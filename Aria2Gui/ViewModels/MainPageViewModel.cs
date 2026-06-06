@@ -425,12 +425,44 @@ public sealed partial class MainPageViewModel : ObservableObject
             }
             string name = Path.GetFileName(file.Path);
             row.Name = string.IsNullOrEmpty(name) ? file.Path : name;
+            row.Index = (int)file.Index;
             row.SizeText = FormatUtils.FormatSize(file.Length);
             row.Progress = file.Length > 0 ? file.CompletedLength * 100.0 / file.Length : 0;
             row.ProgressText = row.Progress.ToString("0.#", CultureInfo.CurrentCulture) + " %";
+            row.SetSelectedFromSnapshot(file.Selected);
+            row.SelectionToggled = () => _ = ApplyFileSelectionAsync(item);
         }
         for (int i = SelectedFiles.Count - 1; i >= count; i--)
             SelectedFiles.RemoveAt(i);
+    }
+
+    /// <summary>
+    /// Pushes the per-file checkbox state to aria2 (select-file). aria2 needs at
+    /// least one file selected, so an all-unchecked state is rejected and reverted.
+    /// </summary>
+    private async Task ApplyFileSelectionAsync(DownloadItemViewModel item)
+    {
+        if (!ReferenceEquals(SelectedDownload, item))
+            return;
+        var indices = SelectedFiles.Where(f => f.IsSelected).Select(f => f.Index).OrderBy(i => i).ToList();
+        if (indices.Count == 0)
+        {
+            // Can't deselect everything — re-check the file the user just cleared.
+            foreach (var f in SelectedFiles)
+                f.SetSelectedFromSnapshot(true);
+            return;
+        }
+        try
+        {
+            await _service.Rpc.ChangeOptionAsync(item.Gid, new Dictionary<string, string>
+            {
+                ["select-file"] = string.Join(',', indices),
+            });
+        }
+        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
+        {
+            // Engine busy/reconnecting — next poll resyncs the checkboxes.
+        }
     }
 
     private async Task RefreshPeersAsync()

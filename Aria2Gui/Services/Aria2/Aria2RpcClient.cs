@@ -133,6 +133,14 @@ public sealed class Aria2RpcClient : IAsyncDisposable
     public Task ChangeGlobalOptionAsync(IReadOnlyDictionary<string, string> options, CancellationToken ct = default) =>
         InvokeAsync("aria2.changeGlobalOption", w => WriteOptions(w, options), ct);
 
+    /// <summary>Changes a single download's options at runtime (e.g. select-file).</summary>
+    public Task ChangeOptionAsync(string gid, IReadOnlyDictionary<string, string> options, CancellationToken ct = default) =>
+        InvokeAsync("aria2.changeOption", w =>
+        {
+            w.WriteStringValue(gid);
+            WriteOptions(w, options);
+        }, ct);
+
     public async Task<Aria2VersionInfo> GetVersionAsync(CancellationToken ct = default)
     {
         var result = await InvokeAsync("aria2.getVersion", null, ct).ConfigureAwait(false);

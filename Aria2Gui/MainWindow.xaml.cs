@@ -12,6 +12,9 @@ namespace Aria2Gui;
 /// </summary>
 public sealed partial class MainWindow : Window
 {
+    /// <summary>Tray icon: minimise-to-tray, live tooltip, restore/pause-all/quit menu.</summary>
+    public Services.TrayIconManager Tray { get; }
+
     public MainWindow()
     {
         InitializeComponent();
@@ -38,6 +41,11 @@ public sealed partial class MainWindow : Window
         // Apply the saved theme before the first frame renders. App.Window is not
         // assigned yet in this constructor, so pass our own content explicitly.
         Helpers.ThemeHelper.Apply(Content as FrameworkElement, Services.SettingsService.Load().Theme);
+
+        Tray = new Services.TrayIconManager(this, AppWindow);
+        Tray.Initialize();
+        if (RootFrame.Content is MainPage page)
+            Tray.AttachViewModel(page.ViewModel);
     }
 
     [System.Runtime.InteropServices.DllImport("user32.dll")]

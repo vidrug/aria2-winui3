@@ -68,8 +68,12 @@ public partial class App : Application
     {
         Window = new MainWindow();
         DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-        // Stop aria2c gracefully (saves the session) when the window closes.
-        Window.Closed += (_, _) => Services.Aria2.Aria2Service.Instance.Shutdown();
+        // Stop aria2c gracefully (saves the session) and remove the tray icon on close.
+        Window.Closed += (_, _) =>
+        {
+            (Window as MainWindow)?.Tray.Dispose();
+            Services.Aria2.Aria2Service.Instance.Shutdown();
+        };
 
         // A second app launch redirects here (see Program) — surface our window.
         // Window.Activate() alone does not restore a minimized window.

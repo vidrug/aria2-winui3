@@ -55,6 +55,14 @@ public sealed partial class MainPage : Page
             ViewModel.Columns.ResizeBy(key, horizontalChange);
     }
 
+    /// <summary>
+    /// Keep the table content at least as wide as the viewport so the columns fill
+    /// the window when they fit; when their total exceeds it, the content grows
+    /// past the viewport and the shared horizontal scrollbar appears.
+    /// </summary>
+    private void TableScroll_SizeChanged(object sender, SizeChangedEventArgs e) =>
+        TableContent.MinWidth = TableScroll.ViewportWidth;
+
     private void Row_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
     {
         if ((sender as FrameworkElement)?.DataContext is DownloadItemViewModel item)
