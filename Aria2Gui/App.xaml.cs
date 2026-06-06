@@ -54,6 +54,11 @@ public partial class App : Application
         DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         // Stop aria2c gracefully (saves the session) when the window closes.
         Window.Closed += (_, _) => Services.Aria2.Aria2Service.Instance.Shutdown();
+
+        // A second app launch redirects here (see Program) — surface our window.
+        Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().Activated += (_, _) =>
+            DispatcherQueue.TryEnqueue(() => Window.Activate());
+
         Window.Activate();
 
         // Start the aria2c engine in the background; the UI reflects service state.

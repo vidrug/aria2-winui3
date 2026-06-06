@@ -21,7 +21,10 @@ public sealed class AppSettings
 
     public int BtMaxPeers { get; set; } = 55;
 
-    /// <summary>Seed until this ratio after a torrent completes; 0 stops seeding immediately.</summary>
+    /// <summary>
+    /// Seed until this ratio after a torrent completes; 0 disables seeding
+    /// (mapped to aria2 --seed-time=0, since --seed-ratio=0 means "seed forever").
+    /// </summary>
     public double SeedRatio { get; set; } = 1.0;
 
     /// <summary>"Default" (follow system), "Light" or "Dark".</summary>
@@ -46,7 +49,36 @@ public static class SettingsService
 
         if (string.IsNullOrWhiteSpace(settings.DownloadDirectory))
             settings.DownloadDirectory = AppPaths.DefaultDownloadDirectory;
+
+        // Values reach the aria2c command line — clamp hand-edited files so a bad
+        // settings.json can't keep the engine from starting.
+        settings.MaxConcurrentDownloads = Math.Clamp(settings.MaxConcurrentDownloads, 1, 50);
+        settings.MaxConnectionsPerServer = Math.Clamp(settings.MaxConnectionsPerServer, 1, 16);
+        settings.BtMaxPeers = Math.Clamp(settings.BtMaxPeers, 0, 1000);
+        settings.SeedRatio = double.IsFinite(settings.SeedRatio) ? Math.Clamp(settings.SeedRatio, 0, 1000) : 1.0;
+        settings.MaxDownloadLimit = SanitizeSpeed(settings.MaxDownloadLimit);
+        settings.MaxUploadLimit = SanitizeSpeed(settings.MaxUploadLimit);
         return settings;
+    }
+
+    /// <summary>aria2 accepts only "&lt;digits&gt;[K|M]" for speed limits.</summary>
+    private static string SanitizeSpeed(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "0";
+        string trimmed = value.Trim();
+        int digits = trimmed.Length;
+        char suffix = char.ToUpperInvariant(trimmed[^1]);
+        if (suffix is 'K' or 'M')
+            digits--;
+        if (digits == 0)
+            return "0";
+        for (int i = 0; i < digits; i++)
+        {
+            if (!char.IsAsciiDigit(trimmed[i]))
+                return "0";
+        }
+        return trimmed;
     }
 
     public static void Save(AppSettings settings)

@@ -51,6 +51,9 @@ public sealed class Aria2Service
     {
         Settings = SettingsService.Load();
         SetState(Aria2ServiceState.Starting);
+        // The recovery lock keeps RecoverAsync (fired by a crash mid-startup) from
+        // racing this path with a concurrent process start.
+        await _recoveryLock.WaitAsync(ct).ConfigureAwait(false);
         try
         {
             await StartProcessAndConnectAsync(ct).ConfigureAwait(false);
@@ -60,8 +63,13 @@ public sealed class Aria2Service
         catch (Exception ex)
         {
             LastError = BuildStartupError(ex);
+            _process.Stop(); // never leave an unsupervised aria2c behind a Failed state
             SetState(Aria2ServiceState.Failed);
             throw;
+        }
+        finally
+        {
+            _recoveryLock.Release();
         }
     }
 
@@ -77,29 +85,42 @@ public sealed class Aria2Service
     /// <summary>
     /// Synchronous shutdown for app exit: ask aria2 to save its session and quit,
     /// then force-kill if it dawdles. The Job Object is the final safety net.
+    /// forceShutdown still saves the session on exit — it only skips slow tracker
+    /// goodbye announces, keeping the UI-thread freeze short.
     /// </summary>
     public void Shutdown()
     {
         _shuttingDown = true;
+        // Don't tear down mid-recovery: a concurrent restart could spawn a process
+        // after we've killed the current one. Bounded wait keeps exit snappy.
+        bool lockTaken = _recoveryLock.Wait(TimeSpan.FromSeconds(2));
         try
         {
-            if (_rpc.IsConnected)
-                _rpc.ShutdownAsync().Wait(TimeSpan.FromSeconds(2));
+            try
+            {
+                if (_rpc.IsConnected)
+                    _rpc.ShutdownAsync(force: true).Wait(TimeSpan.FromSeconds(1.5));
+            }
+            catch
+            {
+                // Best effort — we kill below anyway.
+            }
+            try
+            {
+                _rpc.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(1));
+            }
+            catch
+            {
+            }
+            _process.WaitForExitOrKill(TimeSpan.FromSeconds(2.5));
+            _process.Dispose();
+            SetState(Aria2ServiceState.Stopped);
         }
-        catch
+        finally
         {
-            // Best effort — we kill below anyway.
+            if (lockTaken)
+                _recoveryLock.Release();
         }
-        try
-        {
-            _rpc.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(1));
-        }
-        catch
-        {
-        }
-        _process.WaitForExitOrKill(TimeSpan.FromSeconds(3));
-        _process.Dispose();
-        SetState(Aria2ServiceState.Stopped);
     }
 
     private async Task StartProcessAndConnectAsync(CancellationToken ct)
@@ -168,8 +189,17 @@ public sealed class Aria2Service
             {
                 if (_process.IsRunning && !_rpc.IsConnected)
                 {
-                    // Process alive, socket dropped — just reconnect.
-                    await ConnectWithRetryAsync(CancellationToken.None).ConfigureAwait(false);
+                    // Process alive, socket dropped — try a plain reconnect first,
+                    // and fall back to a full restart if the process is unreachable.
+                    try
+                    {
+                        await ConnectWithRetryAsync(CancellationToken.None).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        _process.Stop();
+                        await StartProcessAndConnectAsync(CancellationToken.None).ConfigureAwait(false);
+                    }
                 }
                 else
                 {
@@ -182,6 +212,7 @@ public sealed class Aria2Service
             catch (Exception ex)
             {
                 LastError = BuildStartupError(ex);
+                _process.Stop(); // never leave an unsupervised aria2c behind a Failed state
                 SetState(Aria2ServiceState.Failed);
             }
         }
@@ -192,27 +223,56 @@ public sealed class Aria2Service
     }
 
     /// <summary>Options passed on the aria2c command line at startup.</summary>
-    private static Dictionary<string, string> BuildStartupOptions(AppSettings s) => new()
+    private static Dictionary<string, string> BuildStartupOptions(AppSettings s)
     {
-        ["max-overall-download-limit"] = s.MaxDownloadLimit,
-        ["max-overall-upload-limit"] = s.MaxUploadLimit,
-        ["max-concurrent-downloads"] = s.MaxConcurrentDownloads.ToString(CultureInfo.InvariantCulture),
-        ["max-connection-per-server"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
-        ["split"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
-        ["bt-max-peers"] = s.BtMaxPeers.ToString(CultureInfo.InvariantCulture),
-        ["seed-ratio"] = s.SeedRatio.ToString("0.0##", CultureInfo.InvariantCulture),
-    };
+        var options = new Dictionary<string, string>
+        {
+            ["max-overall-download-limit"] = s.MaxDownloadLimit,
+            ["max-overall-upload-limit"] = s.MaxUploadLimit,
+            ["max-concurrent-downloads"] = s.MaxConcurrentDownloads.ToString(CultureInfo.InvariantCulture),
+            ["max-connection-per-server"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
+            ["split"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
+            ["bt-max-peers"] = s.BtMaxPeers.ToString(CultureInfo.InvariantCulture),
+        };
+        AddSeedOptions(options, s);
+        return options;
+    }
 
     /// <summary>Subset of options aria2.changeGlobalOption accepts at runtime.</summary>
-    private static Dictionary<string, string> BuildRuntimeOptions(AppSettings s) => new()
+    private static Dictionary<string, string> BuildRuntimeOptions(AppSettings s)
     {
-        ["dir"] = s.DownloadDirectory,
-        ["max-overall-download-limit"] = s.MaxDownloadLimit,
-        ["max-overall-upload-limit"] = s.MaxUploadLimit,
-        ["max-concurrent-downloads"] = s.MaxConcurrentDownloads.ToString(CultureInfo.InvariantCulture),
-        ["bt-max-peers"] = s.BtMaxPeers.ToString(CultureInfo.InvariantCulture),
-        ["seed-ratio"] = s.SeedRatio.ToString("0.0##", CultureInfo.InvariantCulture),
-    };
+        var options = new Dictionary<string, string>
+        {
+            ["dir"] = s.DownloadDirectory,
+            ["max-overall-download-limit"] = s.MaxDownloadLimit,
+            ["max-overall-upload-limit"] = s.MaxUploadLimit,
+            ["max-concurrent-downloads"] = s.MaxConcurrentDownloads.ToString(CultureInfo.InvariantCulture),
+            ["max-connection-per-server"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
+            ["split"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
+            ["bt-max-peers"] = s.BtMaxPeers.ToString(CultureInfo.InvariantCulture),
+        };
+        AddSeedOptions(options, s);
+        return options;
+    }
+
+    /// <summary>
+    /// In aria2 --seed-ratio=0 means "seed forever". "Don't seed" is expressed with
+    /// --seed-time=0 instead, so map our SeedRatio==0 to that. When a ratio is set,
+    /// seed-time gets an effectively-infinite value so a previous runtime "0" cannot
+    /// linger and cut seeding short (there is no "unset" in changeGlobalOption).
+    /// </summary>
+    private static void AddSeedOptions(Dictionary<string, string> options, AppSettings s)
+    {
+        if (s.SeedRatio <= 0)
+        {
+            options["seed-time"] = "0";
+        }
+        else
+        {
+            options["seed-ratio"] = s.SeedRatio.ToString("0.0##", CultureInfo.InvariantCulture);
+            options["seed-time"] = "525600"; // a year, in minutes
+        }
+    }
 
     private string BuildStartupError(Exception ex)
     {

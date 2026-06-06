@@ -19,6 +19,9 @@ public sealed class Aria2ProcessManager : IDisposable
     private nint _jobHandle;
     private StringBuilder? _stderrTail;
     private bool _disposed;
+    // Set before any intentional kill so the Exited event doesn't trigger the
+    // crash-recovery path for stops we initiated ourselves.
+    private volatile bool _expectedExit;
 
     public int RpcPort { get; private set; }
 
@@ -40,7 +43,8 @@ public sealed class Aria2ProcessManager : IDisposable
         }
     }
 
-    /// <summary>Raised from a worker thread when aria2c exits (including crashes).</summary>
+    /// <summary>Raised from a worker thread when aria2c exits unexpectedly (crashes),
+    /// not when we stop it ourselves via <see cref="Stop"/>/<see cref="WaitForExitOrKill"/>.</summary>
     public event Action? Exited;
 
     /// <summary>Last lines of aria2c stderr — surfaced in startup failure messages.</summary>
@@ -90,7 +94,8 @@ public sealed class Aria2ProcessManager : IDisposable
         psi.ArgumentList.Add("--quiet");
         psi.ArgumentList.Add($"--dir={downloadDirectory}");
         psi.ArgumentList.Add("--continue=true");
-        psi.ArgumentList.Add("--file-allocation=falloc");
+        // falloc is instant on NTFS but unsupported on FAT32/exFAT flash drives.
+        psi.ArgumentList.Add($"--file-allocation={PickFileAllocation(downloadDirectory)}");
         psi.ArgumentList.Add("--auto-save-interval=20");
         psi.ArgumentList.Add($"--save-session={sessionFile}");
         psi.ArgumentList.Add("--save-session-interval=30");
@@ -107,6 +112,7 @@ public sealed class Aria2ProcessManager : IDisposable
                 psi.ArgumentList.Add($"--{key}={value}");
         }
 
+        _expectedExit = false;
         var process = Process.Start(psi)
             ?? throw new InvalidOperationException("Failed to start aria2c.exe.");
 
@@ -118,11 +124,20 @@ public sealed class Aria2ProcessManager : IDisposable
         process.OutputDataReceived += (_, _) => { }; // drain so the pipe never blocks aria2c
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
+        // Subscribe before EnableRaisingEvents so an instant death cannot slip
+        // through the gap unobserved.
+        process.Exited += (_, _) =>
+        {
+            if (!_expectedExit)
+                Exited?.Invoke();
+        };
         process.EnableRaisingEvents = true;
-        process.Exited += (_, _) => Exited?.Invoke();
 
         AssignToKillOnCloseJob(process);
-        _process = process;
+        lock (_gate)
+        {
+            _process = process;
+        }
     }
 
     /// <summary>
@@ -131,7 +146,13 @@ public sealed class Aria2ProcessManager : IDisposable
     /// </summary>
     public void WaitForExitOrKill(TimeSpan timeout)
     {
-        var process = _process;
+        _expectedExit = true;
+        Process? process;
+        lock (_gate)
+        {
+            process = _process;
+            _process = null;
+        }
         if (process is null)
             return;
         try
@@ -146,14 +167,18 @@ public sealed class Aria2ProcessManager : IDisposable
         finally
         {
             process.Dispose();
-            _process = null;
         }
     }
 
     public void Stop()
     {
-        var process = _process;
-        _process = null;
+        _expectedExit = true;
+        Process? process;
+        lock (_gate)
+        {
+            process = _process;
+            _process = null;
+        }
         if (process is null)
             return;
         try
@@ -168,6 +193,25 @@ public sealed class Aria2ProcessManager : IDisposable
         {
             process.Dispose();
         }
+    }
+
+    /// <summary>NTFS supports instant allocation; FAT32/exFAT (flash drives) do not.</summary>
+    private static string PickFileAllocation(string downloadDirectory)
+    {
+        try
+        {
+            string? root = Path.GetPathRoot(Path.GetFullPath(downloadDirectory));
+            if (!string.IsNullOrEmpty(root) &&
+                string.Equals(new DriveInfo(root).DriveFormat, "NTFS", StringComparison.OrdinalIgnoreCase))
+            {
+                return "falloc";
+            }
+        }
+        catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            // Network paths and exotic mounts — fall through to the safe default.
+        }
+        return "prealloc";
     }
 
     private void AppendStderr(string? line)
@@ -196,7 +240,7 @@ public sealed class Aria2ProcessManager : IDisposable
     {
         if (_jobHandle == 0)
         {
-            nint job = NativeMethods.CreateJobObjectW(0, null);
+            nint job = NativeMethods.CreateJobObjectW(0, 0);
             if (job == 0)
                 return; // job objects are best-effort; --stop-with-process still covers us
 
@@ -274,7 +318,7 @@ public sealed class Aria2ProcessManager : IDisposable
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern nint CreateJobObjectW(nint lpJobAttributes, string? lpName);
+        public static extern nint CreateJobObjectW(nint lpJobAttributes, nint lpName);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetInformationJobObject(nint hJob, int jobObjectInformationClass, ref JOBOBJECT_EXTENDED_LIMIT_INFORMATION lpJobObjectInformation, uint cbJobObjectInformationLength);

@@ -121,12 +121,18 @@ public sealed partial class MainPageViewModel : ObservableObject
             }
         }
 
-        for (int i = Downloads.Count - 1; i >= 0; i--)
+        // Prune rows only when the snapshot is complete: if the tell* windows were
+        // truncated, a missing gid does not mean the download is gone.
+        long expectedTotal = snapshot.GlobalStat.NumActive + snapshot.GlobalStat.NumWaiting + snapshot.GlobalStat.NumStopped;
+        if (snapshot.Downloads.Count >= expectedTotal)
         {
-            if (!seen.Contains(Downloads[i].Gid))
+            for (int i = Downloads.Count - 1; i >= 0; i--)
             {
-                _byGid.Remove(Downloads[i].Gid);
-                Downloads.RemoveAt(i);
+                if (!seen.Contains(Downloads[i].Gid))
+                {
+                    _byGid.Remove(Downloads[i].Gid);
+                    Downloads.RemoveAt(i);
+                }
             }
         }
 

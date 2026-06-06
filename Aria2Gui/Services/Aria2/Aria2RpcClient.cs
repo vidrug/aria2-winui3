@@ -20,6 +20,14 @@ public sealed class Aria2RpcClient : IAsyncDisposable
 {
     private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(15);
 
+    /// <summary>
+    /// Window size for tellWaiting/tellStopped. aria2 caps its stopped history at
+    /// --max-download-result (default 1000), and queues beyond this size are far
+    /// outside this GUI's use case; the snapshot consumer additionally guards
+    /// against truncation before pruning rows.
+    /// </summary>
+    private const int TellWindow = 10_000;
+
     /// <summary>Fields requested from tell* — keeps poll payloads small.</summary>
     private static readonly string[] TellKeys =
     [
@@ -31,6 +39,9 @@ public sealed class Aria2RpcClient : IAsyncDisposable
 
     private readonly ConcurrentDictionary<long, TaskCompletionSource<JsonElement>> _pending = new();
     private readonly SemaphoreSlim _sendLock = new(1, 1);
+    // Serializes ConnectAsync / CloseSocketAsync / DisposeAsync so a reconnect can
+    // never race teardown (double-disposed CTS, orphaned receive loop).
+    private readonly SemaphoreSlim _connectLock = new(1, 1);
     private ClientWebSocket? _socket;
     private CancellationTokenSource? _receiveCts;
     private Task? _receiveTask;
@@ -48,16 +59,25 @@ public sealed class Aria2RpcClient : IAsyncDisposable
 
     public async Task ConnectAsync(int port, string secret, CancellationToken ct = default)
     {
-        await CloseSocketAsync().ConfigureAwait(false);
+        await _connectLock.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            await CloseSocketCoreAsync().ConfigureAwait(false);
 
-        _tokenParam = "token:" + secret;
-        var socket = new ClientWebSocket();
-        socket.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
-        await socket.ConnectAsync(new Uri($"ws://127.0.0.1:{port}/jsonrpc"), ct).ConfigureAwait(false);
+            _tokenParam = "token:" + secret;
+            var socket = new ClientWebSocket();
+            socket.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
+            await socket.ConnectAsync(new Uri($"ws://127.0.0.1:{port}/jsonrpc"), ct).ConfigureAwait(false);
 
-        _socket = socket;
-        _receiveCts = new CancellationTokenSource();
-        _receiveTask = Task.Run(() => ReceiveLoopAsync(socket, _receiveCts.Token), CancellationToken.None);
+            _socket = socket;
+            _receiveCts = new CancellationTokenSource();
+            _receiveTask = Task.Run(() => ReceiveLoopAsync(socket, _receiveCts.Token), CancellationToken.None);
+        }
+        finally
+        {
+            _connectLock.Release();
+        }
     }
 
     // ---------------------------------------------------------------- typed API
@@ -135,13 +155,13 @@ public sealed class Aria2RpcClient : IAsyncDisposable
             WriteMulticallEntry(w, "aria2.tellWaiting", static w2 =>
             {
                 w2.WriteNumberValue(0);
-                w2.WriteNumberValue(1000);
+                w2.WriteNumberValue(TellWindow);
                 WriteKeys(w2);
             });
             WriteMulticallEntry(w, "aria2.tellStopped", static w2 =>
             {
                 w2.WriteNumberValue(0);
-                w2.WriteNumberValue(1000);
+                w2.WriteNumberValue(TellWindow);
                 WriteKeys(w2);
             });
             WriteMulticallEntry(w, "aria2.getGlobalStat", null);
@@ -201,21 +221,31 @@ public sealed class Aria2RpcClient : IAsyncDisposable
         _pending[id] = tcs;
         try
         {
-            await _sendLock.WaitAsync(ct).ConfigureAwait(false);
-            try
-            {
-                await socket.SendAsync(buffer.WrittenMemory, WebSocketMessageType.Text, endOfMessage: true, ct).ConfigureAwait(false);
-            }
-            finally
-            {
-                _sendLock.Release();
-            }
-
+            // The timeout covers the whole round-trip, including waiting for the send
+            // lock — a wedged aria2c must not block every caller forever.
             using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
             timeoutCts.CancelAfter(RequestTimeout);
-            await using (timeoutCts.Token.Register(static state => ((TaskCompletionSource<JsonElement>)state!).TrySetCanceled(), tcs).ConfigureAwait(false))
+            try
             {
-                return await tcs.Task.ConfigureAwait(false);
+                await _sendLock.WaitAsync(timeoutCts.Token).ConfigureAwait(false);
+                try
+                {
+                    await socket.SendAsync(buffer.WrittenMemory, WebSocketMessageType.Text, endOfMessage: true, timeoutCts.Token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    _sendLock.Release();
+                }
+
+                await using (timeoutCts.Token.Register(static state => ((TaskCompletionSource<JsonElement>)state!).TrySetCanceled(), tcs).ConfigureAwait(false))
+                {
+                    return await tcs.Task.ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+            {
+                // Timeout, not caller cancellation — surface a typed, catchable error.
+                throw new TimeoutException($"aria2 RPC request timed out: {method}");
             }
         }
         finally
@@ -276,9 +306,10 @@ public sealed class Aria2RpcClient : IAsyncDisposable
                 {
                     HandleMessage(message.WrittenMemory);
                 }
-                catch (JsonException)
+                catch (Exception)
                 {
-                    // Malformed frame — ignore; the matching request will time out.
+                    // Malformed frame or a throwing notification subscriber must not
+                    // tear down the connection; the matching request will time out.
                 }
             }
         }
@@ -353,11 +384,12 @@ public sealed class Aria2RpcClient : IAsyncDisposable
         foreach (var key in _pending.Keys)
         {
             if (_pending.TryRemove(key, out var tcs))
-                tcs.TrySetException(new WebSocketException(WebSocketError.ConnectionClosedPrematurely));
+                tcs.TrySetException(new Aria2RpcException(-1, "Соединение с aria2 разорвано."));
         }
     }
 
-    private async Task CloseSocketAsync()
+    /// <summary>Must be called while holding <see cref="_connectLock"/>.</summary>
+    private async Task CloseSocketCoreAsync()
     {
         var cts = _receiveCts;
         var socket = _socket;
@@ -385,7 +417,17 @@ public sealed class Aria2RpcClient : IAsyncDisposable
         if (_disposed)
             return;
         _disposed = true;
-        await CloseSocketAsync().ConfigureAwait(false);
-        _sendLock.Dispose();
+        await _connectLock.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            await CloseSocketCoreAsync().ConfigureAwait(false);
+        }
+        finally
+        {
+            _connectLock.Release();
+        }
+        // _sendLock/_connectLock are intentionally not disposed: SemaphoreSlim holds no
+        // unmanaged resources without AvailableWaitHandle, and disposing while async
+        // waiters are queued would strand them forever.
     }
 }
