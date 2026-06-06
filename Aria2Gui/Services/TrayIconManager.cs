@@ -4,7 +4,7 @@ using H.NotifyIcon;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media;
 
 namespace Aria2Gui.Services;
 
@@ -47,7 +47,16 @@ public sealed class TrayIconManager : IDisposable
         {
             ToolTipText = "Aria2Gui",
             ContextFlyout = menu,
-            IconSource = new BitmapImage(new Uri("ms-appx:///Assets/AppIcon.ico")),
+            // GeneratedIconSource renders synchronously (a BitmapImage from .ico loads
+            // async and leaves the tray icon blank). A green download glyph mirrors the
+            // app's Windows download icon.
+            IconSource = new GeneratedIconSource
+            {
+                Text = "",
+                FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Segoe Fluent Icons"),
+                FontSize = 30,
+                Foreground = new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 16, 185, 80)),
+            },
             NoLeftClickDelay = true,
         };
         _icon.LeftClickCommand = new RelayCommandShim(ShowWindow);

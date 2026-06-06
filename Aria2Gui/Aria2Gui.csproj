@@ -13,6 +13,8 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Embed the app icon into the .exe so the taskbar/Explorer/title bar show it. -->
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <!-- Custom Program.Main enforces single-instancing via AppInstance redirection. -->
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <!-- WUI2010: nested x:Bind to ViewModel.Columns.* — both segments are inline-initialized, never null. -->
@@ -27,7 +29,9 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-48_altform-lightunplated.png" />
     <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\AppIcon.ico" />
+    <Content Include="Assets\AppIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
 

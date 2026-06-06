@@ -287,9 +287,32 @@ public sealed class Aria2Service
         string trackers = NormalizeTrackers(s.ExtraTrackers);
         if (trackers.Length > 0)
             options["bt-tracker"] = trackers;
+        AddCommonOptions(options, s);
         AddSeedOptions(options, s);
         ApplyExtraOptions(options, s.ExtraAria2Options);
         return options;
+    }
+
+    /// <summary>Connection/file/BT options shared between startup and runtime.</summary>
+    private static void AddCommonOptions(Dictionary<string, string> options, AppSettings s)
+    {
+        string inv(int v) => v.ToString(CultureInfo.InvariantCulture);
+        options["bt-max-open-files"] = inv(s.BtMaxOpenFiles);
+        options["timeout"] = inv(s.Timeout);
+        options["connect-timeout"] = inv(s.ConnectTimeout);
+        options["max-tries"] = inv(s.MaxTries);
+        options["retry-wait"] = inv(s.RetryWait);
+        options["check-certificate"] = s.CheckCertificate ? "true" : "false";
+        options["min-split-size"] = s.MinSplitSize;
+        options["allow-overwrite"] = s.AllowOverwrite ? "true" : "false";
+        options["auto-file-renaming"] = s.AutoFileRenaming ? "true" : "false";
+        if (!string.IsNullOrWhiteSpace(s.UserAgent))
+            options["user-agent"] = s.UserAgent.Trim();
+        if (!string.IsNullOrWhiteSpace(s.AllProxy))
+            options["all-proxy"] = s.AllProxy.Trim();
+        // "auto" is resolved per download dir in the process manager; pass concrete others.
+        if (s.FileAllocation is not "auto")
+            options["file-allocation"] = s.FileAllocation;
     }
 
     /// <summary>Lines/commas/spaces → aria2's comma-separated tracker list.</summary>
@@ -337,6 +360,7 @@ public sealed class Aria2Service
             ["split"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
             ["bt-max-peers"] = s.BtMaxPeers.ToString(CultureInfo.InvariantCulture),
         };
+        AddCommonOptions(options, s);
         AddSeedOptions(options, s);
         return options;
     }

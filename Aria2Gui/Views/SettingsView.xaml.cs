@@ -33,8 +33,22 @@ public sealed partial class SettingsView : UserControl
         ConnectionsBox.Value = s.MaxConnectionsPerServer;
         ThemeBox.SelectedIndex = s.Theme switch { "Light" => 1, "Dark" => 2, _ => 0 };
 
+        ProxyBox.Text = s.AllProxy;
+        CheckCertToggle.IsOn = s.CheckCertificate;
+        TimeoutBox.Value = s.Timeout;
+        ConnectTimeoutBox.Value = s.ConnectTimeout;
+        MaxTriesBox.Value = s.MaxTries;
+        RetryWaitBox.Value = s.RetryWait;
+        MinSplitSizeBox.Text = s.MinSplitSize;
+        UserAgentBox.Text = s.UserAgent;
+
+        FileAllocBox.SelectedIndex = s.FileAllocation switch { "none" => 1, "prealloc" => 2, "falloc" => 3, _ => 0 };
+        AllowOverwriteToggle.IsOn = s.AllowOverwrite;
+        AutoRenameToggle.IsOn = s.AutoFileRenaming;
+
         ListenPortBox.Value = s.ListenPort;
         PeersBox.Value = s.BtMaxPeers;
+        BtMaxOpenFilesBox.Value = s.BtMaxOpenFiles;
         SeedRatioBox.Value = s.SeedRatio;
         DhtToggle.IsOn = s.EnableDht;
         PexToggle.IsOn = s.EnablePex;
@@ -79,8 +93,21 @@ public sealed partial class SettingsView : UserControl
                 Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
                 LastAddDirectory = old.LastAddDirectory,
 
+                AllProxy = ProxyBox.Text,
+                CheckCertificate = CheckCertToggle.IsOn,
+                Timeout = (int)SafeValue(TimeoutBox.Value, 60),
+                ConnectTimeout = (int)SafeValue(ConnectTimeoutBox.Value, 60),
+                MaxTries = (int)SafeValue(MaxTriesBox.Value, 5),
+                RetryWait = (int)SafeValue(RetryWaitBox.Value, 0),
+                MinSplitSize = MinSplitSizeBox.Text,
+                UserAgent = UserAgentBox.Text,
+                FileAllocation = (FileAllocBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "auto",
+                AllowOverwrite = AllowOverwriteToggle.IsOn,
+                AutoFileRenaming = AutoRenameToggle.IsOn,
+
                 ListenPort = (int)SafeValue(ListenPortBox.Value, 0),
                 BtMaxPeers = (int)SafeValue(PeersBox.Value, 55),
+                BtMaxOpenFiles = (int)SafeValue(BtMaxOpenFilesBox.Value, 100),
                 SeedRatio = SafeValue(SeedRatioBox.Value, 1.0),
                 EnableDht = DhtToggle.IsOn,
                 EnablePex = PexToggle.IsOn,

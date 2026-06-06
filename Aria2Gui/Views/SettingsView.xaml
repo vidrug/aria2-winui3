@@ -109,6 +109,94 @@
                     </ComboBox>
                 </tk:SettingsCard>
 
+                <!-- ===== Подключение ===== -->
+                <TextBlock Text="Подключение" Style="{StaticResource SectionHeaderStyle}" Margin="2,16,0,4" />
+
+                <tk:SettingsCard Header="Прокси" Description="Напр. http://host:8080 или socks5://host:1080 (пусто — без прокси)">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE968;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <TextBox x:Name="ProxyBox" AutomationProperties.AutomationId="ProxyBox" MinWidth="300" PlaceholderText="без прокси" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Проверять сертификаты HTTPS" Description="Отключайте только для доверенных серверов с самоподписанным сертификатом">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE72E;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="CheckCertToggle" AutomationProperties.AutomationId="CheckCertToggle" OnContent="Вкл" OffContent="Выкл" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Таймаут" Description="Секунд до обрыва зависшего соединения">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE916;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="TimeoutBox" AutomationProperties.AutomationId="TimeoutBox" Minimum="1" Maximum="600" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Таймаут подключения" Description="Секунд на установку соединения">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE839;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="ConnectTimeoutBox" AutomationProperties.AutomationId="ConnectTimeoutBox" Minimum="1" Maximum="600" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Попыток" Description="Сколько раз повторять при ошибке (0 — без повторов)">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE72C;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="MaxTriesBox" AutomationProperties.AutomationId="MaxTriesBox" Minimum="0" Maximum="100" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Пауза между попытками" Description="Секунд ожидания перед повтором">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE823;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="RetryWaitBox" AutomationProperties.AutomationId="RetryWaitBox" Minimum="0" Maximum="600" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Мин. размер сегмента" Description="С какого размера дробить файл на потоки (напр. 1M, 20M)">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8B7;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <TextBox x:Name="MinSplitSizeBox" AutomationProperties.AutomationId="MinSplitSizeBox" MinWidth="148" PlaceholderText="20M" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="User-Agent" Description="HTTP-заголовок User-Agent (пусто — по умолчанию)">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE7C1;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <TextBox x:Name="UserAgentBox" AutomationProperties.AutomationId="UserAgentBox" MinWidth="300" PlaceholderText="aria2 по умолчанию" />
+                </tk:SettingsCard>
+
+                <!-- ===== Файлы ===== -->
+                <TextBlock Text="Файлы" Style="{StaticResource SectionHeaderStyle}" Margin="2,16,0,4" />
+
+                <tk:SettingsCard Header="Размещение файла на диске" Description="auto — falloc на NTFS, иначе prealloc">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xEDA2;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <ComboBox x:Name="FileAllocBox" AutomationProperties.AutomationId="FileAllocBox" MinWidth="180">
+                        <ComboBoxItem Content="Авто" Tag="auto" />
+                        <ComboBoxItem Content="Без выделения" Tag="none" />
+                        <ComboBoxItem Content="Предвыделение" Tag="prealloc" />
+                        <ComboBoxItem Content="Быстрое (falloc)" Tag="falloc" />
+                    </ComboBox>
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Перезаписывать существующие файлы" Description="Иначе файл будет переименован">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE74D;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="AllowOverwriteToggle" AutomationProperties.AutomationId="AllowOverwriteToggle" OnContent="Вкл" OffContent="Выкл" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Авто-переименование" Description="При совпадении имени добавлять .1, .2 …">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8AC;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="AutoRenameToggle" AutomationProperties.AutomationId="AutoRenameToggle" OnContent="Вкл" OffContent="Выкл" />
+                </tk:SettingsCard>
+
                 <!-- ===== BitTorrent ===== -->
                 <TextBlock Text="BitTorrent" Style="{StaticResource SectionHeaderStyle}" Margin="2,16,0,4" />
 
@@ -152,6 +240,13 @@
                         <FontIcon Glyph="&#xE716;" />
                     </tk:SettingsCard.HeaderIcon>
                     <NumberBox x:Name="PeersBox" AutomationProperties.AutomationId="PeersBox" Minimum="0" Maximum="1000" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Макс. открытых файлов" Description="Предел одновременно открытых файлов для всех торрентов">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8B7;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="BtMaxOpenFilesBox" AutomationProperties.AutomationId="BtMaxOpenFilesBox" Minimum="1" Maximum="10000" MinWidth="148" SpinButtonPlacementMode="Compact" />
                 </tk:SettingsCard>
 
                 <tk:SettingsCard Header="Раздавать до рейтинга" Description="0 — не раздавать после загрузки">

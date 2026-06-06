@@ -53,6 +53,46 @@ public sealed class AppSettings
     /// <summary>Extra trackers appended to every torrent (one URI per line).</summary>
     public string ExtraTrackers { get; set; } = "";
 
+    /// <summary>Max simultaneously open files across all BT downloads.</summary>
+    public int BtMaxOpenFiles { get; set; } = 100;
+
+    // ---- Connection / HTTP(S)/FTP ----
+
+    /// <summary>Timeout in seconds for a stalled connection.</summary>
+    public int Timeout { get; set; } = 60;
+
+    /// <summary>Initial connection timeout in seconds.</summary>
+    public int ConnectTimeout { get; set; } = 60;
+
+    /// <summary>Retry attempts per download (0 = no retry).</summary>
+    public int MaxTries { get; set; } = 5;
+
+    /// <summary>Seconds to wait between retries.</summary>
+    public int RetryWait { get; set; }
+
+    /// <summary>Verify HTTPS server certificates.</summary>
+    public bool CheckCertificate { get; set; } = true;
+
+    /// <summary>HTTP User-Agent header (blank = aria2 default).</summary>
+    public string UserAgent { get; set; } = "";
+
+    /// <summary>Proxy for all protocols, e.g. http://host:port or socks5://host:port (blank = none).</summary>
+    public string AllProxy { get; set; } = "";
+
+    /// <summary>Lowest size, aria2 format (e.g. "1M"), at which a download is split for a new connection.</summary>
+    public string MinSplitSize { get; set; } = "20M";
+
+    // ---- Files ----
+
+    /// <summary>"none", "prealloc", "trunc", "falloc", or "auto" (NTFS→falloc, else prealloc).</summary>
+    public string FileAllocation { get; set; } = "auto";
+
+    /// <summary>Overwrite an existing file instead of renaming.</summary>
+    public bool AllowOverwrite { get; set; }
+
+    /// <summary>Rename file to file.1, file.2 … when a name collides.</summary>
+    public bool AutoFileRenaming { get; set; } = true;
+
     /// <summary>Raw aria2 options, one "key=value" per line — full access to any flag.</summary>
     public string ExtraAria2Options { get; set; } = "";
 }
@@ -85,7 +125,22 @@ public static class SettingsService
         settings.MaxDownloadLimit = SanitizeSpeed(settings.MaxDownloadLimit);
         settings.MaxUploadLimit = SanitizeSpeed(settings.MaxUploadLimit);
         settings.ListenPort = settings.ListenPort is 0 ? 0 : Math.Clamp(settings.ListenPort, 1024, 65535);
+        settings.BtMaxOpenFiles = Math.Clamp(settings.BtMaxOpenFiles, 1, 10000);
+        settings.Timeout = Math.Clamp(settings.Timeout, 1, 600);
+        settings.ConnectTimeout = Math.Clamp(settings.ConnectTimeout, 1, 600);
+        settings.MaxTries = Math.Clamp(settings.MaxTries, 0, 100);
+        settings.RetryWait = Math.Clamp(settings.RetryWait, 0, 600);
+        settings.MinSplitSize = SanitizeSize(settings.MinSplitSize, "20M");
+        if (settings.FileAllocation is not ("none" or "prealloc" or "trunc" or "falloc" or "auto"))
+            settings.FileAllocation = "auto";
         return settings;
+    }
+
+    /// <summary>aria2 size format "&lt;digits&gt;[K|M]"; falls back to <paramref name="fallback"/>.</summary>
+    private static string SanitizeSize(string value, string fallback)
+    {
+        string s = SanitizeSpeed(value);
+        return s == "0" ? fallback : s;
     }
 
     /// <summary>aria2 accepts only "&lt;digits&gt;[K|M]" for speed limits.</summary>
