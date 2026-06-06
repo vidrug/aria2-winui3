@@ -44,7 +44,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20,0,20,16">
-            <StackPanel Spacing="4" MaxWidth="1000" HorizontalAlignment="Left">
+            <StackPanel Spacing="4" HorizontalAlignment="Stretch">
 
                 <!-- ===== Основные ===== -->
                 <TextBlock Text="Основные" Style="{StaticResource SectionHeaderStyle}" />
