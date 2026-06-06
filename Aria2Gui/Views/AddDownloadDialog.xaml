@@ -12,7 +12,7 @@
     DefaultButton="Primary"
     PrimaryButtonClick="OnAddClick">
 
-    <StackPanel Spacing="12" MinWidth="440">
+    <StackPanel Spacing="12" MinWidth="480">
         <TextBox
             x:Name="UrlsBox"
             AutomationProperties.AutomationId="UrlsBox"
@@ -20,8 +20,27 @@
             PlaceholderText="magnet:?xt=urn:btih:…"
             AcceptsReturn="True"
             TextWrapping="Wrap"
-            Height="112"
+            Height="88"
             ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+        <!-- Save destination -->
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                x:Name="DirBox"
+                AutomationProperties.AutomationId="AddDirBox"
+                Header="Папка сохранения"
+                IsReadOnly="True" />
+            <Button
+                AutomationProperties.AutomationId="AddBrowseFolderButton"
+                Grid.Column="1"
+                Content="Обзор…"
+                VerticalAlignment="Bottom"
+                Click="OnBrowseFolderClick" />
+        </Grid>
 
         <StackPanel Orientation="Horizontal" Spacing="8">
             <Button
@@ -35,6 +54,41 @@
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 TextTrimming="CharacterEllipsis"
                 MaxWidth="240" />
+        </StackPanel>
+
+        <!-- Torrent contents (appears after picking a .torrent) -->
+        <StackPanel x:Name="TorrentFilesPanel" Spacing="8" Visibility="Collapsed">
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Text="Файлы торрента"
+                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                    VerticalAlignment="Center" />
+                <Button
+                    AutomationProperties.AutomationId="SelectAllFilesButton"
+                    Grid.Column="1"
+                    Content="Выбрать все"
+                    Click="OnSelectAllClick" />
+                <Button
+                    AutomationProperties.AutomationId="DeselectAllFilesButton"
+                    Grid.Column="2"
+                    Content="Снять выбор"
+                    Click="OnDeselectAllClick" />
+            </Grid>
+            <Border
+                BorderThickness="1"
+                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                CornerRadius="{ThemeResource ControlCornerRadius}"
+                Height="248">
+                <TreeView
+                    x:Name="FileTree"
+                    AutomationProperties.AutomationId="TorrentFileTree"
+                    SelectionMode="Multiple" />
+            </Border>
         </StackPanel>
 
         <InfoBar

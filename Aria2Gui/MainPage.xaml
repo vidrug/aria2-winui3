@@ -300,17 +300,22 @@
                                         TextTrimming="CharacterEllipsis" />
                                 </StackPanel>
                                 <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                <Grid Grid.Column="2" VerticalAlignment="Center">
+                                <Grid Grid.Column="2" VerticalAlignment="Center" ColumnSpacing="6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="44" />
+                                    </Grid.ColumnDefinitions>
                                     <ProgressBar
                                         Value="{x:Bind Progress, Mode=OneWay}"
                                         Maximum="100"
-                                        MinHeight="14"
+                                        MinHeight="8"
+                                        VerticalAlignment="Center"
                                         IsIndeterminate="{x:Bind IsProgressIndeterminate, Mode=OneWay}" />
                                     <TextBlock
+                                        Grid.Column="1"
                                         Text="{x:Bind ProgressText, Mode=OneWay}"
-                                        FontSize="10"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center" />
+                                        Style="{StaticResource CellTextStyle}"
+                                        TextAlignment="Right" />
                                 </Grid>
                                 <TextBlock Grid.Column="3" Text="{x:Bind StatusText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
                                 <TextBlock Grid.Column="4" Text="{x:Bind SeedsText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
