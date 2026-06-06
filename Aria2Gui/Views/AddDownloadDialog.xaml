@@ -15,15 +15,19 @@
     <StackPanel Spacing="12" MinWidth="440">
         <TextBox
             x:Name="UrlsBox"
+            AutomationProperties.AutomationId="UrlsBox"
             Header="Ссылки HTTP/FTP или magnet — по одной в строке"
             PlaceholderText="magnet:?xt=urn:btih:…"
             AcceptsReturn="True"
             TextWrapping="Wrap"
-            Height="110"
+            Height="112"
             ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
         <StackPanel Orientation="Horizontal" Spacing="8">
-            <Button Content="Выбрать .torrent-файл…" Click="OnPickTorrentClick" />
+            <Button
+                AutomationProperties.AutomationId="PickTorrentButton"
+                Content="Выбрать .torrent-файл…"
+                Click="OnPickTorrentClick" />
             <TextBlock
                 x:Name="TorrentFileName"
                 VerticalAlignment="Center"

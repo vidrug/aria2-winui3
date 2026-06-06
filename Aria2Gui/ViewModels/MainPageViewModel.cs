@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Aria2Gui.Helpers;
+using Aria2Gui.Services;
 using Aria2Gui.Services.Aria2;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -54,7 +55,11 @@ public sealed partial class MainPageViewModel : ObservableObject
         _initialized = true;
 
         _service.StateChanged += state => App.DispatcherQueue.TryEnqueue(() => ApplyEngineState(state));
-        _service.DownloadNotification += (_, _) => App.DispatcherQueue.TryEnqueue(() => _ = RefreshAsync());
+        _service.DownloadNotification += (method, gid) => App.DispatcherQueue.TryEnqueue(() =>
+        {
+            NotifyDownloadEvent(method, gid);
+            _ = RefreshAsync();
+        });
         ApplyEngineState(_service.State); // catch up on anything missed before Loaded
 
         _timer = App.DispatcherQueue.CreateTimer();
@@ -107,6 +112,11 @@ public sealed partial class MainPageViewModel : ObservableObject
         var seen = new HashSet<string>(snapshot.Downloads.Count);
         foreach (var download in snapshot.Downloads)
         {
+            // Hide intermediate entries (magnet metadata / .torrent-file fetches)
+            // once they have spawned the real download — they only add clutter.
+            if (download.FollowedBy is { Count: > 0 })
+                continue;
+
             seen.Add(download.Gid);
             if (_byGid.TryGetValue(download.Gid, out var item))
             {
@@ -140,6 +150,29 @@ public sealed partial class MainPageViewModel : ObservableObject
         GlobalSpeedText = $"↓ {FormatUtils.FormatSpeed(snapshot.GlobalStat.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(snapshot.GlobalStat.UploadSpeed)}";
         CountsText = $"Активных: {snapshot.GlobalStat.NumActive} • В очереди: {snapshot.GlobalStat.NumWaiting} • Завершённых: {snapshot.GlobalStat.NumStopped}";
     }
+
+    /// <summary>Toasts for completions/errors — only when the app is in the background.</summary>
+    private void NotifyDownloadEvent(string method, string gid)
+    {
+        if (!_byGid.TryGetValue(gid, out var item) || IsWindowForeground())
+            return;
+        switch (method)
+        {
+            // Skip intermediate .torrent-file fetches — the real download follows.
+            case "aria2.onDownloadComplete" or "aria2.onBtDownloadComplete"
+                when !item.Name.EndsWith(".torrent", StringComparison.OrdinalIgnoreCase):
+                NotificationService.ShowDownloadComplete(item.Name);
+                break;
+            case "aria2.onDownloadError":
+                NotificationService.ShowDownloadError(item.Name);
+                break;
+        }
+    }
+
+    private static bool IsWindowForeground() => GetForegroundWindow() == App.WindowHandle;
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern nint GetForegroundWindow();
 
     [RelayCommand]
     private Task AddDownloadAsync() => AddDownloadRequested?.Invoke() ?? Task.CompletedTask;

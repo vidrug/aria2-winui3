@@ -21,6 +21,11 @@ public sealed partial class MainWindow : Window
 
         AppWindow.SetIcon("Assets/AppIcon.ico");
 
+        // Comfortable default size for a download list, scaled to the monitor DPI.
+        nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+        double scale = GetDpiForWindow(hwnd) / 96.0;
+        AppWindow.Resize(new Windows.Graphics.SizeInt32((int)(1000 * scale), (int)(680 * scale)));
+
         // Navigate the root frame to the main page on startup.
         RootFrame.Navigate(typeof(MainPage));
 
@@ -28,4 +33,7 @@ public sealed partial class MainWindow : Window
         // assigned yet in this constructor, so pass our own content explicitly.
         Helpers.ThemeHelper.Apply(Content as FrameworkElement, Services.SettingsService.Load().Theme);
     }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern uint GetDpiForWindow(nint hwnd);
 }

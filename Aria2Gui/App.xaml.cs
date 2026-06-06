@@ -61,6 +61,8 @@ public partial class App : Application
 
         Window.Activate();
 
+        Services.NotificationService.Initialize();
+
         // Start the aria2c engine in the background; the UI reflects service state.
         _ = InitializeEngineAsync();
     }

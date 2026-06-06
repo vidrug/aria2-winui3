@@ -38,7 +38,8 @@
             <AppBarButton
                 Label="Добавить"
                 Command="{x:Bind ViewModel.AddDownloadCommand}"
-                AutomationProperties.Name="Добавить загрузку">
+                AutomationProperties.Name="Добавить загрузку"
+                AutomationProperties.AutomationId="AddDownloadButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE710;" />
                 </AppBarButton.Icon>
@@ -51,7 +52,8 @@
                 Label="Возобновить все"
                 Command="{x:Bind ViewModel.ResumeAllCommand}"
                 IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                AutomationProperties.Name="Возобновить все загрузки">
+                AutomationProperties.Name="Возобновить все загрузки"
+                AutomationProperties.AutomationId="ResumeAllButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE768;" />
                 </AppBarButton.Icon>
@@ -60,7 +62,8 @@
                 Label="Пауза всем"
                 Command="{x:Bind ViewModel.PauseAllCommand}"
                 IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                AutomationProperties.Name="Приостановить все загрузки">
+                AutomationProperties.Name="Приостановить все загрузки"
+                AutomationProperties.AutomationId="PauseAllButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE769;" />
                 </AppBarButton.Icon>
@@ -70,6 +73,7 @@
                 Command="{x:Bind ViewModel.ClearStoppedCommand}"
                 IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
                 AutomationProperties.Name="Очистить завершённые загрузки"
+                AutomationProperties.AutomationId="ClearStoppedButton"
                 ToolTipService.ToolTip="Убрать завершённые и удалённые из списка">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE894;" />
@@ -79,7 +83,8 @@
             <AppBarButton
                 Label="Настройки"
                 Command="{x:Bind ViewModel.OpenSettingsCommand}"
-                AutomationProperties.Name="Настройки">
+                AutomationProperties.Name="Настройки"
+                AutomationProperties.AutomationId="SettingsButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE713;" />
                 </AppBarButton.Icon>
@@ -89,6 +94,7 @@
         <!-- Download list -->
         <ListView
             x:Name="DownloadsList"
+            AutomationProperties.AutomationId="DownloadsList"
             Grid.Row="1"
             ItemsSource="{x:Bind ViewModel.Downloads, Mode=OneWay}"
             SelectionMode="None"
@@ -101,7 +107,7 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="vm:DownloadItemViewModel">
-                    <Grid Padding="0,10" ColumnSpacing="12">
+                    <Grid Padding="0,8" ColumnSpacing="12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -133,28 +139,31 @@
                         <StackPanel
                             Grid.Column="2"
                             Orientation="Horizontal"
-                            Spacing="2"
+                            Spacing="4"
                             VerticalAlignment="Center">
                             <Button
                                 Style="{StaticResource RowIconButtonStyle}"
                                 Command="{x:Bind PauseResumeCommand}"
                                 Visibility="{x:Bind CanPauseResume, Mode=OneWay}"
                                 ToolTipService.ToolTip="{x:Bind PauseResumeTooltip, Mode=OneWay}"
-                                AutomationProperties.Name="{x:Bind PauseResumeTooltip, Mode=OneWay}">
+                                AutomationProperties.Name="{x:Bind PauseResumeTooltip, Mode=OneWay}"
+                                AutomationProperties.AutomationId="RowPauseResumeButton">
                                 <FontIcon Glyph="{x:Bind PauseResumeGlyph, Mode=OneWay}" FontSize="14" />
                             </Button>
                             <Button
                                 Style="{StaticResource RowIconButtonStyle}"
                                 Command="{x:Bind OpenFolderCommand}"
                                 ToolTipService.ToolTip="Открыть папку"
-                                AutomationProperties.Name="Открыть папку">
+                                AutomationProperties.Name="Открыть папку"
+                                AutomationProperties.AutomationId="RowOpenFolderButton">
                                 <FontIcon Glyph="&#xE838;" FontSize="14" />
                             </Button>
                             <Button
                                 Style="{StaticResource RowIconButtonStyle}"
                                 Command="{x:Bind RemoveCommand}"
                                 ToolTipService.ToolTip="Удалить из списка"
-                                AutomationProperties.Name="Удалить из списка">
+                                AutomationProperties.Name="Удалить из списка"
+                                AutomationProperties.AutomationId="RowRemoveButton">
                                 <FontIcon Glyph="&#xE74D;" FontSize="14" />
                             </Button>
                         </StackPanel>
@@ -181,7 +190,6 @@
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             <TextBlock
                 Text="Нажмите «Добавить» (Ctrl+N) или перетащите сюда торрент-файл"
-                Style="{StaticResource BodyTextBlockStyle}"
                 HorizontalAlignment="Center"
                 Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
         </StackPanel>

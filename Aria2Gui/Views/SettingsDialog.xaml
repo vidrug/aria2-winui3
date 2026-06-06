@@ -13,7 +13,7 @@
     PrimaryButtonClick="OnSaveClick">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="520">
-        <StackPanel Spacing="14" MinWidth="440" Padding="0,0,12,0">
+        <StackPanel Spacing="16" MinWidth="440" Padding="0,0,12,0">
             <Grid ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -21,9 +21,11 @@
                 </Grid.ColumnDefinitions>
                 <TextBox
                     x:Name="DirBox"
+                    AutomationProperties.AutomationId="DownloadDirBox"
                     Header="Папка загрузок"
                     IsReadOnly="True" />
                 <Button
+                    AutomationProperties.AutomationId="BrowseFolderButton"
                     Grid.Column="1"
                     Content="Обзор…"
                     VerticalAlignment="Bottom"
@@ -37,6 +39,7 @@
                 </Grid.ColumnDefinitions>
                 <NumberBox
                     x:Name="DownLimitBox"
+                    AutomationProperties.AutomationId="DownLimitBox"
                     Header="Лимит загрузки, МБ/с"
                     Minimum="0"
                     Maximum="10000"
@@ -45,6 +48,7 @@
                     PlaceholderText="0 — без лимита" />
                 <NumberBox
                     x:Name="UpLimitBox"
+                    AutomationProperties.AutomationId="UpLimitBox"
                     Grid.Column="1"
                     Header="Лимит отдачи, МБ/с"
                     Minimum="0"
@@ -61,12 +65,14 @@
                 </Grid.ColumnDefinitions>
                 <NumberBox
                     x:Name="ConcurrentBox"
+                    AutomationProperties.AutomationId="ConcurrentBox"
                     Header="Одновременных загрузок"
                     Minimum="1"
                     Maximum="50"
                     SpinButtonPlacementMode="Compact" />
                 <NumberBox
                     x:Name="ConnectionsBox"
+                    AutomationProperties.AutomationId="ConnectionsBox"
                     Grid.Column="1"
                     Header="Соединений на сервер (HTTP)"
                     Minimum="1"
@@ -81,12 +87,14 @@
                 </Grid.ColumnDefinitions>
                 <NumberBox
                     x:Name="PeersBox"
+                    AutomationProperties.AutomationId="PeersBox"
                     Header="Макс. пиров на торрент"
                     Minimum="0"
                     Maximum="500"
                     SpinButtonPlacementMode="Compact" />
                 <NumberBox
                     x:Name="SeedRatioBox"
+                    AutomationProperties.AutomationId="SeedRatioBox"
                     Grid.Column="1"
                     Header="Раздавать до рейтинга"
                     Minimum="0"
@@ -98,6 +106,7 @@
 
             <ComboBox
                 x:Name="ThemeBox"
+                AutomationProperties.AutomationId="ThemeBox"
                 Header="Тема оформления"
                 MinWidth="200">
                 <ComboBoxItem Content="Как в системе" Tag="Default" />
