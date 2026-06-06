@@ -22,12 +22,14 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Header with back button -->
+        <!-- Header with back button — same 1000px centred column as the cards. -->
         <StackPanel
             Grid.Row="0"
             Orientation="Horizontal"
             Spacing="12"
-            Padding="20,16,20,12">
+            Padding="20,16,20,12"
+            MaxWidth="1040"
+            HorizontalAlignment="Center">
             <Button
                 AutomationProperties.AutomationId="SettingsBackButton"
                 AutomationProperties.Name="Назад"
@@ -44,7 +46,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20,0,20,16">
-            <StackPanel Spacing="4" HorizontalAlignment="Stretch">
+            <StackPanel Spacing="4" MaxWidth="1000" HorizontalAlignment="Center">
 
                 <!-- ===== Основные ===== -->
                 <TextBlock Text="Основные" Style="{StaticResource SectionHeaderStyle}" />
