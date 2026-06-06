@@ -18,14 +18,22 @@ public sealed partial class AddDownloadDialog : ContentDialog
 
     private async void OnPickTorrentClick(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
-        var picker = new FileOpenPicker();
-        WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
-        picker.FileTypeFilter.Add(".torrent");
-        var file = await picker.PickSingleFileAsync();
-        if (file is not null)
+        try
         {
-            _torrentFile = file;
-            TorrentFileName.Text = file.Name;
+            var picker = new FileOpenPicker();
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
+            picker.FileTypeFilter.Add(".torrent");
+            var file = await picker.PickSingleFileAsync();
+            if (file is not null)
+            {
+                _torrentFile = file;
+                TorrentFileName.Text = file.Name;
+            }
+        }
+        catch (Exception ex)
+        {
+            // async void handler — an escaped exception would kill the process.
+            ShowError($"Не удалось открыть выбор файла: {ex.Message}");
         }
     }
 
@@ -43,22 +51,39 @@ public sealed partial class AddDownloadDialog : ContentDialog
                 return;
             }
 
+            // The torrent goes first: it's a single atomic add, so a later URI
+            // failure can't duplicate it on retry.
+            if (_torrentFile is not null)
+            {
+                await DownloadAdder.AddTorrentFileAsync(_torrentFile);
+                _torrentFile = null;
+                TorrentFileName.Text = "";
+            }
+
             if (hasUris)
             {
-                int added = await DownloadAdder.AddUrisAsync(text);
-                if (added == 0 && _torrentFile is null)
+                var result = await DownloadAdder.AddUrisAsync(text);
+                // Queued lines leave the box — a retry resubmits only the remainder.
+                UrlsBox.Text = string.Join(Environment.NewLine, result.Remaining);
+
+                if (result.Error is not null)
                 {
-                    ShowError("Не найдено поддерживаемых ссылок (http, https, ftp, magnet).");
+                    ShowError($"Добавлено: {result.Added}. Остальные не добавились: {result.Error.Message}");
+                    args.Cancel = true;
+                    return;
+                }
+                if (result.Skipped > 0)
+                {
+                    ShowError($"Строк пропущено: {result.Skipped} — поддерживаются только http, https, ftp и magnet.");
                     args.Cancel = true;
                     return;
                 }
             }
-
-            if (_torrentFile is not null)
-                await DownloadAdder.AddTorrentFileAsync(_torrentFile);
         }
-        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException or IOException)
+        catch (Exception ex)
         {
+            // Dialog-local catch-all: an escaped exception here closes the dialog
+            // with zero feedback (the deferral completes in finally regardless).
             ShowError($"Не удалось добавить загрузку: {ex.Message}");
             args.Cancel = true;
         }

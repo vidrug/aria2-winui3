@@ -32,12 +32,21 @@ public sealed partial class SettingsDialog : ContentDialog
 
     private async void OnBrowseClick(object sender, RoutedEventArgs e)
     {
-        var picker = new FolderPicker();
-        WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
-        picker.FileTypeFilter.Add("*");
-        var folder = await picker.PickSingleFolderAsync();
-        if (folder is not null)
-            DirBox.Text = folder.Path;
+        try
+        {
+            var picker = new FolderPicker();
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
+            picker.FileTypeFilter.Add("*");
+            var folder = await picker.PickSingleFolderAsync();
+            if (folder is not null)
+                DirBox.Text = folder.Path;
+        }
+        catch (Exception ex)
+        {
+            // async void handler — an escaped exception would kill the process.
+            ErrorBar.Message = $"Не удалось открыть выбор папки: {ex.Message}";
+            ErrorBar.IsOpen = true;
+        }
     }
 
     private async void OnSaveClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -59,8 +68,10 @@ public sealed partial class SettingsDialog : ContentDialog
             await Aria2Service.Instance.ApplySettingsAsync(s);
             Helpers.ThemeHelper.Apply(s.Theme);
         }
-        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException or IOException)
+        catch (Exception ex)
         {
+            // Dialog-local catch-all: an escaped exception here would close the
+            // dialog silently and could take the process down (async void).
             ErrorBar.Message = $"Не удалось сохранить: {ex.Message}";
             ErrorBar.IsOpen = true;
             args.Cancel = true;
@@ -93,8 +104,9 @@ public sealed partial class SettingsDialog : ContentDialog
             multiplier = 1024 * 1024;
             trimmed = trimmed[..^1];
         }
+        // 4 decimals so small limits ("1K" = 0.001 MB/s) survive the open→save round-trip.
         return double.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out var value)
-            ? Math.Round(value * multiplier / (1024 * 1024), 2)
+            ? Math.Round(value * multiplier / (1024 * 1024), 4)
             : 0;
     }
 
@@ -103,6 +115,8 @@ public sealed partial class SettingsDialog : ContentDialog
     {
         if (double.IsNaN(megabytes) || megabytes <= 0)
             return "0";
-        return ((long)Math.Round(megabytes * 1024)).ToString(CultureInfo.InvariantCulture) + "K";
+        // A nonzero limit must never round down to "0" (= unlimited in aria2).
+        long kib = Math.Max(1, (long)Math.Round(megabytes * 1024));
+        return kib.ToString(CultureInfo.InvariantCulture) + "K";
     }
 }

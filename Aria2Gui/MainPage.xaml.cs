@@ -69,8 +69,16 @@ public sealed partial class MainPage : Page
                 var items = await e.DataView.GetStorageItemsAsync();
                 foreach (var item in items)
                 {
-                    if (item is StorageFile file && file.FileType.Equals(".torrent", StringComparison.OrdinalIgnoreCase))
+                    if (item is not StorageFile file || !file.FileType.Equals(".torrent", StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    try
+                    {
                         await DownloadAdder.AddTorrentFileAsync(file);
+                    }
+                    catch (Exception)
+                    {
+                        // One bad file must not abort the rest of the dropped batch.
+                    }
                 }
             }
             else if (e.DataView.Contains(StandardDataFormats.WebLink))

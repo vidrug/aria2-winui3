@@ -53,6 +53,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     private string? _directory;
     private string? _firstFilePath;
 
+    /// <summary>Set once the first completion toast decision was made (dedupes the
+    /// second onDownloadComplete aria2 fires when seeding stops).</summary>
+    public bool CompletionNotified { get; set; }
+
     public DownloadItemViewModel(string gid)
     {
         Gid = gid;
@@ -63,11 +67,13 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     {
         _status = d.Status;
         _isStopped = d.Status is Aria2Status.Complete or Aria2Status.Error or Aria2Status.Removed;
-        _directory = d.Dir;
+        _directory = NormalizePath(d.Dir);
 
         var firstFile = d.Files?.FirstOrDefault();
         bool isMetadata = firstFile?.Path.StartsWith("[METADATA]", StringComparison.Ordinal) == true;
-        _firstFilePath = !isMetadata && firstFile is not null && Path.IsPathRooted(firstFile.Path) ? firstFile.Path : null;
+        _firstFilePath = !isMetadata && firstFile is not null && Path.IsPathRooted(firstFile.Path)
+            ? NormalizePath(firstFile.Path)
+            : null;
 
         Name = d.GetDisplayName();
         Progress = d.TotalLength > 0
@@ -165,7 +171,17 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         try
         {
             if (!_isStopped)
-                await _service.Rpc.RemoveAsync(Gid);
+            {
+                try
+                {
+                    await _service.Rpc.RemoveAsync(Gid);
+                }
+                catch (Aria2RpcException)
+                {
+                    // Stopped between polls (_isStopped is up to 1s stale) — fall
+                    // through to the result removal below.
+                }
+            }
 
             // aria2.remove is asynchronous on the aria2 side: the download may still be
             // tearing down (tracker notify) for a moment, so retry the result removal.
@@ -201,6 +217,25 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         catch (Exception)
         {
             // Explorer launch is best-effort.
+        }
+    }
+
+    /// <summary>
+    /// aria2 reports forward-slash/mixed-separator paths, which explorer.exe's
+    /// "/select," argument silently ignores; a trailing "\" would also escape the
+    /// closing quote. Canonicalize before handing to Explorer.
+    /// </summary>
+    private static string? NormalizePath(string? path)
+    {
+        if (string.IsNullOrEmpty(path))
+            return path;
+        try
+        {
+            return Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
+        }
+        catch (Exception ex) when (ex is ArgumentException or PathTooLongException or NotSupportedException)
+        {
+            return null;
         }
     }
 }

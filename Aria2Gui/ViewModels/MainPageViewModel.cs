@@ -55,11 +55,8 @@ public sealed partial class MainPageViewModel : ObservableObject
         _initialized = true;
 
         _service.StateChanged += state => App.DispatcherQueue.TryEnqueue(() => ApplyEngineState(state));
-        _service.DownloadNotification += (method, gid) => App.DispatcherQueue.TryEnqueue(() =>
-        {
-            NotifyDownloadEvent(method, gid);
-            _ = RefreshAsync();
-        });
+        _service.DownloadNotification += (method, gid) =>
+            App.DispatcherQueue.TryEnqueue(() => _ = HandleNotificationAsync(method, gid));
         ApplyEngineState(_service.State); // catch up on anything missed before Loaded
 
         _timer = App.DispatcherQueue.CreateTimer();
@@ -127,7 +124,18 @@ public sealed partial class MainPageViewModel : ObservableObject
                 item = new DownloadItemViewModel(download.Gid);
                 item.UpdateFrom(download);
                 _byGid[download.Gid] = item;
-                Downloads.Add(item);
+                // A download spawned from a metadata fetch takes its parent's row
+                // position instead of jumping to the bottom of the list.
+                if (download.Following is { Length: > 0 } parentGid
+                    && _byGid.TryGetValue(parentGid, out var parent)
+                    && Downloads.IndexOf(parent) is int parentIndex and >= 0)
+                {
+                    Downloads.Insert(parentIndex, item);
+                }
+                else
+                {
+                    Downloads.Add(item);
+                }
             }
         }
 
@@ -151,21 +159,39 @@ public sealed partial class MainPageViewModel : ObservableObject
         CountsText = $"Активных: {snapshot.GlobalStat.NumActive} • В очереди: {snapshot.GlobalStat.NumWaiting} • Завершённых: {snapshot.GlobalStat.NumStopped}";
     }
 
+    /// <summary>
+    /// Refresh BEFORE toasting so notifications use final state: intermediate
+    /// entries (magnet metadata, .torrent-file fetches) gain followedBy and get
+    /// pruned by the refresh, which suppresses their toasts naturally, and
+    /// just-stopped downloads are registered before the gid lookup.
+    /// </summary>
+    private async Task HandleNotificationAsync(string method, string gid)
+    {
+        await RefreshAsync();
+        NotifyDownloadEvent(method, gid);
+    }
+
     /// <summary>Toasts for completions/errors — only when the app is in the background.</summary>
     private void NotifyDownloadEvent(string method, string gid)
     {
-        if (!_byGid.TryGetValue(gid, out var item) || IsWindowForeground())
+        if (!_byGid.TryGetValue(gid, out var item))
             return;
-        switch (method)
+        if (method is "aria2.onDownloadComplete" or "aria2.onBtDownloadComplete")
         {
-            // Skip intermediate .torrent-file fetches — the real download follows.
-            case "aria2.onDownloadComplete" or "aria2.onBtDownloadComplete"
-                when !item.Name.EndsWith(".torrent", StringComparison.OrdinalIgnoreCase):
+            // onBtDownloadComplete fires when the payload finishes and seeding
+            // starts; onDownloadComplete fires again when seeding stops — only
+            // the first completion deserves a toast.
+            bool alreadyNotified = item.CompletionNotified;
+            item.CompletionNotified = true;
+            if (!alreadyNotified && !IsWindowForeground()
+                && !item.Name.EndsWith(".torrent", StringComparison.OrdinalIgnoreCase))
+            {
                 NotificationService.ShowDownloadComplete(item.Name);
-                break;
-            case "aria2.onDownloadError":
-                NotificationService.ShowDownloadError(item.Name);
-                break;
+            }
+        }
+        else if (method == "aria2.onDownloadError" && !IsWindowForeground())
+        {
+            NotificationService.ShowDownloadError(item.Name);
         }
     }
 

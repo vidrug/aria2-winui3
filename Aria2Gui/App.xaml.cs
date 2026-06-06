@@ -72,8 +72,17 @@ public partial class App : Application
         Window.Closed += (_, _) => Services.Aria2.Aria2Service.Instance.Shutdown();
 
         // A second app launch redirects here (see Program) — surface our window.
+        // Window.Activate() alone does not restore a minimized window.
         Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().Activated += (_, _) =>
-            DispatcherQueue.TryEnqueue(() => Window.Activate());
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (Window.AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter
+                    && presenter.State == Microsoft.UI.Windowing.OverlappedPresenterState.Minimized)
+                {
+                    presenter.Restore();
+                }
+                Window.Activate();
+            });
 
         Window.Activate();
 
