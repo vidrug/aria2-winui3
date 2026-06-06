@@ -101,7 +101,7 @@
                          whose Content carries our TorrentNodeContent. -->
                     <TreeView.ItemTemplate>
                         <DataTemplate x:DataType="muxc:TreeViewNode">
-                            <TextBlock Text="{x:Bind ((vm:TorrentNodeContent)Content).Label}" TextWrapping="NoWrap" />
+                            <TextBlock Text="{x:Bind ((vm:TorrentNodeContent)Content).Label, Mode=OneTime}" TextWrapping="NoWrap" />
                         </DataTemplate>
                     </TreeView.ItemTemplate>
                 </TreeView>

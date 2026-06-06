@@ -126,65 +126,41 @@ public sealed class Aria2Service
     }
 
     /// <summary>
-    /// Synchronous shutdown for app exit: ask aria2 to save its session and quit,
-    /// then force-kill if it dawdles. The Job Object is the final safety net.
-    /// forceShutdown still saves the session on exit — it only skips slow tracker
-    /// goodbye announces, keeping the UI-thread freeze short.
+    /// Fast synchronous shutdown for app exit: persist the session explicitly
+    /// (aria2.saveSession returns as soon as it's on disk), then kill the process
+    /// right away instead of waiting out aria2's slow ~4s graceful exit. The Job
+    /// Object is the final safety net. Total UI-thread block is well under a second.
     /// </summary>
     public void Shutdown()
     {
-        var log = new System.Text.StringBuilder();
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-        void Log(string step) => log.AppendLine($"[{sw.ElapsedMilliseconds,5} ms] {step}");
-
         _shuttingDown = true;
         // Don't tear down mid-recovery: a concurrent restart could spawn a process
         // after we've killed the current one. Bounded wait keeps exit snappy.
-        bool lockTaken = _recoveryLock.Wait(TimeSpan.FromSeconds(2));
-        Log($"recovery lock taken: {lockTaken}");
+        bool lockTaken = _recoveryLock.Wait(TimeSpan.FromSeconds(1));
         try
         {
             try
             {
-                Log($"rpc connected: {_rpc.IsConnected}");
                 if (_rpc.IsConnected)
                 {
-                    bool completed = _rpc.ShutdownAsync(force: true).Wait(TimeSpan.FromSeconds(1.5));
-                    Log($"forceShutdown completed: {completed}");
+                    // Session on disk first — then we don't need a graceful exit.
+                    _rpc.SaveSessionAsync().Wait(TimeSpan.FromSeconds(1.5));
+                    _ = _rpc.ShutdownAsync(force: true); // fire-and-forget; Kill backs it up
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Log($"forceShutdown failed: {ex.GetBaseException().GetType().Name}: {ex.GetBaseException().Message}");
+                // Best effort — Stop() below force-kills regardless.
             }
-            try
-            {
-                _rpc.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(1));
-                Log("rpc disposed");
-            }
-            catch (Exception ex)
-            {
-                Log($"rpc dispose failed: {ex.GetBaseException().GetType().Name}");
-            }
-            // aria2 1.36 takes ~4s to exit after acknowledging forceShutdown (cancels
-            // downloads, writes the session). The window is already gone at this
-            // point, so the wait is invisible to the user.
-            _process.WaitForExitOrKill(TimeSpan.FromSeconds(8));
-            Log("process exited or killed");
+            _process.Stop();
             _process.Dispose();
+            _ = _rpc.DisposeAsync();
             SetState(Aria2ServiceState.Stopped);
         }
         finally
         {
             if (lockTaken)
                 _recoveryLock.Release();
-            try
-            {
-                File.WriteAllText(Path.Combine(AppPaths.DataDirectory, "last-shutdown.log"), log.ToString());
-            }
-            catch
-            {
-            }
         }
     }
 

@@ -71,6 +71,8 @@ public sealed class Aria2ProcessManager : IDisposable
         string exe = FindExecutable()
             ?? throw new FileNotFoundException("aria2c.exe not found next to the application.");
 
+        RemoveMarkOfTheWeb(exe);
+
         Stop();
 
         RpcPort = GetFreeTcpPort();
@@ -96,9 +98,9 @@ public sealed class Aria2ProcessManager : IDisposable
         psi.ArgumentList.Add("--continue=true");
         // falloc is instant on NTFS but unsupported on FAT32/exFAT flash drives.
         psi.ArgumentList.Add($"--file-allocation={PickFileAllocation(downloadDirectory)}");
-        psi.ArgumentList.Add("--auto-save-interval=20");
+        psi.ArgumentList.Add("--auto-save-interval=15");
         psi.ArgumentList.Add($"--save-session={sessionFile}");
-        psi.ArgumentList.Add("--save-session-interval=30");
+        psi.ArgumentList.Add("--save-session-interval=15");
         psi.ArgumentList.Add("--bt-save-metadata=true");
         psi.ArgumentList.Add("--rpc-save-upload-metadata=true");
         psi.ArgumentList.Add("--follow-torrent=true");
@@ -192,6 +194,25 @@ public sealed class Aria2ProcessManager : IDisposable
         finally
         {
             process.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Strips the "downloaded from the internet" zone marker (an NTFS alternate data
+    /// stream) from the bundled aria2c.exe. Without this, Windows can pop a
+    /// "Security Warning" / SmartScreen prompt the first time we launch the child.
+    /// Best-effort: the ADS may be absent or the volume non-NTFS.
+    /// </summary>
+    private static void RemoveMarkOfTheWeb(string exePath)
+    {
+        try
+        {
+            string zoneStream = exePath + ":Zone.Identifier";
+            if (File.Exists(zoneStream))
+                File.Delete(zoneStream);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException)
+        {
         }
     }
 

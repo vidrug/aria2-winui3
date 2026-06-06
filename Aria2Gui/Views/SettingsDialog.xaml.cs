@@ -20,7 +20,7 @@ public sealed partial class SettingsDialog : ContentDialog
         InitializeComponent();
 
         var s = Aria2Service.Instance.Settings;
-        DirBox.Text = s.DownloadDirectory;
+        DirText.Text = s.DownloadDirectory;
         DownLimitBox.Value = SpeedToMegabytes(s.MaxDownloadLimit);
         UpLimitBox.Value = SpeedToMegabytes(s.MaxUploadLimit);
         ConcurrentBox.Value = s.MaxConcurrentDownloads;
@@ -43,13 +43,6 @@ public sealed partial class SettingsDialog : ContentDialog
         ExtraOptionsBox.Text = s.ExtraAria2Options;
     }
 
-    private void OnTabChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
-    {
-        bool general = sender.Items.IndexOf(sender.SelectedItem) == 0;
-        GeneralPanel.Visibility = general ? Visibility.Visible : Visibility.Collapsed;
-        BtPanel.Visibility = general ? Visibility.Collapsed : Visibility.Visible;
-    }
-
     private async void OnBrowseClick(object sender, RoutedEventArgs e)
     {
         try
@@ -59,7 +52,7 @@ public sealed partial class SettingsDialog : ContentDialog
             picker.FileTypeFilter.Add("*");
             var folder = await picker.PickSingleFolderAsync();
             if (folder is not null)
-                DirBox.Text = folder.Path;
+                DirText.Text = folder.Path;
         }
         catch (Exception ex)
         {
@@ -77,7 +70,7 @@ public sealed partial class SettingsDialog : ContentDialog
             var old = Aria2Service.Instance.Settings;
             var s = new AppSettings
             {
-                DownloadDirectory = DirBox.Text,
+                DownloadDirectory = DirText.Text,
                 MaxDownloadLimit = MegabytesToSpeed(DownLimitBox.Value),
                 MaxUploadLimit = MegabytesToSpeed(UpLimitBox.Value),
                 MaxConcurrentDownloads = (int)SafeValue(ConcurrentBox.Value, 5),

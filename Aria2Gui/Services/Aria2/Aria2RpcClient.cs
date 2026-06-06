@@ -142,6 +142,11 @@ public sealed class Aria2RpcClient : IAsyncDisposable
     public Task ShutdownAsync(bool force = false, CancellationToken ct = default) =>
         InvokeAsync(force ? "aria2.forceShutdown" : "aria2.shutdown", null, ct);
 
+    /// <summary>Writes the session file to disk immediately — lets us kill aria2c
+    /// fast on exit without waiting for its (slow) graceful shutdown to persist it.</summary>
+    public Task SaveSessionAsync(CancellationToken ct = default) =>
+        InvokeAsync("aria2.saveSession", null, ct);
+
     /// <summary>Connected peers of a BitTorrent download (errors for non-BT gids).</summary>
     public async Task<List<Aria2Peer>> GetPeersAsync(string gid, CancellationToken ct = default)
     {

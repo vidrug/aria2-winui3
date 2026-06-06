@@ -197,15 +197,29 @@
                     <RowDefinition Height="230" MinHeight="130" MaxHeight="500" />
                 </Grid.RowDefinitions>
 
-                <!-- Column headers (dividers are draggable to resize columns) -->
+                <!-- Column headers: dividers resize columns; right-click toggles which show. -->
                 <Grid
                     Grid.Row="0"
                     Padding="16,6,12,6"
                     ColumnSpacing="8"
+                    Background="Transparent"
                     BorderThickness="0,0,0,1"
                     BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                    <Grid.ContextFlyout>
+                        <MenuFlyout>
+                            <ToggleMenuFlyoutItem Text="Размер" Tag="size" IsChecked="{x:Bind ViewModel.Columns.SizeVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Прогресс" Tag="progress" IsChecked="{x:Bind ViewModel.Columns.ProgressVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Статус" Tag="status" IsChecked="{x:Bind ViewModel.Columns.StatusVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Сиды" Tag="seeds" IsChecked="{x:Bind ViewModel.Columns.SeedsVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Пиры" Tag="peers" IsChecked="{x:Bind ViewModel.Columns.PeersVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Загрузка" Tag="down" IsChecked="{x:Bind ViewModel.Columns.DownVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Отдача" Tag="up" IsChecked="{x:Bind ViewModel.Columns.UpVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Осталось" Tag="eta" IsChecked="{x:Bind ViewModel.Columns.EtaVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Рейтинг" Tag="ratio" IsChecked="{x:Bind ViewModel.Columns.RatioVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                        </MenuFlyout>
+                    </Grid.ContextFlyout>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" MinWidth="120" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.NameWidth, Mode=OneWay}" MinWidth="120" />
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.SizeWidth, Mode=OneWay}" />
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.ProgressWidth, Mode=OneWay}" />
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.StatusWidth, Mode=OneWay}" />
@@ -215,26 +229,28 @@
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.UpWidth, Mode=OneWay}" />
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.EtaWidth, Mode=OneWay}" />
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.RatioWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="*" MinWidth="0" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Имя" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <TextBlock Grid.Column="1" Text="Размер" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="1" Tag="size" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
-                    <TextBlock Grid.Column="2" Text="Прогресс" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="2" Tag="progress" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
-                    <TextBlock Grid.Column="3" Text="Статус" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="3" Tag="status" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
-                    <TextBlock Grid.Column="4" Text="Сиды" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="4" Tag="seeds" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
-                    <TextBlock Grid.Column="5" Text="Пиры" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="5" Tag="peers" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
-                    <TextBlock Grid.Column="6" Text="Загрузка" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="6" Tag="down" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
-                    <TextBlock Grid.Column="7" Text="Отдача" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="7" Tag="up" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
-                    <TextBlock Grid.Column="8" Text="Осталось" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="8" Tag="eta" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
-                    <TextBlock Grid.Column="9" Text="Рейтинг" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="9" Tag="ratio" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
+                    <helpers:ResizeHandle Grid.Column="0" Tag="name" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
+                    <TextBlock Grid.Column="1" Text="Размер" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SizeVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="1" Tag="size" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SizeVisible), Mode=OneWay}" />
+                    <TextBlock Grid.Column="2" Text="Прогресс" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.ProgressVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="2" Tag="progress" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.ProgressVisible), Mode=OneWay}" />
+                    <TextBlock Grid.Column="3" Text="Статус" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.StatusVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="3" Tag="status" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.StatusVisible), Mode=OneWay}" />
+                    <TextBlock Grid.Column="4" Text="Сиды" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SeedsVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="4" Tag="seeds" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SeedsVisible), Mode=OneWay}" />
+                    <TextBlock Grid.Column="5" Text="Пиры" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.PeersVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="5" Tag="peers" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.PeersVisible), Mode=OneWay}" />
+                    <TextBlock Grid.Column="6" Text="Загрузка" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.DownVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="6" Tag="down" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.DownVisible), Mode=OneWay}" />
+                    <TextBlock Grid.Column="7" Text="Отдача" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UpVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="7" Tag="up" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UpVisible), Mode=OneWay}" />
+                    <TextBlock Grid.Column="8" Text="Осталось" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.EtaVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="8" Tag="eta" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.EtaVisible), Mode=OneWay}" />
+                    <TextBlock Grid.Column="9" Text="Рейтинг" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="9" Tag="ratio" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
                 </Grid>
 
                 <!-- Downloads table -->
@@ -293,7 +309,7 @@
                                     </MenuFlyout>
                                 </Grid.ContextFlyout>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" MinWidth="120" />
+                                    <ColumnDefinition Width="{x:Bind Columns.NameWidth, Mode=OneWay}" MinWidth="120" />
                                     <ColumnDefinition Width="{x:Bind Columns.SizeWidth, Mode=OneWay}" />
                                     <ColumnDefinition Width="{x:Bind Columns.ProgressWidth, Mode=OneWay}" />
                                     <ColumnDefinition Width="{x:Bind Columns.StatusWidth, Mode=OneWay}" />
@@ -303,6 +319,7 @@
                                     <ColumnDefinition Width="{x:Bind Columns.UpWidth, Mode=OneWay}" />
                                     <ColumnDefinition Width="{x:Bind Columns.EtaWidth, Mode=OneWay}" />
                                     <ColumnDefinition Width="{x:Bind Columns.RatioWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="*" MinWidth="0" />
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
@@ -315,8 +332,8 @@
                                         VerticalAlignment="Center"
                                         TextTrimming="CharacterEllipsis" />
                                 </StackPanel>
-                                <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                <Grid Grid.Column="2" VerticalAlignment="Center" ColumnSpacing="6">
+                                <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.SizeVisible), Mode=OneWay}" />
+                                <Grid Grid.Column="2" VerticalAlignment="Center" ColumnSpacing="6" Visibility="{x:Bind local:MainPage.VisIf(Columns.ProgressVisible), Mode=OneWay}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="44" />
@@ -333,13 +350,13 @@
                                         Style="{StaticResource CellTextStyle}"
                                         TextAlignment="Right" />
                                 </Grid>
-                                <TextBlock Grid.Column="3" Text="{x:Bind StatusText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                <TextBlock Grid.Column="4" Text="{x:Bind SeedsText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                <TextBlock Grid.Column="5" Text="{x:Bind PeersText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                <TextBlock Grid.Column="6" Text="{x:Bind DownSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                <TextBlock Grid.Column="7" Text="{x:Bind UpSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                <TextBlock Grid.Column="8" Text="{x:Bind EtaText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                <TextBlock Grid.Column="9" Text="{x:Bind RatioText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                <TextBlock Grid.Column="3" Text="{x:Bind StatusText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.StatusVisible), Mode=OneWay}" />
+                                <TextBlock Grid.Column="4" Text="{x:Bind SeedsText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.SeedsVisible), Mode=OneWay}" />
+                                <TextBlock Grid.Column="5" Text="{x:Bind PeersText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.PeersVisible), Mode=OneWay}" />
+                                <TextBlock Grid.Column="6" Text="{x:Bind DownSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.DownVisible), Mode=OneWay}" />
+                                <TextBlock Grid.Column="7" Text="{x:Bind UpSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.UpVisible), Mode=OneWay}" />
+                                <TextBlock Grid.Column="8" Text="{x:Bind EtaText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.EtaVisible), Mode=OneWay}" />
+                                <TextBlock Grid.Column="9" Text="{x:Bind RatioText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.RatioVisible), Mode=OneWay}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

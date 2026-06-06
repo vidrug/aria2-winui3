@@ -33,6 +33,16 @@ public sealed partial class MainPage : Page
     public static Visibility CollapsedIf(bool value) =>
         value ? Visibility.Collapsed : Visibility.Visible;
 
+    /// <summary>x:Bind helper: bool→Visibility.</summary>
+    public static Visibility VisIf(bool value) =>
+        value ? Visibility.Visible : Visibility.Collapsed;
+
+    private void ColumnToggle_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is ToggleMenuFlyoutItem { Tag: string key } item)
+            ViewModel.Columns.SetVisible(key, item.IsChecked);
+    }
+
     private void DownloadsList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
         ViewModel.SetSelection([.. DownloadsList.SelectedItems.OfType<DownloadItemViewModel>()]);
 

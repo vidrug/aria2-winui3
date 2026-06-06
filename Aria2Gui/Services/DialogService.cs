@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Aria2Gui.Services;
@@ -18,6 +19,7 @@ public static class DialogService
         try
         {
             dialog.XamlRoot = root;
+            ApplyTheme(dialog);
             await dialog.ShowAsync();
         }
         catch (Exception)
@@ -46,6 +48,7 @@ public static class DialogService
                 DefaultButton = ContentDialogButton.Close,
                 XamlRoot = root,
             };
+            ApplyTheme(dialog);
             return await dialog.ShowAsync() == ContentDialogResult.Primary;
         }
         catch (Exception)
@@ -56,5 +59,18 @@ public static class DialogService
         {
             _open = false;
         }
+    }
+
+    /// <summary>
+    /// A ContentDialog lives in its own popup root, so it does NOT inherit the
+    /// theme of the window content — its buttons would render with the system
+    /// theme (light) even when the app is forced dark. ActualTheme resolves the
+    /// concrete Light/Dark (never Default), so it works for both explicit themes
+    /// and "follow system".
+    /// </summary>
+    private static void ApplyTheme(ContentDialog dialog)
+    {
+        if (App.Window?.Content is FrameworkElement root)
+            dialog.RequestedTheme = root.ActualTheme;
     }
 }
