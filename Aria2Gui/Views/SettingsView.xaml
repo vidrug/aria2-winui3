@@ -83,8 +83,15 @@
                 </NavigationViewItem>
             </NavigationView.MenuItems>
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,8,24,16">
-                <StackPanel MaxWidth="900" HorizontalAlignment="Left">
+            <ScrollViewer
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled"
+                HorizontalScrollMode="Disabled"
+                Padding="24,8,24,16">
+                <!-- Grid gives the panel the full content width so the cards stretch
+                     to MaxWidth and centre (a Center StackPanel would shrink to fit). -->
+                <Grid HorizontalAlignment="Stretch">
+                <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
 
                     <!-- ===== Основные ===== -->
                     <StackPanel x:Name="GeneralPanel" Spacing="4">
@@ -295,6 +302,7 @@
                         Margin="0,16,0,0"
                         Click="OnSaveClick" />
                 </StackPanel>
+                </Grid>
             </ScrollViewer>
         </NavigationView>
     </Grid>
