@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentDialog
+    x:Class="Aria2Gui.Views.AddDownloadDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Новая загрузка"
+    PrimaryButtonText="Добавить"
+    CloseButtonText="Отмена"
+    DefaultButton="Primary"
+    PrimaryButtonClick="OnAddClick">
+
+    <StackPanel Spacing="12" MinWidth="440">
+        <TextBox
+            x:Name="UrlsBox"
+            Header="Ссылки HTTP/FTP или magnet — по одной в строке"
+            PlaceholderText="magnet:?xt=urn:btih:…"
+            AcceptsReturn="True"
+            TextWrapping="Wrap"
+            Height="110"
+            ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Content="Выбрать .torrent-файл…" Click="OnPickTorrentClick" />
+            <TextBlock
+                x:Name="TorrentFileName"
+                VerticalAlignment="Center"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                TextTrimming="CharacterEllipsis"
+                MaxWidth="240" />
+        </StackPanel>
+
+        <InfoBar
+            x:Name="ErrorBar"
+            Severity="Error"
+            IsOpen="False"
+            IsClosable="False" />
+    </StackPanel>
+</ContentDialog>

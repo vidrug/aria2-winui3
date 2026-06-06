@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentDialog
+    x:Class="Aria2Gui.Views.SettingsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Настройки"
+    PrimaryButtonText="Сохранить"
+    CloseButtonText="Отмена"
+    DefaultButton="Primary"
+    PrimaryButtonClick="OnSaveClick">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="520">
+        <StackPanel Spacing="14" MinWidth="440" Padding="0,0,12,0">
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="DirBox"
+                    Header="Папка загрузок"
+                    IsReadOnly="True" />
+                <Button
+                    Grid.Column="1"
+                    Content="Обзор…"
+                    VerticalAlignment="Bottom"
+                    Click="OnBrowseClick" />
+            </Grid>
+
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <NumberBox
+                    x:Name="DownLimitBox"
+                    Header="Лимит загрузки, МБ/с"
+                    Minimum="0"
+                    Maximum="10000"
+                    SmallChange="0.5"
+                    SpinButtonPlacementMode="Compact"
+                    PlaceholderText="0 — без лимита" />
+                <NumberBox
+                    x:Name="UpLimitBox"
+                    Grid.Column="1"
+                    Header="Лимит отдачи, МБ/с"
+                    Minimum="0"
+                    Maximum="10000"
+                    SmallChange="0.5"
+                    SpinButtonPlacementMode="Compact"
+                    PlaceholderText="0 — без лимита" />
+            </Grid>
+
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <NumberBox
+                    x:Name="ConcurrentBox"
+                    Header="Одновременных загрузок"
+                    Minimum="1"
+                    Maximum="50"
+                    SpinButtonPlacementMode="Compact" />
+                <NumberBox
+                    x:Name="ConnectionsBox"
+                    Grid.Column="1"
+                    Header="Соединений на сервер (HTTP)"
+                    Minimum="1"
+                    Maximum="16"
+                    SpinButtonPlacementMode="Compact" />
+            </Grid>
+
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <NumberBox
+                    x:Name="PeersBox"
+                    Header="Макс. пиров на торрент"
+                    Minimum="0"
+                    Maximum="500"
+                    SpinButtonPlacementMode="Compact" />
+                <NumberBox
+                    x:Name="SeedRatioBox"
+                    Grid.Column="1"
+                    Header="Раздавать до рейтинга"
+                    Minimum="0"
+                    Maximum="100"
+                    SmallChange="0.1"
+                    SpinButtonPlacementMode="Compact"
+                    PlaceholderText="0 — не раздавать" />
+            </Grid>
+
+            <ComboBox
+                x:Name="ThemeBox"
+                Header="Тема оформления"
+                MinWidth="200">
+                <ComboBoxItem Content="Как в системе" Tag="Default" />
+                <ComboBoxItem Content="Светлая" Tag="Light" />
+                <ComboBoxItem Content="Тёмная" Tag="Dark" />
+            </ComboBox>
+
+            <InfoBar
+                x:Name="ErrorBar"
+                Severity="Error"
+                IsOpen="False"
+                IsClosable="False" />
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

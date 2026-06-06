@@ -1,0 +1,108 @@
+using System.Globalization;
+using Aria2Gui.Services;
+using Aria2Gui.Services.Aria2;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Storage.Pickers;
+
+namespace Aria2Gui.Views;
+
+/// <summary>Settings form. Limits are edited in MB/s and stored in aria2's "NNNK" format.</summary>
+public sealed partial class SettingsDialog : ContentDialog
+{
+    public SettingsDialog()
+    {
+        InitializeComponent();
+
+        var s = Aria2Service.Instance.Settings;
+        DirBox.Text = s.DownloadDirectory;
+        DownLimitBox.Value = SpeedToMegabytes(s.MaxDownloadLimit);
+        UpLimitBox.Value = SpeedToMegabytes(s.MaxUploadLimit);
+        ConcurrentBox.Value = s.MaxConcurrentDownloads;
+        ConnectionsBox.Value = s.MaxConnectionsPerServer;
+        PeersBox.Value = s.BtMaxPeers;
+        SeedRatioBox.Value = s.SeedRatio;
+        ThemeBox.SelectedIndex = s.Theme switch
+        {
+            "Light" => 1,
+            "Dark" => 2,
+            _ => 0,
+        };
+    }
+
+    private async void OnBrowseClick(object sender, RoutedEventArgs e)
+    {
+        var picker = new FolderPicker();
+        WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
+        picker.FileTypeFilter.Add("*");
+        var folder = await picker.PickSingleFolderAsync();
+        if (folder is not null)
+            DirBox.Text = folder.Path;
+    }
+
+    private async void OnSaveClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+    {
+        var deferral = args.GetDeferral();
+        try
+        {
+            var s = new AppSettings
+            {
+                DownloadDirectory = DirBox.Text,
+                MaxDownloadLimit = MegabytesToSpeed(DownLimitBox.Value),
+                MaxUploadLimit = MegabytesToSpeed(UpLimitBox.Value),
+                MaxConcurrentDownloads = (int)SafeValue(ConcurrentBox.Value, 5),
+                MaxConnectionsPerServer = (int)SafeValue(ConnectionsBox.Value, 8),
+                BtMaxPeers = (int)SafeValue(PeersBox.Value, 55),
+                SeedRatio = SafeValue(SeedRatioBox.Value, 1.0),
+                Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
+            };
+            await Aria2Service.Instance.ApplySettingsAsync(s);
+            Helpers.ThemeHelper.Apply(s.Theme);
+        }
+        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException or IOException)
+        {
+            ErrorBar.Message = $"Не удалось сохранить: {ex.Message}";
+            ErrorBar.IsOpen = true;
+            args.Cancel = true;
+        }
+        finally
+        {
+            deferral.Complete();
+        }
+    }
+
+    /// <summary>NumberBox yields NaN when cleared.</summary>
+    private static double SafeValue(double value, double fallback) =>
+        double.IsNaN(value) ? fallback : value;
+
+    /// <summary>"5120K" / "5M" / "0" → MB/s.</summary>
+    private static double SpeedToMegabytes(string aria2Speed)
+    {
+        if (string.IsNullOrWhiteSpace(aria2Speed))
+            return 0;
+        string trimmed = aria2Speed.Trim();
+        double multiplier = 1;
+        char last = char.ToUpperInvariant(trimmed[^1]);
+        if (last == 'K')
+        {
+            multiplier = 1024;
+            trimmed = trimmed[..^1];
+        }
+        else if (last == 'M')
+        {
+            multiplier = 1024 * 1024;
+            trimmed = trimmed[..^1];
+        }
+        return double.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out var value)
+            ? Math.Round(value * multiplier / (1024 * 1024), 2)
+            : 0;
+    }
+
+    /// <summary>MB/s → aria2 format in KiB ("0" = unlimited).</summary>
+    private static string MegabytesToSpeed(double megabytes)
+    {
+        if (double.IsNaN(megabytes) || megabytes <= 0)
+            return "0";
+        return ((long)Math.Round(megabytes * 1024)).ToString(CultureInfo.InvariantCulture) + "K";
+    }
+}

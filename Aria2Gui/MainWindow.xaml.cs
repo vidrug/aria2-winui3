@@ -23,5 +23,9 @@ public sealed partial class MainWindow : Window
 
         // Navigate the root frame to the main page on startup.
         RootFrame.Navigate(typeof(MainPage));
+
+        // Apply the saved theme before the first frame renders. App.Window is not
+        // assigned yet in this constructor, so pass our own content explicitly.
+        Helpers.ThemeHelper.Apply(Content as FrameworkElement, Services.SettingsService.Load().Theme);
     }
 }
