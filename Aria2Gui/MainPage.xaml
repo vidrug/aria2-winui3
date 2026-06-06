@@ -113,23 +113,46 @@
                     <FontIcon Glyph="&#xE713;" />
                 </AppBarButton.Icon>
             </AppBarButton>
-            <CommandBar.SecondaryCommands>
-                <AppBarButton
-                    Label="Возобновить все"
-                    Command="{x:Bind ViewModel.ResumeAllCommand}"
-                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                    AutomationProperties.AutomationId="ResumeAllButton" />
-                <AppBarButton
-                    Label="Пауза всем"
-                    Command="{x:Bind ViewModel.PauseAllCommand}"
-                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                    AutomationProperties.AutomationId="PauseAllButton" />
-                <AppBarButton
-                    Label="Очистить завершённые"
-                    Command="{x:Bind ViewModel.ClearStoppedCommand}"
-                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                    AutomationProperties.AutomationId="ClearStoppedButton" />
-            </CommandBar.SecondaryCommands>
+            <AppBarButton
+                Label="Ещё"
+                AutomationProperties.Name="Ещё действия"
+                AutomationProperties.AutomationId="MoreButton">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE712;" />
+                </AppBarButton.Icon>
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem
+                            Text="Возобновить все"
+                            Command="{x:Bind ViewModel.ResumeAllCommand}"
+                            IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                            AutomationProperties.AutomationId="ResumeAllButton">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE768;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem
+                            Text="Пауза всем"
+                            Command="{x:Bind ViewModel.PauseAllCommand}"
+                            IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                            AutomationProperties.AutomationId="PauseAllButton">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE769;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem
+                            Text="Очистить завершённые"
+                            Command="{x:Bind ViewModel.ClearStoppedCommand}"
+                            IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                            AutomationProperties.AutomationId="ClearStoppedButton">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE894;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
         </CommandBar>
 
         <!-- Sidebar | main area (hidden while the settings page is shown) -->
