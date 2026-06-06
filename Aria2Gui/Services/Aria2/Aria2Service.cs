@@ -90,29 +90,44 @@ public sealed class Aria2Service
     /// </summary>
     public void Shutdown()
     {
+        var log = new System.Text.StringBuilder();
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        void Log(string step) => log.AppendLine($"[{sw.ElapsedMilliseconds,5} ms] {step}");
+
         _shuttingDown = true;
         // Don't tear down mid-recovery: a concurrent restart could spawn a process
         // after we've killed the current one. Bounded wait keeps exit snappy.
         bool lockTaken = _recoveryLock.Wait(TimeSpan.FromSeconds(2));
+        Log($"recovery lock taken: {lockTaken}");
         try
         {
             try
             {
+                Log($"rpc connected: {_rpc.IsConnected}");
                 if (_rpc.IsConnected)
-                    _rpc.ShutdownAsync(force: true).Wait(TimeSpan.FromSeconds(1.5));
+                {
+                    bool completed = _rpc.ShutdownAsync(force: true).Wait(TimeSpan.FromSeconds(1.5));
+                    Log($"forceShutdown completed: {completed}");
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                // Best effort — we kill below anyway.
+                Log($"forceShutdown failed: {ex.GetBaseException().GetType().Name}: {ex.GetBaseException().Message}");
             }
             try
             {
                 _rpc.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(1));
+                Log("rpc disposed");
             }
-            catch
+            catch (Exception ex)
             {
+                Log($"rpc dispose failed: {ex.GetBaseException().GetType().Name}");
             }
-            _process.WaitForExitOrKill(TimeSpan.FromSeconds(2.5));
+            // aria2 1.36 takes ~4s to exit after acknowledging forceShutdown (cancels
+            // downloads, writes the session). The window is already gone at this
+            // point, so the wait is invisible to the user.
+            _process.WaitForExitOrKill(TimeSpan.FromSeconds(8));
+            Log("process exited or killed");
             _process.Dispose();
             SetState(Aria2ServiceState.Stopped);
         }
@@ -120,6 +135,13 @@ public sealed class Aria2Service
         {
             if (lockTaken)
                 _recoveryLock.Release();
+            try
+            {
+                File.WriteAllText(Path.Combine(AppPaths.DataDirectory, "last-shutdown.log"), log.ToString());
+            }
+            catch
+            {
+            }
         }
     }
 

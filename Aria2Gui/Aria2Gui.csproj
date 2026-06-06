@@ -77,7 +77,12 @@
   <PropertyGroup>
     <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
     <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
-    <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
-    <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+    <!--
+      IL trimming (both full and partial) crashes this app at runtime:
+      0xC000027B in Microsoft.UI.Xaml ~2s after launch (verified on clean publishes).
+      Keep trimming off; size is controlled via SatelliteResourceLanguages instead.
+    -->
+    <PublishTrimmed>False</PublishTrimmed>
+    <SatelliteResourceLanguages>en;ru</SatelliteResourceLanguages>
   </PropertyGroup>
 </Project>
