@@ -50,13 +50,14 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Toolbar -->
+        <!-- Toolbar (hidden while the settings page is shown) -->
         <CommandBar
             Grid.Row="0"
             Background="Transparent"
             DefaultLabelPosition="Right"
             IsOpen="False"
-            HorizontalAlignment="Left">
+            HorizontalAlignment="Left"
+            Visibility="{x:Bind local:MainPage.CollapsedIf(ViewModel.SettingsOpen), Mode=OneWay}">
             <AppBarButton
                 Label="Добавить"
                 Command="{x:Bind ViewModel.AddDownloadCommand}"

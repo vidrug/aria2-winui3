@@ -45,6 +45,16 @@
             IsPaneToggleButtonVisible="False"
             OpenPaneLength="230"
             SelectionChanged="OnSectionChanged">
+            <NavigationView.Resources>
+                <!-- Transparent surfaces so the window's Mica backdrop shows through,
+                     matching the rest of the app instead of a flat grey panel. -->
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
+                <Thickness x:Key="NavigationViewContentGridBorderThickness">0</Thickness>
+                <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0</CornerRadius>
+            </NavigationView.Resources>
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Основные" Tag="general" IsSelected="True" AutomationProperties.AutomationId="NavGeneral">
                     <NavigationViewItem.Icon>
