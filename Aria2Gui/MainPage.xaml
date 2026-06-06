@@ -132,8 +132,8 @@
             </CommandBar.SecondaryCommands>
         </CommandBar>
 
-        <!-- Sidebar | main area -->
-        <Grid Grid.Row="1">
+        <!-- Sidebar | main area (hidden while the settings page is shown) -->
+        <Grid Grid.Row="1" Visibility="{x:Bind local:MainPage.CollapsedIf(ViewModel.SettingsOpen), Mode=OneWay}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="220" MinWidth="160" MaxWidth="400" />
                 <ColumnDefinition Width="Auto" />
@@ -547,16 +547,15 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </Grid>
-
-                <!-- In-app settings page overlays the table+details (Gallery-style). -->
-                <views:SettingsView
-                    x:Name="SettingsPage"
-                    Grid.Row="0"
-                    Grid.RowSpan="3"
-                    Closed="SettingsPage_Closed"
-                    Visibility="{x:Bind local:MainPage.VisIf(ViewModel.SettingsOpen), Mode=OneWay}" />
             </Grid>
         </Grid>
+
+        <!-- Settings page: full width of the window, on the same Mica backdrop. -->
+        <views:SettingsView
+            x:Name="SettingsPage"
+            Grid.Row="1"
+            Closed="SettingsPage_Closed"
+            Visibility="{x:Bind local:MainPage.VisIf(ViewModel.SettingsOpen), Mode=OneWay}" />
 
         <!-- Engine failure surface -->
         <InfoBar

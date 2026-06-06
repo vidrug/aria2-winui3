@@ -14,8 +14,9 @@
         </Style>
     </UserControl.Resources>
 
-    <!-- Opaque so it covers the table underneath, like a Gallery settings page. -->
-    <Grid Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+    <!-- Transparent so the window's Mica backdrop shows through, matching the
+         rest of the app (the sidebar/table are hidden while this is visible). -->
+    <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
