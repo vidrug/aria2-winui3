@@ -61,6 +61,18 @@ public sealed partial class SettingsView : UserControl
 
     private void OnBackClick(object sender, RoutedEventArgs e) => Closed?.Invoke(this, EventArgs.Empty);
 
+    /// <summary>Shows only the selected section's panel (WinUI NavigationView style).</summary>
+    private void OnSectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+    {
+        if (args.SelectedItem is not NavigationViewItem { Tag: string tag })
+            return;
+        GeneralPanel.Visibility = tag == "general" ? Visibility.Visible : Visibility.Collapsed;
+        ConnectionPanel.Visibility = tag == "connection" ? Visibility.Visible : Visibility.Collapsed;
+        FilesPanel.Visibility = tag == "files" ? Visibility.Visible : Visibility.Collapsed;
+        BtPanel.Visibility = tag == "bt" ? Visibility.Visible : Visibility.Collapsed;
+        AdvancedPanel.Visibility = tag == "advanced" ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     private async void OnBrowseClick(object sender, RoutedEventArgs e)
     {
         try
