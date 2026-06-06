@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Aria2Gui (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Aria2Gui (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
