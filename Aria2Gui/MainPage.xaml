@@ -22,11 +22,15 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
+        <!-- The grab strip straddles the column divider: negative top/bottom fill the
+             header's 8px vertical padding and the negative right (-(4 + Width/2)) centres
+             the 12px handle over the 8px column gap. This deliberate overlap is the one
+             place negative margins are used. -->
         <Style x:Key="ColumnResizeHandleStyle" TargetType="helpers:ResizeHandle">
-            <Setter Property="Width" Value="10" />
+            <Setter Property="Width" Value="12" />
             <Setter Property="HorizontalAlignment" Value="Right" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="Margin" Value="0,-6,-9,-6" />
+            <Setter Property="Margin" Value="0,-8,-10,-8" />
         </Style>
         <Style x:Key="DetailLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
             <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
@@ -209,6 +213,8 @@
 
             <toolkit:GridSplitter
                 Grid.Column="1"
+                AutomationProperties.AutomationId="SidebarSplitter"
+                AutomationProperties.Name="Ширина боковой панели"
                 Width="8"
                 ResizeBehavior="BasedOnAlignment"
                 ResizeDirection="Auto" />
@@ -218,7 +224,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" MinHeight="120" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="230" MinHeight="130" MaxHeight="500" />
+                    <RowDefinition Height="232" MinHeight="128" MaxHeight="500" />
                 </Grid.RowDefinitions>
 
                 <!-- Table: header and rows share one horizontal scroller so they stay
@@ -240,22 +246,22 @@
                 <!-- Column headers: dividers resize columns; right-click toggles which show. -->
                 <Grid
                     Grid.Row="0"
-                    Padding="16,6,12,6"
+                    Padding="16,8,12,8"
                     ColumnSpacing="8"
                     Background="Transparent"
                     BorderThickness="0,0,0,1"
                     BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
                     <Grid.ContextFlyout>
                         <MenuFlyout>
-                            <ToggleMenuFlyoutItem Text="Размер" Tag="size" IsChecked="{x:Bind ViewModel.Columns.SizeVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Прогресс" Tag="progress" IsChecked="{x:Bind ViewModel.Columns.ProgressVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Статус" Tag="status" IsChecked="{x:Bind ViewModel.Columns.StatusVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Сиды" Tag="seeds" IsChecked="{x:Bind ViewModel.Columns.SeedsVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Пиры" Tag="peers" IsChecked="{x:Bind ViewModel.Columns.PeersVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Загрузка" Tag="down" IsChecked="{x:Bind ViewModel.Columns.DownVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Отдача" Tag="up" IsChecked="{x:Bind ViewModel.Columns.UpVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Осталось" Tag="eta" IsChecked="{x:Bind ViewModel.Columns.EtaVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Рейтинг" Tag="ratio" IsChecked="{x:Bind ViewModel.Columns.RatioVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Размер" Tag="size" AutomationProperties.AutomationId="ColumnToggleSize" IsChecked="{x:Bind ViewModel.Columns.SizeVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Прогресс" Tag="progress" AutomationProperties.AutomationId="ColumnToggleProgress" IsChecked="{x:Bind ViewModel.Columns.ProgressVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Статус" Tag="status" AutomationProperties.AutomationId="ColumnToggleStatus" IsChecked="{x:Bind ViewModel.Columns.StatusVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Сиды" Tag="seeds" AutomationProperties.AutomationId="ColumnToggleSeeds" IsChecked="{x:Bind ViewModel.Columns.SeedsVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Пиры" Tag="peers" AutomationProperties.AutomationId="ColumnTogglePeers" IsChecked="{x:Bind ViewModel.Columns.PeersVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Загрузка" Tag="down" AutomationProperties.AutomationId="ColumnToggleDown" IsChecked="{x:Bind ViewModel.Columns.DownVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Отдача" Tag="up" AutomationProperties.AutomationId="ColumnToggleUp" IsChecked="{x:Bind ViewModel.Columns.UpVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Осталось" Tag="eta" AutomationProperties.AutomationId="ColumnToggleEta" IsChecked="{x:Bind ViewModel.Columns.EtaVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem Text="Рейтинг" Tag="ratio" AutomationProperties.AutomationId="ColumnToggleRatio" IsChecked="{x:Bind ViewModel.Columns.RatioVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
                         </MenuFlyout>
                     </Grid.ContextFlyout>
                     <Grid.ColumnDefinitions>
@@ -271,25 +277,25 @@
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.RatioWidth, Mode=OneWay}" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Имя" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="0" Tag="name" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
+                    <helpers:ResizeHandle Grid.Column="0" Tag="name" AutomationProperties.AutomationId="ResizeHandleName" AutomationProperties.Name="Изменить ширину столбца «Имя»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="1" Text="Размер" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SizeVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="1" Tag="size" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SizeVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="1" Tag="size" AutomationProperties.AutomationId="ResizeHandleSize" AutomationProperties.Name="Изменить ширину столбца «Размер»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SizeVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="2" Text="Прогресс" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.ProgressVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="2" Tag="progress" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.ProgressVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="2" Tag="progress" AutomationProperties.AutomationId="ResizeHandleProgress" AutomationProperties.Name="Изменить ширину столбца «Прогресс»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.ProgressVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="3" Text="Статус" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.StatusVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="3" Tag="status" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.StatusVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="3" Tag="status" AutomationProperties.AutomationId="ResizeHandleStatus" AutomationProperties.Name="Изменить ширину столбца «Статус»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.StatusVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="4" Text="Сиды" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SeedsVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="4" Tag="seeds" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SeedsVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="4" Tag="seeds" AutomationProperties.AutomationId="ResizeHandleSeeds" AutomationProperties.Name="Изменить ширину столбца «Сиды»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SeedsVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="5" Text="Пиры" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.PeersVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="5" Tag="peers" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.PeersVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="5" Tag="peers" AutomationProperties.AutomationId="ResizeHandlePeers" AutomationProperties.Name="Изменить ширину столбца «Пиры»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.PeersVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="6" Text="Загрузка" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.DownVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="6" Tag="down" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.DownVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="6" Tag="down" AutomationProperties.AutomationId="ResizeHandleDown" AutomationProperties.Name="Изменить ширину столбца «Загрузка»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.DownVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="7" Text="Отдача" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UpVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="7" Tag="up" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UpVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="7" Tag="up" AutomationProperties.AutomationId="ResizeHandleUp" AutomationProperties.Name="Изменить ширину столбца «Отдача»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UpVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="8" Text="Осталось" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.EtaVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="8" Tag="eta" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.EtaVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="8" Tag="eta" AutomationProperties.AutomationId="ResizeHandleEta" AutomationProperties.Name="Изменить ширину столбца «Осталось»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.EtaVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="9" Text="Рейтинг" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="9" Tag="ratio" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="9" Tag="ratio" AutomationProperties.AutomationId="ResizeHandleRatio" AutomationProperties.Name="Изменить ширину столбца «Рейтинг»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
                 </Grid>
 
                 <!-- Downloads table -->
@@ -371,7 +377,7 @@
                                         TextTrimming="CharacterEllipsis" />
                                 </StackPanel>
                                 <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.SizeVisible), Mode=OneWay}" />
-                                <Grid Grid.Column="2" VerticalAlignment="Center" ColumnSpacing="6" Visibility="{x:Bind local:MainPage.VisIf(Columns.ProgressVisible), Mode=OneWay}">
+                                <Grid Grid.Column="2" VerticalAlignment="Center" ColumnSpacing="8" Visibility="{x:Bind local:MainPage.VisIf(Columns.ProgressVisible), Mode=OneWay}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="44" />
@@ -426,6 +432,8 @@
 
                 <toolkit:GridSplitter
                     Grid.Row="1"
+                    AutomationProperties.AutomationId="DetailsSplitter"
+                    AutomationProperties.Name="Высота панели сведений"
                     Height="8"
                     ResizeBehavior="BasedOnAlignment"
                     ResizeDirection="Auto" />
@@ -506,7 +514,7 @@
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <Setter Property="MinHeight" Value="30" />
+                                <Setter Property="MinHeight" Value="32" />
                                 <Setter Property="Padding" Value="0,0,12,0" />
                             </Style>
                         </ListView.ItemContainerStyle>
@@ -517,7 +525,7 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="80" />
-                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="152" />
                                         <ColumnDefinition Width="52" />
                                     </Grid.ColumnDefinitions>
                                     <CheckBox
@@ -549,7 +557,7 @@
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <Setter Property="MinHeight" Value="30" />
+                                <Setter Property="MinHeight" Value="32" />
                                 <Setter Property="Padding" Value="0,0,12,0" />
                             </Style>
                         </ListView.ItemContainerStyle>

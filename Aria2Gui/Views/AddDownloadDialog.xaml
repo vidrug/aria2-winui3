@@ -26,7 +26,7 @@
             PlaceholderText="magnet:?xt=urn:btih:…"
             AcceptsReturn="True"
             TextWrapping="Wrap"
-            Height="88"
+            MinHeight="88"
             ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
         <!-- Save destination -->

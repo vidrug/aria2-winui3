@@ -43,17 +43,33 @@
             IsSettingsVisible="False"
             IsBackButtonVisible="Collapsed"
             IsPaneToggleButtonVisible="False"
-            OpenPaneLength="230"
+            OpenPaneLength="240"
             SelectionChanged="OnSectionChanged">
             <NavigationView.Resources>
                 <!-- Transparent surfaces so the window's Mica backdrop shows through,
-                     matching the rest of the app instead of a flat grey panel. -->
-                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
-                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
-                <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent" />
-                <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
-                <Thickness x:Key="NavigationViewContentGridBorderThickness">0</Thickness>
-                <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0</CornerRadius>
+                     matching the rest of the app instead of a flat grey panel. Scoped
+                     to Light/Dark only — in High Contrast (Mica is off) an empty HC
+                     dictionary keeps the opaque system pane fill and visible divider. -->
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light">
+                            <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                            <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
+                            <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent" />
+                            <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
+                            <Thickness x:Key="NavigationViewContentGridBorderThickness">0</Thickness>
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="Dark">
+                            <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                            <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
+                            <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent" />
+                            <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
+                            <Thickness x:Key="NavigationViewContentGridBorderThickness">0</Thickness>
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="HighContrast" />
+                    </ResourceDictionary.ThemeDictionaries>
+                    <CornerRadius x:Key="NavigationViewContentGridCornerRadius">0</CornerRadius>
+                </ResourceDictionary>
             </NavigationView.Resources>
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Основные" Tag="general" IsSelected="True" AutomationProperties.AutomationId="NavGeneral">
@@ -275,7 +291,7 @@
                             </tk:SettingsExpander.HeaderIcon>
                             <tk:SettingsExpander.Items>
                                 <tk:SettingsCard ContentAlignment="Vertical">
-                                    <TextBox x:Name="TrackersBox" AutomationProperties.AutomationId="TrackersBox" PlaceholderText="udp://tracker.example.org:1337/announce&#x0a;по одному в строке" AcceptsReturn="True" TextWrapping="Wrap" Height="96" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                                    <TextBox x:Name="TrackersBox" AutomationProperties.AutomationId="TrackersBox" PlaceholderText="udp://tracker.example.org:1337/announce&#x0a;по одному в строке" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="96" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                                 </tk:SettingsCard>
                             </tk:SettingsExpander.Items>
                         </tk:SettingsExpander>
@@ -288,7 +304,7 @@
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE713;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <TextBox x:Name="ExtraOptionsBox" AutomationProperties.AutomationId="ExtraOptionsBox" PlaceholderText="bt-request-peer-speed-limit=100K&#x0a;bt-stop-timeout=0" AcceptsReturn="True" TextWrapping="Wrap" Height="160" FontFamily="Consolas" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                            <TextBox x:Name="ExtraOptionsBox" AutomationProperties.AutomationId="ExtraOptionsBox" PlaceholderText="bt-request-peer-speed-limit=100K&#x0a;bt-stop-timeout=0" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="160" FontFamily="Consolas" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                         </tk:SettingsCard>
                         <InfoBar Severity="Informational" IsOpen="True" IsClosable="False" Margin="0,8,0,0" Message="Полный список опций — в документации aria2. Эти изменения перезапускают движок." />
                     </StackPanel>

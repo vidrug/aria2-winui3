@@ -43,6 +43,10 @@ public partial class App : Application
     {
         InitializeComponent();
 
+        // The app ships no custom High Contrast brushes, so let the system colours
+        // apply directly instead of having Windows double-adjust them.
+        HighContrastAdjustment = ApplicationHighContrastAdjustment.None;
+
         // Last-resort guard: log UI-thread exceptions and keep the app (and its
         // active downloads) alive instead of tearing the whole process down.
         UnhandledException += (_, e) =>
