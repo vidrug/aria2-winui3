@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using Aria2Gui.Helpers;
 using Aria2Gui.Services;
 using Aria2Gui.Services.Aria2;
@@ -9,18 +10,46 @@ using Microsoft.UI.Dispatching;
 namespace Aria2Gui.ViewModels;
 
 /// <summary>
-/// Main page ViewModel: owns the download list, polls aria2 once per second with a
-/// single multicall, and merges results into existing item ViewModels in place.
+/// Main page ViewModel: qBittorrent-style layout state — status filters in the
+/// sidebar, a filtered table of downloads, a details pane for the selection —
+/// fed by a 1-second multicall poll merged into existing item ViewModels in place.
 /// </summary>
 public sealed partial class MainPageViewModel : ObservableObject
 {
     private readonly Aria2Service _service = Aria2Service.Instance;
     private readonly Dictionary<string, DownloadItemViewModel> _byGid = [];
+    private readonly List<DownloadItemViewModel> _all = []; // master order (arrival)
+    private IReadOnlyList<DownloadItemViewModel> _selection = [];
     private DispatcherQueueTimer? _timer;
     private bool _refreshing;
+    private bool _peersRefreshing;
     private bool _initialized;
 
+    /// <summary>Filtered projection of <see cref="_all"/> shown in the table.</summary>
     public ObservableCollection<DownloadItemViewModel> Downloads { get; } = [];
+
+    public FilterItemViewModel[] Filters { get; } =
+    [
+        new("all", "Все", ""),
+        new("downloading", "Загружаются", ""),
+        new("seeding", "Раздаются", ""),
+        new("completed", "Завершённые", ""),
+        new("paused", "Приостановленные", ""),
+        new("queued", "В очереди", ""),
+        new("error", "Ошибки", ""),
+    ];
+
+    [ObservableProperty]
+    public partial FilterItemViewModel? SelectedFilter { get; set; }
+
+    [ObservableProperty]
+    public partial DownloadItemViewModel? SelectedDownload { get; set; }
+
+    [ObservableProperty]
+    public partial bool HasSelection { get; set; }
+
+    [ObservableProperty]
+    public partial int DetailsTabIndex { get; set; }
 
     [ObservableProperty]
     public partial string EngineStatusText { get; set; } = "Запуск aria2…";
@@ -43,9 +72,49 @@ public sealed partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
 
+    // ---- details pane (Общие) ----
+    [ObservableProperty]
+    public partial string DetSavePath { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string DetSize { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string DetStatus { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string DetHash { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string DetRatio { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string DetUploaded { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string DetSpeed { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string DetConnections { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string DetError { get; set; } = "";
+
+    [ObservableProperty]
+    public partial bool DetHasError { get; set; }
+
+    public ObservableCollection<FileRowViewModel> SelectedFiles { get; } = [];
+
+    public ObservableCollection<PeerRowViewModel> Peers { get; } = [];
+
     /// <summary>Hooked by MainPage to open the add/settings dialogs (views own dialogs).</summary>
     public Func<Task>? AddDownloadRequested { get; set; }
     public Func<Task>? SettingsRequested { get; set; }
+
+    public MainPageViewModel()
+    {
+        SelectedFilter = Filters[0];
+    }
 
     /// <summary>Called once from MainPage.Loaded — events may fire before the page exists.</summary>
     public void Initialize()
@@ -66,6 +135,23 @@ public sealed partial class MainPageViewModel : ObservableObject
         _timer.Start();
     }
 
+    /// <summary>Called by the page on ListView.SelectionChanged.</summary>
+    public void SetSelection(IReadOnlyList<DownloadItemViewModel> items)
+    {
+        _selection = items;
+        HasSelection = items.Count > 0;
+        SelectedDownload = items.Count > 0 ? items[0] : null;
+        UpdateDetails();
+    }
+
+    partial void OnSelectedFilterChanged(FilterItemViewModel? value) => RebuildFilteredView();
+
+    partial void OnDetailsTabIndexChanged(int value)
+    {
+        if (value == 2)
+            _ = RefreshPeersAsync();
+    }
+
     private void ApplyEngineState(Aria2ServiceState state)
     {
         IsEngineReady = state == Aria2ServiceState.Running;
@@ -82,81 +168,6 @@ public sealed partial class MainPageViewModel : ObservableObject
             EngineErrorText = _service.LastError ?? "Неизвестная ошибка.";
         if (state == Aria2ServiceState.Running)
             _ = RefreshAsync();
-    }
-
-    private async Task RefreshAsync()
-    {
-        if (_refreshing || !_service.Rpc.IsConnected)
-            return;
-        _refreshing = true;
-        try
-        {
-            var snapshot = await _service.Rpc.GetSnapshotAsync();
-            ApplySnapshot(snapshot);
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            // Engine restarting/disconnected — state events drive the UI; next tick retries.
-        }
-        finally
-        {
-            _refreshing = false;
-        }
-    }
-
-    private void ApplySnapshot(Aria2Snapshot snapshot)
-    {
-        var seen = new HashSet<string>(snapshot.Downloads.Count);
-        foreach (var download in snapshot.Downloads)
-        {
-            // Hide intermediate entries (magnet metadata / .torrent-file fetches)
-            // once they have spawned the real download — they only add clutter.
-            if (download.FollowedBy is { Count: > 0 })
-                continue;
-
-            seen.Add(download.Gid);
-            if (_byGid.TryGetValue(download.Gid, out var item))
-            {
-                item.UpdateFrom(download);
-            }
-            else
-            {
-                item = new DownloadItemViewModel(download.Gid);
-                item.UpdateFrom(download);
-                _byGid[download.Gid] = item;
-                // A download spawned from a metadata fetch takes its parent's row
-                // position instead of jumping to the bottom of the list.
-                if (download.Following is { Length: > 0 } parentGid
-                    && _byGid.TryGetValue(parentGid, out var parent)
-                    && Downloads.IndexOf(parent) is int parentIndex and >= 0)
-                {
-                    Downloads.Insert(parentIndex, item);
-                }
-                else
-                {
-                    Downloads.Add(item);
-                }
-            }
-        }
-
-        // Prune rows only when the snapshot is complete: if the tell* windows were
-        // truncated, a missing gid does not mean the download is gone.
-        long expectedTotal = snapshot.GlobalStat.NumActive + snapshot.GlobalStat.NumWaiting + snapshot.GlobalStat.NumStopped;
-        if (snapshot.Downloads.Count >= expectedTotal)
-        {
-            for (int i = Downloads.Count - 1; i >= 0; i--)
-            {
-                if (!seen.Contains(Downloads[i].Gid))
-                {
-                    _byGid.Remove(Downloads[i].Gid);
-                    Downloads.RemoveAt(i);
-                }
-            }
-        }
-
-        IsEmpty = Downloads.Count == 0;
-        GlobalSpeedText = $"↓ {FormatUtils.FormatSpeed(snapshot.GlobalStat.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(snapshot.GlobalStat.UploadSpeed)}";
-        CountsText = $"Активных: {snapshot.GlobalStat.NumActive} • В очереди: {snapshot.GlobalStat.NumWaiting} • Завершённых: {snapshot.GlobalStat.NumStopped}";
     }
 
     /// <summary>
@@ -200,11 +211,307 @@ public sealed partial class MainPageViewModel : ObservableObject
     [System.Runtime.InteropServices.DllImport("user32.dll")]
     private static extern nint GetForegroundWindow();
 
+    private async Task RefreshAsync()
+    {
+        if (_refreshing || !_service.Rpc.IsConnected)
+            return;
+        _refreshing = true;
+        try
+        {
+            var snapshot = await _service.Rpc.GetSnapshotAsync();
+            ApplySnapshot(snapshot);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // Engine restarting/disconnected — state events drive the UI; next tick retries.
+        }
+        finally
+        {
+            _refreshing = false;
+        }
+    }
+
+    private void ApplySnapshot(Aria2Snapshot snapshot)
+    {
+        var seen = new HashSet<string>(snapshot.Downloads.Count);
+        foreach (var download in snapshot.Downloads)
+        {
+            // Hide intermediate entries (magnet metadata / .torrent-file fetches)
+            // once they have spawned the real download — they only add clutter.
+            if (download.FollowedBy is { Count: > 0 })
+                continue;
+
+            seen.Add(download.Gid);
+            if (_byGid.TryGetValue(download.Gid, out var item))
+            {
+                item.UpdateFrom(download);
+            }
+            else
+            {
+                item = new DownloadItemViewModel(download.Gid);
+                item.UpdateFrom(download);
+                _byGid[download.Gid] = item;
+                // A download spawned from a metadata fetch takes its parent's
+                // position instead of jumping to the bottom of the list.
+                int masterIndex = _all.Count;
+                if (download.Following is { Length: > 0 } parentGid
+                    && _byGid.TryGetValue(parentGid, out var parent)
+                    && _all.IndexOf(parent) is int parentIndex and >= 0)
+                {
+                    masterIndex = parentIndex;
+                }
+                _all.Insert(masterIndex, item);
+            }
+            SyncViewMembership(item);
+        }
+
+        // Prune rows only when the snapshot is complete: if the tell* windows were
+        // truncated, a missing gid does not mean the download is gone.
+        long expectedTotal = snapshot.GlobalStat.NumActive + snapshot.GlobalStat.NumWaiting + snapshot.GlobalStat.NumStopped;
+        if (snapshot.Downloads.Count >= expectedTotal)
+        {
+            for (int i = _all.Count - 1; i >= 0; i--)
+            {
+                var item = _all[i];
+                if (seen.Contains(item.Gid))
+                    continue;
+                _byGid.Remove(item.Gid);
+                _all.RemoveAt(i);
+                if (item.InView)
+                {
+                    item.InView = false;
+                    Downloads.Remove(item);
+                }
+            }
+        }
+
+        UpdateFilterCounts();
+        UpdateDetails();
+
+        IsEmpty = Downloads.Count == 0;
+        GlobalSpeedText = $"↓ {FormatUtils.FormatSpeed(snapshot.GlobalStat.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(snapshot.GlobalStat.UploadSpeed)}";
+        CountsText = $"Активных: {snapshot.GlobalStat.NumActive} • В очереди: {snapshot.GlobalStat.NumWaiting} • Завершённых: {snapshot.GlobalStat.NumStopped}";
+    }
+
+    // ------------------------------------------------------------------ filtering
+
+    private bool MatchesFilter(DownloadItemViewModel item) => SelectedFilter?.Key switch
+    {
+        "downloading" => item.Category == DownloadCategory.Downloading,
+        "seeding" => item.Category == DownloadCategory.Seeding,
+        "completed" => item.Category == DownloadCategory.Completed,
+        "paused" => item.Category == DownloadCategory.Paused,
+        "queued" => item.Category == DownloadCategory.Queued,
+        "error" => item.Category == DownloadCategory.Error,
+        _ => true,
+    };
+
+    /// <summary>Adds/removes one item from the filtered view, keeping master order.</summary>
+    private void SyncViewMembership(DownloadItemViewModel item)
+    {
+        bool matches = MatchesFilter(item);
+        if (matches == item.InView)
+            return;
+        if (matches)
+        {
+            // Position = number of in-view items that precede it in master order.
+            int viewIndex = 0;
+            foreach (var other in _all)
+            {
+                if (ReferenceEquals(other, item))
+                    break;
+                if (other.InView)
+                    viewIndex++;
+            }
+            item.InView = true;
+            Downloads.Insert(viewIndex, item);
+        }
+        else
+        {
+            item.InView = false;
+            Downloads.Remove(item);
+        }
+    }
+
+    private void RebuildFilteredView()
+    {
+        foreach (var item in _all)
+            item.InView = false;
+        Downloads.Clear();
+        foreach (var item in _all)
+        {
+            if (MatchesFilter(item))
+            {
+                item.InView = true;
+                Downloads.Add(item);
+            }
+        }
+        IsEmpty = Downloads.Count == 0;
+    }
+
+    private void UpdateFilterCounts()
+    {
+        Span<int> counts = stackalloc int[6];
+        foreach (var item in _all)
+            counts[(int)item.Category]++;
+        foreach (var filter in Filters)
+        {
+            filter.Count = filter.Key switch
+            {
+                "downloading" => counts[(int)DownloadCategory.Downloading],
+                "seeding" => counts[(int)DownloadCategory.Seeding],
+                "queued" => counts[(int)DownloadCategory.Queued],
+                "paused" => counts[(int)DownloadCategory.Paused],
+                "completed" => counts[(int)DownloadCategory.Completed],
+                "error" => counts[(int)DownloadCategory.Error],
+                _ => _all.Count,
+            };
+        }
+    }
+
+    // ------------------------------------------------------------------ details pane
+
+    private void UpdateDetails()
+    {
+        var item = SelectedDownload;
+        if (item is null || !_byGid.ContainsKey(item.Gid))
+        {
+            if (SelectedFiles.Count > 0)
+                SelectedFiles.Clear();
+            if (Peers.Count > 0)
+                Peers.Clear();
+            return;
+        }
+
+        DetSavePath = item.Directory ?? "";
+        DetSize = item.TotalLength > 0
+            ? $"{FormatUtils.FormatSize(item.CompletedLength)} из {FormatUtils.FormatSize(item.TotalLength)}"
+            : FormatUtils.FormatSize(item.CompletedLength);
+        DetStatus = item.StatusText;
+        DetHash = item.InfoHash ?? "—";
+        DetRatio = item.RatioText;
+        DetUploaded = FormatUtils.FormatSize(item.UploadLength);
+        DetSpeed = $"↓ {FormatUtils.FormatSpeed(item.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(item.UploadSpeed)}";
+        DetConnections = item.IsTorrent
+            ? $"Сиды: {item.NumSeeders} • Пиры: {item.Connections}"
+            : $"Соединения: {item.Connections}";
+        DetError = item.ErrorMessage ?? "";
+        DetHasError = !string.IsNullOrEmpty(item.ErrorMessage);
+
+        MergeFiles(item);
+        if (DetailsTabIndex == 2)
+            _ = RefreshPeersAsync();
+    }
+
+    private void MergeFiles(DownloadItemViewModel item)
+    {
+        var files = item.Files;
+        int count = files?.Count ?? 0;
+        for (int i = 0; i < count; i++)
+        {
+            var file = files![i];
+            FileRowViewModel row;
+            if (i < SelectedFiles.Count)
+            {
+                row = SelectedFiles[i];
+            }
+            else
+            {
+                row = new FileRowViewModel();
+                SelectedFiles.Add(row);
+            }
+            string name = Path.GetFileName(file.Path);
+            row.Name = string.IsNullOrEmpty(name) ? file.Path : name;
+            row.SizeText = FormatUtils.FormatSize(file.Length);
+            row.Progress = file.Length > 0 ? file.CompletedLength * 100.0 / file.Length : 0;
+            row.ProgressText = row.Progress.ToString("0.#", CultureInfo.CurrentCulture) + " %";
+        }
+        for (int i = SelectedFiles.Count - 1; i >= count; i--)
+            SelectedFiles.RemoveAt(i);
+    }
+
+    private async Task RefreshPeersAsync()
+    {
+        var item = SelectedDownload;
+        if (_peersRefreshing || item is null || !item.IsTorrent || !_service.Rpc.IsConnected)
+        {
+            if (item is null || !item.IsTorrent)
+                Peers.Clear();
+            return;
+        }
+        _peersRefreshing = true;
+        try
+        {
+            var peers = await _service.Rpc.GetPeersAsync(item.Gid);
+            if (!ReferenceEquals(SelectedDownload, item))
+                return; // selection moved while we were fetching
+            for (int i = 0; i < peers.Count; i++)
+            {
+                PeerRowViewModel row;
+                if (i < Peers.Count)
+                {
+                    row = Peers[i];
+                }
+                else
+                {
+                    row = new PeerRowViewModel();
+                    Peers.Add(row);
+                }
+                row.Address = $"{peers[i].Ip}:{peers[i].Port}";
+                row.Kind = peers[i].Seeder ? "Сид" : "Пир";
+                row.DownSpeedText = FormatUtils.FormatSpeed(peers[i].DownloadSpeed);
+                row.UpSpeedText = FormatUtils.FormatSpeed(peers[i].UploadSpeed);
+            }
+            for (int i = Peers.Count - 1; i >= peers.Count; i--)
+                Peers.RemoveAt(i);
+        }
+        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
+        {
+            Peers.Clear();
+        }
+        finally
+        {
+            _peersRefreshing = false;
+        }
+    }
+
+    // ------------------------------------------------------------------ commands
+
     [RelayCommand]
     private Task AddDownloadAsync() => AddDownloadRequested?.Invoke() ?? Task.CompletedTask;
 
     [RelayCommand]
     private Task OpenSettingsAsync() => SettingsRequested?.Invoke() ?? Task.CompletedTask;
+
+    [RelayCommand]
+    private async Task ResumeSelectedAsync()
+    {
+        foreach (var item in _selection.ToArray())
+        {
+            if (item.RawStatus == Aria2Status.Paused)
+                await GuardedRpcAsync(() => _service.Rpc.UnpauseAsync(item.Gid));
+        }
+        await RefreshAsync();
+    }
+
+    [RelayCommand]
+    private async Task PauseSelectedAsync()
+    {
+        foreach (var item in _selection.ToArray())
+        {
+            if (item.RawStatus is Aria2Status.Active or Aria2Status.Waiting)
+                await GuardedRpcAsync(() => _service.Rpc.PauseAsync(item.Gid));
+        }
+        await RefreshAsync();
+    }
+
+    [RelayCommand]
+    private async Task RemoveSelectedAsync()
+    {
+        foreach (var item in _selection.ToArray())
+            await item.RemoveAsync();
+        await RefreshAsync();
+    }
 
     [RelayCommand]
     private Task PauseAllAsync() => GuardedRpcAsync(() => _service.Rpc.PauseAllAsync());

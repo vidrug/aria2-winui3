@@ -3,50 +3,46 @@ using Aria2Gui.ViewModels;
 using Aria2Gui.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
 namespace Aria2Gui;
 
 /// <summary>
-/// The main content page: download list, toolbar, status bar, drag&amp;drop target.
+/// The main content page: qBittorrent-style layout — filter sidebar, download
+/// table, details pane — plus toolbar, status bar and drag&amp;drop target.
 /// </summary>
 public sealed partial class MainPage : Page
 {
     public MainPageViewModel ViewModel { get; } = new();
 
-    private bool _dialogOpen;
-
     public MainPage()
     {
         InitializeComponent();
-        ViewModel.AddDownloadRequested = () => ShowDialogAsync(new AddDownloadDialog());
-        ViewModel.SettingsRequested = () => ShowDialogAsync(new SettingsDialog());
+        ViewModel.AddDownloadRequested = () => DialogService.ShowAsync(new AddDownloadDialog());
+        ViewModel.SettingsRequested = () => DialogService.ShowAsync(new SettingsDialog());
         Loaded += (_, _) => ViewModel.Initialize();
     }
 
-    /// <summary>
-    /// WinUI allows only one open ContentDialog per root — a second ShowAsync throws.
-    /// Guard so rapid Ctrl+N / toolbar clicks can't crash the app.
-    /// </summary>
-    private async Task ShowDialogAsync(ContentDialog dialog)
+    /// <summary>x:Bind helper: visible when the given details tab is active AND something is selected.</summary>
+    public static Visibility TabVisible(int current, int tab, bool hasSelection) =>
+        hasSelection && current == tab ? Visibility.Visible : Visibility.Collapsed;
+
+    /// <summary>x:Bind helper: inverse bool→Visibility.</summary>
+    public static Visibility CollapsedIf(bool value) =>
+        value ? Visibility.Collapsed : Visibility.Visible;
+
+    private void DownloadsList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
+        ViewModel.SetSelection([.. DownloadsList.SelectedItems.OfType<DownloadItemViewModel>()]);
+
+    private void DetailsTabs_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args) =>
+        ViewModel.DetailsTabIndex = sender.Items.IndexOf(sender.SelectedItem);
+
+    private void Row_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
     {
-        if (_dialogOpen)
-            return;
-        _dialogOpen = true;
-        try
-        {
-            dialog.XamlRoot = XamlRoot;
-            await dialog.ShowAsync();
-        }
-        catch (Exception)
-        {
-            // A dialog from another code path raced us — drop this one.
-        }
-        finally
-        {
-            _dialogOpen = false;
-        }
+        if ((sender as FrameworkElement)?.DataContext is DownloadItemViewModel item)
+            item.OpenFolder();
     }
 
     private void RootGrid_DragOver(object sender, DragEventArgs e)

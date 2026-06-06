@@ -21,10 +21,16 @@ public sealed partial class MainWindow : Window
 
         AppWindow.SetIcon("Assets/AppIcon.ico");
 
-        // Comfortable default size for a download list, scaled to the monitor DPI.
+        // Comfortable default size for the qBittorrent-style table layout,
+        // scaled to the monitor DPI; the column set needs ~1100px of width.
         nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
         double scale = GetDpiForWindow(hwnd) / 96.0;
-        AppWindow.Resize(new Windows.Graphics.SizeInt32((int)(1000 * scale), (int)(680 * scale)));
+        AppWindow.Resize(new Windows.Graphics.SizeInt32((int)(1280 * scale), (int)(800 * scale)));
+        if (AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
+        {
+            presenter.PreferredMinimumWidth = (int)(980 * scale);
+            presenter.PreferredMinimumHeight = (int)(620 * scale);
+        }
 
         // Navigate the root frame to the main page on startup.
         RootFrame.Navigate(typeof(MainPage));

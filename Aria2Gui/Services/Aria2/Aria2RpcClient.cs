@@ -142,6 +142,13 @@ public sealed class Aria2RpcClient : IAsyncDisposable
     public Task ShutdownAsync(bool force = false, CancellationToken ct = default) =>
         InvokeAsync(force ? "aria2.forceShutdown" : "aria2.shutdown", null, ct);
 
+    /// <summary>Connected peers of a BitTorrent download (errors for non-BT gids).</summary>
+    public async Task<List<Aria2Peer>> GetPeersAsync(string gid, CancellationToken ct = default)
+    {
+        var result = await InvokeAsync("aria2.getPeers", w => w.WriteStringValue(gid), ct).ConfigureAwait(false);
+        return result.Deserialize(Aria2JsonContext.Default.ListAria2Peer) ?? [];
+    }
+
     /// <summary>
     /// Fetches active + waiting + stopped downloads and global transfer stats in a
     /// single system.multicall round-trip — one WebSocket message per poll tick.

@@ -1,16 +1,28 @@
 using System.Diagnostics;
 using System.Globalization;
-using System.Text;
 using Aria2Gui.Helpers;
+using Aria2Gui.Services;
 using Aria2Gui.Services.Aria2;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace Aria2Gui.ViewModels;
 
+/// <summary>Sidebar filter buckets (qBittorrent-style status groups).</summary>
+public enum DownloadCategory
+{
+    Downloading,
+    Seeding,
+    Queued,
+    Paused,
+    Completed,
+    Error,
+}
+
 /// <summary>
-/// Observable wrapper for one aria2 download (keyed by gid). Instances live for the
-/// lifetime of the download in the list and are updated in place on every poll tick;
+/// Observable wrapper for one aria2 download (keyed by gid), exposing one property
+/// per table column. Instances are updated in place on every poll tick;
 /// [ObservableProperty] setters no-op when the value is unchanged, so a quiet list
 /// raises no change notifications at all.
 /// </summary>
@@ -29,33 +41,75 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     [ObservableProperty]
     public partial bool IsProgressIndeterminate { get; set; }
 
-    /// <summary>Composed "status • size • speed • ETA • peers" caption line.</summary>
     [ObservableProperty]
-    public partial string DetailsText { get; set; } = "";
+    public partial string ProgressText { get; set; } = "";
 
     [ObservableProperty]
-    public partial string StatusGlyph { get; set; } = "";
+    public partial string SizeText { get; set; } = "—";
 
     [ObservableProperty]
-    public partial string PauseResumeGlyph { get; set; } = "";
+    public partial string StatusText { get; set; } = "";
 
     [ObservableProperty]
-    public partial string PauseResumeTooltip { get; set; } = "Пауза";
+    public partial string StatusGlyph { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string SeedsText { get; set; } = "—";
+
+    [ObservableProperty]
+    public partial string PeersText { get; set; } = "—";
+
+    [ObservableProperty]
+    public partial string DownSpeedText { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string UpSpeedText { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string EtaText { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string RatioText { get; set; } = "—";
+
+    [ObservableProperty]
+    public partial bool IsError { get; set; }
+
+    [ObservableProperty]
+    public partial string PauseResumeText { get; set; } = "Пауза";
 
     [ObservableProperty]
     public partial bool CanPauseResume { get; set; }
 
     [ObservableProperty]
-    public partial bool IsError { get; set; }
+    public partial bool HasMagnet { get; set; }
 
-    private string _status = "";
-    private bool _isStopped;
-    private string? _directory;
-    private string? _firstFilePath;
+    /// <summary>Filter bucket; recomputed on every poll tick.</summary>
+    public DownloadCategory Category { get; private set; } = DownloadCategory.Downloading;
+
+    /// <summary>True while the item is present in the filtered view collection.</summary>
+    public bool InView { get; set; }
 
     /// <summary>Set once the first completion toast decision was made (dedupes the
     /// second onDownloadComplete aria2 fires when seeding stops).</summary>
     public bool CompletionNotified { get; set; }
+
+    // Raw state for the details pane (read on tick — no change notifications needed).
+    public string RawStatus { get; private set; } = "";
+    public string? Directory { get; private set; }
+    public string? InfoHash { get; private set; }
+    public string? ErrorMessage { get; private set; }
+    public bool IsTorrent { get; private set; }
+    public long TotalLength { get; private set; }
+    public long CompletedLength { get; private set; }
+    public long UploadLength { get; private set; }
+    public long DownloadSpeed { get; private set; }
+    public long UploadSpeed { get; private set; }
+    public long Connections { get; private set; }
+    public long NumSeeders { get; private set; }
+    public IReadOnlyList<Aria2File>? Files { get; private set; }
+
+    private bool _isStopped;
+    private string? _firstFilePath;
 
     public DownloadItemViewModel(string gid)
     {
@@ -65,9 +119,20 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     /// <summary>Applies the latest aria2 snapshot entry to the bindable properties.</summary>
     public void UpdateFrom(Aria2Download d)
     {
-        _status = d.Status;
+        RawStatus = d.Status;
         _isStopped = d.Status is Aria2Status.Complete or Aria2Status.Error or Aria2Status.Removed;
-        _directory = NormalizePath(d.Dir);
+        Directory = NormalizePath(d.Dir);
+        InfoHash = d.InfoHash;
+        ErrorMessage = d.ErrorMessage;
+        IsTorrent = d.IsTorrent;
+        TotalLength = d.TotalLength;
+        CompletedLength = d.CompletedLength;
+        UploadLength = d.UploadLength;
+        DownloadSpeed = d.DownloadSpeed;
+        UploadSpeed = d.UploadSpeed;
+        Connections = d.Connections;
+        NumSeeders = d.NumSeeders;
+        Files = d.Files;
 
         var firstFile = d.Files?.FirstOrDefault();
         bool isMetadata = firstFile?.Path.StartsWith("[METADATA]", StringComparison.Ordinal) == true;
@@ -80,73 +145,44 @@ public sealed partial class DownloadItemViewModel : ObservableObject
             ? d.CompletedLength * 100.0 / d.TotalLength
             : d.Status == Aria2Status.Complete ? 100 : 0;
         IsProgressIndeterminate = d.Status == Aria2Status.Active && d.TotalLength == 0;
+        ProgressText = IsProgressIndeterminate
+            ? "…"
+            : Progress.ToString("0.#", CultureInfo.CurrentCulture) + " %";
 
-        (string statusText, string glyph) = (d.Status, isMetadata, d.Seeder) switch
+        SizeText = d.TotalLength > 0 ? FormatUtils.FormatSize(d.TotalLength) : "—";
+
+        (StatusText, StatusGlyph, Category) = (d.Status, isMetadata, d.Seeder) switch
         {
-            (Aria2Status.Active, true, _) => ("Получение метаданных", ""),
-            (Aria2Status.Active, _, true) => ("Раздача", ""),
-            (Aria2Status.Active, _, _) => ("Загрузка", ""),
-            (Aria2Status.Waiting, _, _) => ("В очереди", ""),
-            (Aria2Status.Paused, _, _) => ("Пауза", ""),
-            (Aria2Status.Complete, _, _) => ("Завершено", ""),
-            (Aria2Status.Error, _, _) => (string.IsNullOrEmpty(d.ErrorMessage) ? "Ошибка" : $"Ошибка: {d.ErrorMessage}", ""),
-            (Aria2Status.Removed, _, _) => ("Удалено", ""),
-            _ => (d.Status, ""),
+            (Aria2Status.Active, true, _) => ("Метаданные", "", DownloadCategory.Downloading),
+            (Aria2Status.Active, _, true) => ("Раздача", "", DownloadCategory.Seeding),
+            (Aria2Status.Active, _, _) => ("Загрузка", "", DownloadCategory.Downloading),
+            (Aria2Status.Waiting, _, _) => ("В очереди", "", DownloadCategory.Queued),
+            (Aria2Status.Paused, _, _) => ("Пауза", "", DownloadCategory.Paused),
+            (Aria2Status.Complete, _, _) => ("Завершено", "", DownloadCategory.Completed),
+            (Aria2Status.Error, _, _) => ("Ошибка", "", DownloadCategory.Error),
+            (Aria2Status.Removed, _, _) => ("Удалено", "", DownloadCategory.Completed),
+            _ => (d.Status, "", DownloadCategory.Completed),
         };
-        StatusGlyph = glyph;
         IsError = d.Status == Aria2Status.Error;
 
-        DetailsText = ComposeDetails(d, statusText);
+        bool active = d.Status == Aria2Status.Active;
+        SeedsText = IsTorrent && active ? d.NumSeeders.ToString(CultureInfo.CurrentCulture) : "—";
+        PeersText = IsTorrent && active ? d.Connections.ToString(CultureInfo.CurrentCulture)
+            : !IsTorrent && active && d.Connections > 0 ? d.Connections.ToString(CultureInfo.CurrentCulture)
+            : "—";
+        DownSpeedText = active && d.DownloadSpeed > 0 ? FormatUtils.FormatSpeed(d.DownloadSpeed) : "";
+        UpSpeedText = active && d.UploadSpeed > 0 ? FormatUtils.FormatSpeed(d.UploadSpeed) : "";
+        EtaText = active && !d.Seeder
+            ? FormatUtils.FormatEta(d.TotalLength, d.CompletedLength, d.DownloadSpeed)
+            : "—";
+        RatioText = IsTorrent && d.TotalLength > 0 && d.UploadLength > 0
+            ? (d.UploadLength / (double)d.TotalLength).ToString("0.00", CultureInfo.CurrentCulture)
+            : "—";
 
         bool paused = d.Status == Aria2Status.Paused;
         CanPauseResume = !_isStopped;
-        PauseResumeGlyph = paused ? "" : "";
-        PauseResumeTooltip = paused ? "Возобновить" : "Пауза";
-    }
-
-    private static string ComposeDetails(Aria2Download d, string statusText)
-    {
-        var sb = new StringBuilder(96);
-        sb.Append(statusText);
-
-        if (d.TotalLength > 0)
-        {
-            sb.Append(" • ").Append(FormatUtils.FormatSize(d.CompletedLength))
-              .Append(" / ").Append(FormatUtils.FormatSize(d.TotalLength));
-        }
-        else if (d.CompletedLength > 0)
-        {
-            sb.Append(" • ").Append(FormatUtils.FormatSize(d.CompletedLength));
-        }
-
-        if (d.Status == Aria2Status.Active)
-        {
-            if (!d.Seeder && d.DownloadSpeed > 0)
-            {
-                sb.Append(" • ↓ ").Append(FormatUtils.FormatSpeed(d.DownloadSpeed));
-                string eta = FormatUtils.FormatEta(d.TotalLength, d.CompletedLength, d.DownloadSpeed);
-                if (eta != "—")
-                    sb.Append(" • осталось ").Append(eta);
-            }
-            if (d.IsTorrent)
-            {
-                if (d.UploadSpeed > 0)
-                    sb.Append(" • ↑ ").Append(FormatUtils.FormatSpeed(d.UploadSpeed));
-                sb.Append(" • сиды ").Append(d.NumSeeders).Append(" • пиры ").Append(d.Connections);
-            }
-            else if (d.Connections > 1)
-            {
-                sb.Append(" • потоки ").Append(d.Connections);
-            }
-        }
-
-        if (d.IsTorrent && d.TotalLength > 0 && d.UploadLength > 0)
-        {
-            double ratio = d.UploadLength / (double)d.TotalLength;
-            sb.Append(" • рейтинг ").Append(ratio.ToString("0.00", CultureInfo.CurrentCulture));
-        }
-
-        return sb.ToString();
+        PauseResumeText = paused ? "Возобновить" : "Пауза";
+        HasMagnet = !string.IsNullOrEmpty(d.InfoHash);
     }
 
     [RelayCommand]
@@ -154,7 +190,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     {
         try
         {
-            if (_status == Aria2Status.Paused)
+            if (RawStatus == Aria2Status.Paused)
                 await _service.Rpc.UnpauseAsync(Gid);
             else if (!_isStopped)
                 await _service.Rpc.PauseAsync(Gid);
@@ -166,7 +202,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task RemoveAsync()
+    public async Task RemoveAsync()
     {
         try
         {
@@ -205,14 +241,64 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void OpenFolder()
+    private async Task RemoveWithFilesAsync()
+    {
+        bool confirmed = await DialogService.ConfirmAsync(
+            "Удалить с файлами?",
+            $"«{Name}» будет убрана из списка, а её файлы — удалены с диска.",
+            "Удалить");
+        if (!confirmed)
+            return;
+
+        var files = Files;
+        await RemoveAsync();
+
+        // Best-effort disk cleanup: listed files + aria2 control files.
+        if (files is null)
+            return;
+        foreach (var file in files)
+        {
+            try
+            {
+                if (Path.IsPathRooted(file.Path) && File.Exists(file.Path))
+                    File.Delete(file.Path);
+                string control = file.Path + ".aria2";
+                if (File.Exists(control))
+                    File.Delete(control);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+            {
+                // Locked/protected file — leave it; the list entry is already gone.
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void CopyMagnet()
+    {
+        if (string.IsNullOrEmpty(InfoHash))
+            return;
+        try
+        {
+            var package = new DataPackage();
+            package.SetText($"magnet:?xt=urn:btih:{InfoHash}&dn={Uri.EscapeDataString(Name)}");
+            Clipboard.SetContent(package);
+        }
+        catch (Exception)
+        {
+            // Clipboard is flaky when another app holds it — best effort.
+        }
+    }
+
+    [RelayCommand]
+    public void OpenFolder()
     {
         try
         {
-            if (!string.IsNullOrEmpty(_firstFilePath) && (File.Exists(_firstFilePath) || Directory.Exists(_firstFilePath)))
+            if (!string.IsNullOrEmpty(_firstFilePath) && (File.Exists(_firstFilePath) || System.IO.Directory.Exists(_firstFilePath)))
                 Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{_firstFilePath}\"") { UseShellExecute = false });
-            else if (!string.IsNullOrEmpty(_directory) && Directory.Exists(_directory))
-                Process.Start(new ProcessStartInfo("explorer.exe", $"\"{_directory}\"") { UseShellExecute = false });
+            else if (!string.IsNullOrEmpty(Directory) && System.IO.Directory.Exists(Directory))
+                Process.Start(new ProcessStartInfo("explorer.exe", $"\"{Directory}\"") { UseShellExecute = false });
         }
         catch (Exception)
         {

@@ -1,4 +1,4 @@
-# ui-tests.ps1 — batch UI tests for Aria2Gui
+# ui-tests.ps1 — batch UI tests for Aria2Gui (qBittorrent-style layout)
 param([Parameter(Mandatory)][int]$AppPid)
 
 $ErrorActionPreference = 'Continue'
@@ -20,14 +20,21 @@ function Test-UI {
 
 New-Item -ItemType Directory -Force -Path "screenshots" | Out-Null
 
-# ─── Engine + toolbar ───
+# ─── Engine + chrome ───
 Test-UI "Engine running (status bar)" { winapp ui wait-for "EngineStatusText" -a $AppPid --value "aria2 работает" -t 15000 }
-Test-UI "Add button exists"       { winapp ui wait-for "AddDownloadButton" -a $AppPid -t 3000 }
-Test-UI "ResumeAll button exists" { winapp ui wait-for "ResumeAllButton" -a $AppPid -t 3000 }
-Test-UI "PauseAll button exists"  { winapp ui wait-for "PauseAllButton" -a $AppPid -t 3000 }
-Test-UI "Clear button exists"     { winapp ui wait-for "ClearStoppedButton" -a $AppPid -t 3000 }
-Test-UI "Settings button exists"  { winapp ui wait-for "SettingsButton" -a $AppPid -t 3000 }
-Test-UI "Counts show empty state" { winapp ui wait-for "CountsText" -a $AppPid --value "Активных: 0" --contains -t 5000 }
+Test-UI "Add button exists"        { winapp ui wait-for "AddDownloadButton" -a $AppPid -t 3000 }
+Test-UI "ResumeSelected exists"    { winapp ui wait-for "ResumeSelectedButton" -a $AppPid -t 3000 }
+Test-UI "PauseSelected exists"     { winapp ui wait-for "PauseSelectedButton" -a $AppPid -t 3000 }
+Test-UI "RemoveSelected exists"    { winapp ui wait-for "RemoveSelectedButton" -a $AppPid -t 3000 }
+Test-UI "Settings button exists"   { winapp ui wait-for "SettingsButton" -a $AppPid -t 3000 }
+Test-UI "Filters sidebar exists"   { winapp ui wait-for "FiltersList" -a $AppPid -t 3000 }
+Test-UI "Details tabs exist"       { winapp ui wait-for "DetailsTabGeneral" -a $AppPid -t 3000 }
+Test-UI "Counts show empty state"  { winapp ui wait-for "CountsText" -a $AppPid --value "Активных: 0" --contains -t 5000 }
+
+# Selection-dependent buttons disabled with no selection
+Test-UI "RemoveSelected disabled w/o selection" {
+    winapp ui wait-for "RemoveSelectedButton" -a $AppPid -p IsEnabled --value "False" -t 3000
+}
 winapp ui screenshot -a $AppPid -o "screenshots/01-initial.png" 2>$null
 
 # ─── Add-download dialog ───
@@ -43,18 +50,27 @@ Test-UI "Dialog dismissed" { winapp ui wait-for "UrlsBox" -a $AppPid --gone -t 5
 Test-UI "Download appears in counts" { winapp ui wait-for "CountsText" -a $AppPid --value "Активных: 1" --contains -t 10000 }
 winapp ui screenshot -a $AppPid -o "screenshots/03-downloading.png" 2>$null
 Test-UI "Download completes" { winapp ui wait-for "CountsText" -a $AppPid --value "Завершённых: 1" --contains -t 60000 }
-Test-UI "Row open-folder button exists" { winapp ui wait-for "RowOpenFolderButton" -a $AppPid -t 3000 }
-Test-UI "Row remove button exists" { winapp ui wait-for "RowRemoveButton" -a $AppPid -t 3000 }
 winapp ui screenshot -a $AppPid -o "screenshots/04-completed.png" 2>$null
 
-# ─── Remove the completed row ───
-Test-UI "Remove download row" { winapp ui invoke "RowRemoveButton" -a $AppPid }
-Test-UI "Counts back to zero" { winapp ui wait-for "CountsText" -a $AppPid --value "Завершённых: 0" --contains -t 10000 }
+# ─── Select the row: enables toolbar, fills details ───
+$row = (winapp ui search "10Mb" -a $AppPid 2>&1 | Out-String)
+$slug = [regex]::Match($row, 'invoke via: (itm-\S+)').Groups[1].Value
+if ($slug) {
+    Test-UI "Click download row" { winapp ui click "$slug" -a $AppPid }
+    Test-UI "RemoveSelected enabled with selection" {
+        winapp ui wait-for "RemoveSelectedButton" -a $AppPid -p IsEnabled --value "True" -t 4000
+    }
+    winapp ui screenshot -a $AppPid -o "screenshots/05-selected-details.png" 2>$null
+    Test-UI "Remove selected" { winapp ui invoke "RemoveSelectedButton" -a $AppPid }
+    Test-UI "Counts back to zero" { winapp ui wait-for "CountsText" -a $AppPid --value "Завершённых: 0" --contains -t 10000 }
+} else {
+    $fail++; $results += @{ name = "Find download row"; status = "FAIL"; detail = "row slug not found" }
+}
 
 # ─── Settings dialog ───
 Test-UI "Open settings" { winapp ui invoke "SettingsButton" -a $AppPid }
 Test-UI "Settings fields appear" { winapp ui wait-for "DownLimitBox" -a $AppPid -t 4000 }
-winapp ui screenshot -a $AppPid -o "screenshots/05-settings.png" 2>$null
+winapp ui screenshot -a $AppPid -o "screenshots/06-settings.png" 2>$null
 Test-UI "Set download limit 3 MB/s" { winapp ui set-value "DownLimitBox" "3" -a $AppPid }
 Test-UI "Commit via focus shift" { winapp ui focus "UpLimitBox" -a $AppPid }
 Test-UI "Save settings" { winapp ui invoke "PrimaryButton" -a $AppPid }
@@ -78,8 +94,6 @@ if ($settings -and $settings.MaxDownloadLimit -eq "3072K") {
 Start-Sleep -Seconds 2
 Test-UI "Re-open settings" { winapp ui invoke "SettingsButton" -a $AppPid }
 Start-Sleep -Seconds 1
-# NumberBox value is not readable via get-value (returns the header); the
-# settings.json assertion above already covers the round-trip.
 Test-UI "Settings fields shown again" { winapp ui wait-for "DownLimitBox" -a $AppPid -t 5000 }
 Test-UI "Close settings" { winapp ui invoke "CloseButton" -a $AppPid }
 Test-UI "Settings closed" { winapp ui wait-for "DownLimitBox" -a $AppPid --gone -t 5000 }
@@ -99,7 +113,7 @@ if ($missingId.Count -eq 0) {
     $fail++; $results += @{ name = "AutomationId coverage"; status = "FAIL"; detail = "Missing: $names" }
 }
 
-winapp ui screenshot -a $AppPid -o "screenshots/06-final.png" 2>$null
+winapp ui screenshot -a $AppPid -o "screenshots/07-final.png" 2>$null
 
 Write-Host "`nPassed: $pass | Failed: $fail"
 $results | Where-Object { $_.status -eq "FAIL" } | ForEach-Object {

@@ -146,6 +146,25 @@ public sealed class Aria2Uri
     public string Status { get; set; } = "";
 }
 
+/// <summary>One connected peer as returned by aria2.getPeers (BitTorrent only).</summary>
+public sealed class Aria2Peer
+{
+    [JsonPropertyName("ip")]
+    public string Ip { get; set; } = "";
+
+    [JsonPropertyName("port")]
+    public long Port { get; set; }
+
+    [JsonPropertyName("downloadSpeed")]
+    public long DownloadSpeed { get; set; }
+
+    [JsonPropertyName("uploadSpeed")]
+    public long UploadSpeed { get; set; }
+
+    [JsonPropertyName("seeder")]
+    public bool Seeder { get; set; }
+}
+
 /// <summary>Result of aria2.getGlobalStat.</summary>
 public sealed class Aria2GlobalStat
 {

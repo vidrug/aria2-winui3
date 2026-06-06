@@ -42,4 +42,5 @@ public sealed class Aria2BoolConverter : JsonConverter<bool>
 [JsonSerializable(typeof(List<Aria2Download>))]
 [JsonSerializable(typeof(Aria2GlobalStat))]
 [JsonSerializable(typeof(Aria2VersionInfo))]
+[JsonSerializable(typeof(List<Aria2Peer>))]
 public sealed partial class Aria2JsonContext : JsonSerializerContext;

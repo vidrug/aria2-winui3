@@ -6,14 +6,28 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Aria2Gui"
     xmlns:vm="using:Aria2Gui.ViewModels"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Page.Resources>
-        <Style x:Key="RowIconButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="8" />
+        <Style x:Key="ColumnHeaderTextStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="CellTextStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="DetailLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="Margin" Value="0,0,8,4" />
+        </Style>
+        <Style x:Key="DetailValueStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
+            <Setter Property="Margin" Value="0,0,16,4" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="IsTextSelectionEnabled" Value="True" />
         </Style>
     </Page.Resources>
 
@@ -49,35 +63,37 @@
             </AppBarButton>
             <AppBarSeparator />
             <AppBarButton
-                Label="Возобновить все"
-                Command="{x:Bind ViewModel.ResumeAllCommand}"
-                IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                AutomationProperties.Name="Возобновить все загрузки"
-                AutomationProperties.AutomationId="ResumeAllButton">
+                Label="Возобновить"
+                Command="{x:Bind ViewModel.ResumeSelectedCommand}"
+                IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
+                AutomationProperties.Name="Возобновить выбранные"
+                AutomationProperties.AutomationId="ResumeSelectedButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE768;" />
                 </AppBarButton.Icon>
             </AppBarButton>
             <AppBarButton
-                Label="Пауза всем"
-                Command="{x:Bind ViewModel.PauseAllCommand}"
-                IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                AutomationProperties.Name="Приостановить все загрузки"
-                AutomationProperties.AutomationId="PauseAllButton">
+                Label="Пауза"
+                Command="{x:Bind ViewModel.PauseSelectedCommand}"
+                IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
+                AutomationProperties.Name="Приостановить выбранные"
+                AutomationProperties.AutomationId="PauseSelectedButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE769;" />
                 </AppBarButton.Icon>
             </AppBarButton>
             <AppBarButton
-                Label="Очистить"
-                Command="{x:Bind ViewModel.ClearStoppedCommand}"
-                IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                AutomationProperties.Name="Очистить завершённые загрузки"
-                AutomationProperties.AutomationId="ClearStoppedButton"
-                ToolTipService.ToolTip="Убрать завершённые и удалённые из списка">
+                Label="Удалить"
+                Command="{x:Bind ViewModel.RemoveSelectedCommand}"
+                IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
+                AutomationProperties.Name="Удалить выбранные из списка"
+                AutomationProperties.AutomationId="RemoveSelectedButton">
                 <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE894;" />
+                    <FontIcon Glyph="&#xE74D;" />
                 </AppBarButton.Icon>
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="Delete" />
+                </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
             <AppBarSeparator />
             <AppBarButton
@@ -89,110 +105,390 @@
                     <FontIcon Glyph="&#xE713;" />
                 </AppBarButton.Icon>
             </AppBarButton>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton
+                    Label="Возобновить все"
+                    Command="{x:Bind ViewModel.ResumeAllCommand}"
+                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                    AutomationProperties.AutomationId="ResumeAllButton" />
+                <AppBarButton
+                    Label="Пауза всем"
+                    Command="{x:Bind ViewModel.PauseAllCommand}"
+                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                    AutomationProperties.AutomationId="PauseAllButton" />
+                <AppBarButton
+                    Label="Очистить завершённые"
+                    Command="{x:Bind ViewModel.ClearStoppedCommand}"
+                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                    AutomationProperties.AutomationId="ClearStoppedButton" />
+            </CommandBar.SecondaryCommands>
         </CommandBar>
 
-        <!-- Download list -->
-        <ListView
-            x:Name="DownloadsList"
-            AutomationProperties.AutomationId="DownloadsList"
-            Grid.Row="1"
-            ItemsSource="{x:Bind ViewModel.Downloads, Mode=OneWay}"
-            SelectionMode="None"
-            IsItemClickEnabled="False"
-            Padding="12,0,12,8">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="vm:DownloadItemViewModel">
-                    <Grid Padding="0,8" ColumnSpacing="12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+        <!-- Sidebar | main area -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" MinWidth="160" MaxWidth="400" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" MinWidth="400" />
+            </Grid.ColumnDefinitions>
 
-                        <FontIcon
-                            Grid.Column="0"
-                            Glyph="{x:Bind StatusGlyph, Mode=OneWay}"
-                            FontSize="18"
-                            VerticalAlignment="Center" />
-
-                        <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+            <!-- Status filters -->
+            <ListView
+                x:Name="FiltersList"
+                AutomationProperties.AutomationId="FiltersList"
+                Grid.Column="0"
+                Padding="4,8,4,8"
+                SelectionMode="Single"
+                ItemsSource="{x:Bind ViewModel.Filters, Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.SelectedFilter, Mode=TwoWay}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="MinHeight" Value="36" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:FilterItemViewModel">
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <FontIcon
+                                Glyph="{x:Bind Glyph}"
+                                FontSize="14"
+                                VerticalAlignment="Center" />
                             <TextBlock
-                                Text="{x:Bind Name, Mode=OneWay}"
-                                Style="{StaticResource BodyStrongTextBlockStyle}"
+                                Grid.Column="1"
+                                Text="{x:Bind Title}"
+                                VerticalAlignment="Center"
                                 TextTrimming="CharacterEllipsis" />
-                            <ProgressBar
-                                Value="{x:Bind Progress, Mode=OneWay}"
-                                Maximum="100"
-                                IsIndeterminate="{x:Bind IsProgressIndeterminate, Mode=OneWay}" />
                             <TextBlock
-                                Text="{x:Bind DetailsText, Mode=OneWay}"
+                                Grid.Column="2"
+                                Text="{x:Bind Count, Mode=OneWay}"
                                 Style="{StaticResource CaptionTextBlockStyle}"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
+                                VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-                        <StackPanel
-                            Grid.Column="2"
-                            Orientation="Horizontal"
-                            Spacing="4"
-                            VerticalAlignment="Center">
-                            <Button
-                                Style="{StaticResource RowIconButtonStyle}"
-                                Command="{x:Bind PauseResumeCommand}"
-                                Visibility="{x:Bind CanPauseResume, Mode=OneWay}"
-                                ToolTipService.ToolTip="{x:Bind PauseResumeTooltip, Mode=OneWay}"
-                                AutomationProperties.Name="{x:Bind PauseResumeTooltip, Mode=OneWay}"
-                                AutomationProperties.AutomationId="RowPauseResumeButton">
-                                <FontIcon Glyph="{x:Bind PauseResumeGlyph, Mode=OneWay}" FontSize="14" />
-                            </Button>
-                            <Button
-                                Style="{StaticResource RowIconButtonStyle}"
-                                Command="{x:Bind OpenFolderCommand}"
-                                ToolTipService.ToolTip="Открыть папку"
-                                AutomationProperties.Name="Открыть папку"
-                                AutomationProperties.AutomationId="RowOpenFolderButton">
-                                <FontIcon Glyph="&#xE838;" FontSize="14" />
-                            </Button>
-                            <Button
-                                Style="{StaticResource RowIconButtonStyle}"
-                                Command="{x:Bind RemoveCommand}"
-                                ToolTipService.ToolTip="Удалить из списка"
-                                AutomationProperties.Name="Удалить из списка"
-                                AutomationProperties.AutomationId="RowRemoveButton">
-                                <FontIcon Glyph="&#xE74D;" FontSize="14" />
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            <toolkit:GridSplitter
+                Grid.Column="1"
+                Width="8"
+                ResizeBehavior="BasedOnAlignment"
+                ResizeDirection="Auto" />
 
-        <!-- Empty state -->
-        <StackPanel
-            Grid.Row="1"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Spacing="12"
-            Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}">
-            <FontIcon
-                Glyph="&#xE896;"
-                FontSize="48"
-                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
-            <TextBlock
-                Text="Нет загрузок"
-                Style="{StaticResource SubtitleTextBlockStyle}"
-                HorizontalAlignment="Center"
-                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-            <TextBlock
-                Text="Нажмите «Добавить» (Ctrl+N) или перетащите сюда торрент-файл"
-                HorizontalAlignment="Center"
-                Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
-        </StackPanel>
+            <!-- Table + details -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" MinHeight="120" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="230" MinHeight="130" MaxHeight="500" />
+                </Grid.RowDefinitions>
+
+                <!-- Column headers -->
+                <Grid
+                    Grid.Row="0"
+                    Padding="16,6,12,6"
+                    ColumnSpacing="8"
+                    BorderThickness="0,0,0,1"
+                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="160" />
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition Width="88" />
+                        <ColumnDefinition Width="88" />
+                        <ColumnDefinition Width="88" />
+                        <ColumnDefinition Width="52" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Имя" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <TextBlock Grid.Column="1" Text="Размер" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <TextBlock Grid.Column="2" Text="Прогресс" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <TextBlock Grid.Column="3" Text="Статус" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <TextBlock Grid.Column="4" Text="Сиды" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <TextBlock Grid.Column="5" Text="Пиры" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <TextBlock Grid.Column="6" Text="Загрузка" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <TextBlock Grid.Column="7" Text="Отдача" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <TextBlock Grid.Column="8" Text="Осталось" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <TextBlock Grid.Column="9" Text="Рейтинг" Style="{StaticResource ColumnHeaderTextStyle}" />
+                </Grid>
+
+                <!-- Downloads table -->
+                <ListView
+                    x:Name="DownloadsList"
+                    AutomationProperties.AutomationId="DownloadsList"
+                    Grid.Row="1"
+                    Padding="0"
+                    SelectionMode="Extended"
+                    SelectionChanged="DownloadsList_SelectionChanged"
+                    ItemsSource="{x:Bind ViewModel.Downloads, Mode=OneWay}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="16,0,12,0" />
+                            <Setter Property="MinHeight" Value="36" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:DownloadItemViewModel">
+                            <Grid ColumnSpacing="8" DoubleTapped="Row_DoubleTapped" Background="Transparent">
+                                <Grid.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem
+                                            Text="{x:Bind PauseResumeText, Mode=OneWay}"
+                                            Command="{x:Bind PauseResumeCommand}"
+                                            IsEnabled="{x:Bind CanPauseResume, Mode=OneWay}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE769;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem Text="Открыть папку" Command="{x:Bind OpenFolderCommand}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE838;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem
+                                            Text="Копировать magnet-ссылку"
+                                            Command="{x:Bind CopyMagnetCommand}"
+                                            Visibility="{x:Bind HasMagnet, Mode=OneWay}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE71B;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutSeparator />
+                                        <MenuFlyoutItem Text="Удалить из списка" Command="{x:Bind RemoveCommand}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE74D;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem Text="Удалить с файлами…" Command="{x:Bind RemoveWithFilesCommand}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE74E;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                    </MenuFlyout>
+                                </Grid.ContextFlyout>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" MinWidth="160" />
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="48" />
+                                    <ColumnDefinition Width="48" />
+                                    <ColumnDefinition Width="88" />
+                                    <ColumnDefinition Width="88" />
+                                    <ColumnDefinition Width="88" />
+                                    <ColumnDefinition Width="52" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <FontIcon
+                                        Glyph="{x:Bind StatusGlyph, Mode=OneWay}"
+                                        FontSize="13"
+                                        VerticalAlignment="Center" />
+                                    <TextBlock
+                                        Text="{x:Bind Name, Mode=OneWay}"
+                                        VerticalAlignment="Center"
+                                        TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                <Grid Grid.Column="2" VerticalAlignment="Center">
+                                    <ProgressBar
+                                        Value="{x:Bind Progress, Mode=OneWay}"
+                                        Maximum="100"
+                                        MinHeight="14"
+                                        IsIndeterminate="{x:Bind IsProgressIndeterminate, Mode=OneWay}" />
+                                    <TextBlock
+                                        Text="{x:Bind ProgressText, Mode=OneWay}"
+                                        FontSize="10"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center" />
+                                </Grid>
+                                <TextBlock Grid.Column="3" Text="{x:Bind StatusText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                <TextBlock Grid.Column="4" Text="{x:Bind SeedsText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                <TextBlock Grid.Column="5" Text="{x:Bind PeersText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                <TextBlock Grid.Column="6" Text="{x:Bind DownSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                <TextBlock Grid.Column="7" Text="{x:Bind UpSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                <TextBlock Grid.Column="8" Text="{x:Bind EtaText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                <TextBlock Grid.Column="9" Text="{x:Bind RatioText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <!-- Empty state -->
+                <StackPanel
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="12"
+                    Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}">
+                    <FontIcon
+                        Glyph="&#xE896;"
+                        FontSize="44"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                    <TextBlock
+                        Text="Нет загрузок"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        HorizontalAlignment="Center"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock
+                        Text="Нажмите «Добавить» (Ctrl+N) или перетащите сюда торрент-файл"
+                        HorizontalAlignment="Center"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                </StackPanel>
+
+                <toolkit:GridSplitter
+                    Grid.Row="2"
+                    Height="8"
+                    ResizeBehavior="BasedOnAlignment"
+                    ResizeDirection="Auto" />
+
+                <!-- Details pane -->
+                <Grid
+                    Grid.Row="3"
+                    Padding="16,4,12,8"
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <SelectorBar x:Name="DetailsTabs" SelectionChanged="DetailsTabs_SelectionChanged">
+                        <SelectorBarItem Text="Общие" IsSelected="True" AutomationProperties.AutomationId="DetailsTabGeneral" />
+                        <SelectorBarItem Text="Файлы" AutomationProperties.AutomationId="DetailsTabFiles" />
+                        <SelectorBarItem Text="Пиры" AutomationProperties.AutomationId="DetailsTabPeers" />
+                    </SelectorBar>
+
+                    <!-- No selection placeholder -->
+                    <TextBlock
+                        Grid.Row="1"
+                        Text="Выберите загрузку, чтобы увидеть подробности"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Visibility="{x:Bind local:MainPage.CollapsedIf(ViewModel.HasSelection), Mode=OneWay}" />
+
+                    <!-- General -->
+                    <ScrollViewer
+                        Grid.Row="1"
+                        VerticalScrollBarVisibility="Auto"
+                        Visibility="{x:Bind local:MainPage.TabVisible(ViewModel.DetailsTabIndex, 0, ViewModel.HasSelection), Mode=OneWay}">
+                        <Grid Padding="0,8,0,0" ColumnSpacing="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Сохранено в:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Column="1" Grid.ColumnSpan="5" Text="{x:Bind ViewModel.DetSavePath, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
+                            <TextBlock Grid.Row="1" Text="Размер:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind ViewModel.DetSize, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Статус:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="1" Grid.Column="3" Text="{x:Bind ViewModel.DetStatus, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
+                            <TextBlock Grid.Row="1" Grid.Column="4" Text="Скорость:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="1" Grid.Column="5" Text="{x:Bind ViewModel.DetSpeed, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
+                            <TextBlock Grid.Row="2" Text="Хеш:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="5" Text="{x:Bind ViewModel.DetHash, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
+                            <TextBlock Grid.Row="3" Text="Рейтинг:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.DetRatio, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
+                            <TextBlock Grid.Row="3" Grid.Column="2" Text="Отдано:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="3" Grid.Column="3" Text="{x:Bind ViewModel.DetUploaded, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
+                            <TextBlock Grid.Row="3" Grid.Column="4" Text="Подключения:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="3" Grid.Column="5" Text="{x:Bind ViewModel.DetConnections, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
+                        </Grid>
+                    </ScrollViewer>
+
+                    <!-- Files -->
+                    <ListView
+                        Grid.Row="1"
+                        Margin="0,8,0,0"
+                        Padding="0"
+                        SelectionMode="None"
+                        ItemsSource="{x:Bind ViewModel.SelectedFiles, Mode=OneWay}"
+                        Visibility="{x:Bind local:MainPage.TabVisible(ViewModel.DetailsTabIndex, 1, ViewModel.HasSelection), Mode=OneWay}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="MinHeight" Value="30" />
+                                <Setter Property="Padding" Value="0,0,12,0" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:FileRowViewModel">
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="52" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                    <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                    <ProgressBar
+                                        Grid.Column="2"
+                                        Value="{x:Bind Progress, Mode=OneWay}"
+                                        Maximum="100"
+                                        VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="3" Text="{x:Bind ProgressText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!-- Peers -->
+                    <ListView
+                        Grid.Row="1"
+                        Margin="0,8,0,0"
+                        Padding="0"
+                        SelectionMode="None"
+                        ItemsSource="{x:Bind ViewModel.Peers, Mode=OneWay}"
+                        Visibility="{x:Bind local:MainPage.TabVisible(ViewModel.DetailsTabIndex, 2, ViewModel.HasSelection), Mode=OneWay}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="MinHeight" Value="30" />
+                                <Setter Property="Padding" Value="0,0,12,0" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:PeerRowViewModel">
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="88" />
+                                        <ColumnDefinition Width="88" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Bind Address, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Kind, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                    <TextBlock Grid.Column="2" Text="{x:Bind DownSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                    <TextBlock Grid.Column="3" Text="{x:Bind UpSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Grid>
+        </Grid>
 
         <!-- Engine failure surface -->
         <InfoBar
