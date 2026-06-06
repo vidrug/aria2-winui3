@@ -27,6 +27,13 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
 
+  <!-- Bundled aria2c engine — ships next to the app exe. -->
+  <ItemGroup>
+    <Content Include="Aria2\aria2c.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>

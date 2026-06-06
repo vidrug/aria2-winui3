@@ -52,6 +52,23 @@ public partial class App : Application
     {
         Window = new MainWindow();
         DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+        // Stop aria2c gracefully (saves the session) when the window closes.
+        Window.Closed += (_, _) => Services.Aria2.Aria2Service.Instance.Shutdown();
         Window.Activate();
+
+        // Start the aria2c engine in the background; the UI reflects service state.
+        _ = InitializeEngineAsync();
+    }
+
+    private static async Task InitializeEngineAsync()
+    {
+        try
+        {
+            await Services.Aria2.Aria2Service.Instance.StartAsync();
+        }
+        catch
+        {
+            // Already surfaced via Aria2Service.State / LastError.
+        }
     }
 }
