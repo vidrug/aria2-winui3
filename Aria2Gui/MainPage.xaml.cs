@@ -15,24 +15,38 @@ public sealed partial class MainPage : Page
 {
     public MainPageViewModel ViewModel { get; } = new();
 
+    private bool _dialogOpen;
+
     public MainPage()
     {
         InitializeComponent();
-        ViewModel.AddDownloadRequested = ShowAddDialogAsync;
-        ViewModel.SettingsRequested = ShowSettingsDialogAsync;
+        ViewModel.AddDownloadRequested = () => ShowDialogAsync(new AddDownloadDialog());
+        ViewModel.SettingsRequested = () => ShowDialogAsync(new SettingsDialog());
         Loaded += (_, _) => ViewModel.Initialize();
     }
 
-    private async Task ShowAddDialogAsync()
+    /// <summary>
+    /// WinUI allows only one open ContentDialog per root — a second ShowAsync throws.
+    /// Guard so rapid Ctrl+N / toolbar clicks can't crash the app.
+    /// </summary>
+    private async Task ShowDialogAsync(ContentDialog dialog)
     {
-        var dialog = new AddDownloadDialog { XamlRoot = XamlRoot };
-        await dialog.ShowAsync();
-    }
-
-    private async Task ShowSettingsDialogAsync()
-    {
-        var dialog = new SettingsDialog { XamlRoot = XamlRoot };
-        await dialog.ShowAsync();
+        if (_dialogOpen)
+            return;
+        _dialogOpen = true;
+        try
+        {
+            dialog.XamlRoot = XamlRoot;
+            await dialog.ShowAsync();
+        }
+        catch (Exception)
+        {
+            // A dialog from another code path raced us — drop this one.
+        }
+        finally
+        {
+            _dialogOpen = false;
+        }
     }
 
     private void RootGrid_DragOver(object sender, DragEventArgs e)

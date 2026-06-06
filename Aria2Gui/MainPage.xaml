@@ -220,17 +220,20 @@
                     FontSize="13"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 <TextBlock
+                    AutomationProperties.AutomationId="EngineStatusText"
                     Text="{x:Bind ViewModel.EngineStatusText, Mode=OneWay}"
                     Style="{StaticResource CaptionTextBlockStyle}"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     VerticalAlignment="Center" />
                 <TextBlock
+                    AutomationProperties.AutomationId="CountsText"
                     Text="{x:Bind ViewModel.CountsText, Mode=OneWay}"
                     Style="{StaticResource CaptionTextBlockStyle}"
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                     VerticalAlignment="Center" />
             </StackPanel>
             <TextBlock
+                AutomationProperties.AutomationId="GlobalSpeedText"
                 Grid.Column="1"
                 Text="{x:Bind ViewModel.GlobalSpeedText, Mode=OneWay}"
                 Style="{StaticResource CaptionTextBlockStyle}"

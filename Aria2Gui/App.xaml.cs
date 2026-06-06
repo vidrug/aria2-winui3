@@ -42,6 +42,22 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+
+        // Last-resort guard: log UI-thread exceptions and keep the app (and its
+        // active downloads) alive instead of tearing the whole process down.
+        UnhandledException += (_, e) =>
+        {
+            try
+            {
+                File.AppendAllText(
+                    Path.Combine(Services.AppPaths.DataDirectory, "crash.log"),
+                    $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {e.Exception}{Environment.NewLine}");
+            }
+            catch
+            {
+            }
+            e.Handled = true;
+        };
     }
 
     /// <summary>
