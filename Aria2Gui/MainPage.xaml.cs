@@ -21,9 +21,18 @@ public sealed partial class MainPage : Page
     {
         InitializeComponent();
         ViewModel.AddDownloadRequested = () => DialogService.ShowAsync(new AddDownloadDialog());
-        ViewModel.SettingsRequested = () => DialogService.ShowAsync(new SettingsDialog());
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         Loaded += (_, _) => ViewModel.Initialize();
     }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        // Refresh the settings form from disk each time the page is shown.
+        if (e.PropertyName == nameof(MainPageViewModel.SettingsOpen) && ViewModel.SettingsOpen)
+            SettingsPage.LoadFromSettings();
+    }
+
+    private void SettingsPage_Closed(object? sender, EventArgs e) => ViewModel.SettingsOpen = false;
 
     /// <summary>x:Bind helper: visible when the given details tab is active AND something is selected.</summary>
     public static Visibility TabVisible(int current, int tab, bool hasSelection) =>

@@ -75,6 +75,10 @@ public sealed partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
 
+    /// <summary>True while the in-app settings page covers the download list.</summary>
+    [ObservableProperty]
+    public partial bool SettingsOpen { get; set; }
+
     // ---- details pane (Общие) ----
     [ObservableProperty]
     public partial string DetSavePath { get; set; } = "";
@@ -110,9 +114,8 @@ public sealed partial class MainPageViewModel : ObservableObject
 
     public ObservableCollection<PeerRowViewModel> Peers { get; } = [];
 
-    /// <summary>Hooked by MainPage to open the add/settings dialogs (views own dialogs).</summary>
+    /// <summary>Hooked by MainPage to open the add dialog (views own dialogs).</summary>
     public Func<Task>? AddDownloadRequested { get; set; }
-    public Func<Task>? SettingsRequested { get; set; }
 
     public MainPageViewModel()
     {
@@ -516,7 +519,7 @@ public sealed partial class MainPageViewModel : ObservableObject
     private Task AddDownloadAsync() => AddDownloadRequested?.Invoke() ?? Task.CompletedTask;
 
     [RelayCommand]
-    private Task OpenSettingsAsync() => SettingsRequested?.Invoke() ?? Task.CompletedTask;
+    private void OpenSettings() => SettingsOpen = true;
 
     [RelayCommand]
     private async Task ResumeSelectedAsync()

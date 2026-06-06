@@ -35,6 +35,11 @@ public static class DownloadAdder
                 await Aria2Service.Instance.Rpc.AddUriAsync([lines[i]], options);
                 added++;
             }
+            catch (Aria2RpcException ex) when (ex.Message.Contains("already", StringComparison.OrdinalIgnoreCase))
+            {
+                // Already in the list (re-added) — count as success, not an error.
+                added++;
+            }
             catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
             {
                 // Keep the failed line and everything after it for a clean retry.

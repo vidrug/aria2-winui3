@@ -233,7 +233,15 @@ public sealed partial class AddDownloadDialog : ContentDialog
                     args.Cancel = true;
                     return;
                 }
-                await DownloadAdder.AddTorrentBytesAsync(_torrentBytes, directory, selectFile);
+                try
+                {
+                    await DownloadAdder.AddTorrentBytesAsync(_torrentBytes, directory, selectFile);
+                }
+                catch (Aria2RpcException ex) when (IsDuplicate(ex))
+                {
+                    // Re-adding a torrent that's already in the list (e.g. an already
+                    // downloaded one): treat as success, the entry is already there.
+                }
                 _torrentBytes = null;
                 _torrentContent = null;
                 TorrentFileName.Text = "";
@@ -275,6 +283,10 @@ public sealed partial class AddDownloadDialog : ContentDialog
             deferral.Complete();
         }
     }
+
+    /// <summary>aria2 reports a re-added torrent/URI as "Download already exists".</summary>
+    private static bool IsDuplicate(Aria2RpcException ex) =>
+        ex.Message.Contains("already", StringComparison.OrdinalIgnoreCase);
 
     private static void RememberDirectory(string? directory)
     {

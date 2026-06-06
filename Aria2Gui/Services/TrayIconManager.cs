@@ -86,16 +86,12 @@ public sealed class TrayIconManager : IDisposable
 
     private void ShowWindow()
     {
-        _appWindow.Show();
-        if (_appWindow.Presenter is OverlappedPresenter presenter)
-            presenter.Restore();
-        _window.Activate();
-        NativeActivate();
-    }
-
-    private void NativeActivate()
-    {
+        // The window was AppWindow.Hide()'d while Minimized, so it's both hidden and
+        // minimized. Make it visible first, then SW_RESTORE un-minimizes AND activates
+        // — more reliable than Presenter.Restore() right after Show().
         nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_window);
+        _appWindow.Show();
+        ShowWindow(hwnd, SW_RESTORE);
         SetForegroundWindow(hwnd);
     }
 
@@ -114,8 +110,13 @@ public sealed class TrayIconManager : IDisposable
         _icon = null;
     }
 
+    private const int SW_RESTORE = 9;
+
     [System.Runtime.InteropServices.DllImport("user32.dll")]
     private static extern bool SetForegroundWindow(nint hWnd);
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool ShowWindow(nint hWnd, int nCmdShow);
 
     /// <summary>Minimal ICommand so the tray's left click can call a delegate.</summary>
     private sealed class RelayCommandShim(Action action) : System.Windows.Input.ICommand

@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Aria2Gui"
     xmlns:vm="using:Aria2Gui.ViewModels"
+    xmlns:views="using:Aria2Gui.Views"
     xmlns:helpers="using:Aria2Gui.Helpers"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -546,6 +547,14 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </Grid>
+
+                <!-- In-app settings page overlays the table+details (Gallery-style). -->
+                <views:SettingsView
+                    x:Name="SettingsPage"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Closed="SettingsPage_Closed"
+                    Visibility="{x:Bind local:MainPage.VisIf(ViewModel.SettingsOpen), Mode=OneWay}" />
             </Grid>
         </Grid>
 

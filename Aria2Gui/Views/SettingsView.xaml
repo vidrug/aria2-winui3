@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="Aria2Gui.Views.SettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:tk="using:CommunityToolkit.WinUI.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BodyStrongTextBlockStyle}">
+            <Setter Property="Margin" Value="2,4,0,4" />
+        </Style>
+    </UserControl.Resources>
+
+    <!-- Opaque so it covers the table underneath, like a Gallery settings page. -->
+    <Grid Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header with back button -->
+        <StackPanel
+            Grid.Row="0"
+            Orientation="Horizontal"
+            Spacing="12"
+            Padding="20,16,20,12">
+            <Button
+                AutomationProperties.AutomationId="SettingsBackButton"
+                AutomationProperties.Name="Назад"
+                Width="40"
+                Height="40"
+                Padding="0"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="OnBackClick"
+                ToolTipService.ToolTip="Назад">
+                <FontIcon Glyph="&#xE72B;" FontSize="16" />
+            </Button>
+            <TextBlock Text="Настройки" Style="{StaticResource TitleTextBlockStyle}" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20,0,20,16">
+            <StackPanel Spacing="4" MaxWidth="1000" HorizontalAlignment="Left">
+
+                <!-- ===== Основные ===== -->
+                <TextBlock Text="Основные" Style="{StaticResource SectionHeaderStyle}" />
+
+                <tk:SettingsCard Header="Папка загрузок" Description="Куда сохранять файлы по умолчанию">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE838;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock
+                            x:Name="DirText"
+                            AutomationProperties.AutomationId="DownloadDirText"
+                            VerticalAlignment="Center"
+                            MaxWidth="280"
+                            TextTrimming="CharacterEllipsis"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <Button
+                            AutomationProperties.AutomationId="BrowseFolderButton"
+                            Content="Обзор…"
+                            Click="OnBrowseClick" />
+                    </StackPanel>
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Лимит загрузки" Description="0 — без ограничения, МБ/с">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE896;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="DownLimitBox" AutomationProperties.AutomationId="DownLimitBox" Minimum="0" Maximum="10000" SmallChange="0.5" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Лимит отдачи" Description="0 — без ограничения, МБ/с">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE898;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="UpLimitBox" AutomationProperties.AutomationId="UpLimitBox" Minimum="0" Maximum="10000" SmallChange="0.5" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Одновременных загрузок" Description="Сколько файлов качать параллельно">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE71D;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="ConcurrentBox" AutomationProperties.AutomationId="ConcurrentBox" Minimum="1" Maximum="50" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Соединений на сервер" Description="Для HTTP/FTP-загрузок (макс. 16)">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE968;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="ConnectionsBox" AutomationProperties.AutomationId="ConnectionsBox" Minimum="1" Maximum="16" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Тема оформления" Description="Светлая, тёмная или как в системе">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE790;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <ComboBox x:Name="ThemeBox" AutomationProperties.AutomationId="ThemeBox" MinWidth="180">
+                        <ComboBoxItem Content="Как в системе" Tag="Default" />
+                        <ComboBoxItem Content="Светлая" Tag="Light" />
+                        <ComboBoxItem Content="Тёмная" Tag="Dark" />
+                    </ComboBox>
+                </tk:SettingsCard>
+
+                <!-- ===== BitTorrent ===== -->
+                <TextBlock Text="BitTorrent" Style="{StaticResource SectionHeaderStyle}" Margin="2,16,0,4" />
+
+                <tk:SettingsCard Header="Порт BT/DHT" Description="0 — выбрать автоматически">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE945;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="ListenPortBox" AutomationProperties.AutomationId="ListenPortBox" Minimum="0" Maximum="65535" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="DHT" Description="Децентрализованный поиск пиров">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE71B;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="DhtToggle" AutomationProperties.AutomationId="DhtToggle" OnContent="Вкл" OffContent="Выкл" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Обмен пирами (PEX)" Description="Обмен списками пиров между клиентами">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8AF;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="PexToggle" AutomationProperties.AutomationId="PexToggle" OnContent="Вкл" OffContent="Выкл" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Локальное обнаружение (LPD)" Description="Поиск пиров в локальной сети">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE839;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="LpdToggle" AutomationProperties.AutomationId="LpdToggle" OnContent="Вкл" OffContent="Выкл" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Требовать шифрование" Description="Только зашифрованные соединения с пирами">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE72E;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <ToggleSwitch x:Name="CryptoToggle" AutomationProperties.AutomationId="CryptoToggle" OnContent="Вкл" OffContent="Выкл" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Макс. пиров на торрент" Description="Предел подключений для одного торрента">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE716;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="PeersBox" AutomationProperties.AutomationId="PeersBox" Minimum="0" Maximum="1000" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsCard Header="Раздавать до рейтинга" Description="0 — не раздавать после загрузки">
+                    <tk:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE898;" />
+                    </tk:SettingsCard.HeaderIcon>
+                    <NumberBox x:Name="SeedRatioBox" AutomationProperties.AutomationId="SeedRatioBox" Minimum="0" Maximum="100" SmallChange="0.1" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                </tk:SettingsCard>
+
+                <tk:SettingsExpander Header="Дополнительные трекеры" Description="Добавляются ко всем торрентам">
+                    <tk:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE774;" />
+                    </tk:SettingsExpander.HeaderIcon>
+                    <tk:SettingsExpander.Items>
+                        <tk:SettingsCard ContentAlignment="Vertical">
+                            <TextBox x:Name="TrackersBox" AutomationProperties.AutomationId="TrackersBox" PlaceholderText="udp://tracker.example.org:1337/announce&#x0a;по одному в строке" AcceptsReturn="True" TextWrapping="Wrap" Height="96" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                        </tk:SettingsCard>
+                    </tk:SettingsExpander.Items>
+                </tk:SettingsExpander>
+
+                <tk:SettingsExpander Header="Дополнительные опции aria2" Description="key=value по одной в строке — применяются последними">
+                    <tk:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE713;" />
+                    </tk:SettingsExpander.HeaderIcon>
+                    <tk:SettingsExpander.Items>
+                        <tk:SettingsCard ContentAlignment="Vertical">
+                            <TextBox x:Name="ExtraOptionsBox" AutomationProperties.AutomationId="ExtraOptionsBox" PlaceholderText="bt-request-peer-speed-limit=100K&#x0a;bt-stop-timeout=0" AcceptsReturn="True" TextWrapping="Wrap" Height="96" FontFamily="Consolas" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                        </tk:SettingsCard>
+                    </tk:SettingsExpander.Items>
+                </tk:SettingsExpander>
+
+                <InfoBar
+                    Severity="Informational"
+                    IsOpen="True"
+                    IsClosable="False"
+                    Margin="0,8,0,0"
+                    Message="Изменения BitTorrent перезапускают движок aria2 (сессия сохраняется, загрузки продолжатся)." />
+
+                <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" IsClosable="False" />
+
+                <Button
+                    AutomationProperties.AutomationId="SaveSettingsButton"
+                    Content="Сохранить и закрыть"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Margin="0,12,0,0"
+                    Click="OnSaveClick" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
