@@ -7,7 +7,12 @@ using Windows.Storage.Pickers;
 
 namespace Aria2Gui.Views;
 
-/// <summary>Settings form. Limits are edited in MB/s and stored in aria2's "NNNK" format.</summary>
+/// <summary>
+/// Settings form with two tabs: general limits and BitTorrent engine flags.
+/// Speed limits are edited in MB/s and stored in aria2's "NNNK" format.
+/// BT-tab changes require an engine restart (command-line flags) — done gracefully
+/// with session save, so unfinished downloads resume.
+/// </summary>
 public sealed partial class SettingsDialog : ContentDialog
 {
     public SettingsDialog()
@@ -20,14 +25,29 @@ public sealed partial class SettingsDialog : ContentDialog
         UpLimitBox.Value = SpeedToMegabytes(s.MaxUploadLimit);
         ConcurrentBox.Value = s.MaxConcurrentDownloads;
         ConnectionsBox.Value = s.MaxConnectionsPerServer;
-        PeersBox.Value = s.BtMaxPeers;
-        SeedRatioBox.Value = s.SeedRatio;
         ThemeBox.SelectedIndex = s.Theme switch
         {
             "Light" => 1,
             "Dark" => 2,
             _ => 0,
         };
+
+        ListenPortBox.Value = s.ListenPort;
+        PeersBox.Value = s.BtMaxPeers;
+        SeedRatioBox.Value = s.SeedRatio;
+        DhtToggle.IsOn = s.EnableDht;
+        PexToggle.IsOn = s.EnablePex;
+        LpdToggle.IsOn = s.EnableLpd;
+        CryptoToggle.IsOn = s.RequireCrypto;
+        TrackersBox.Text = s.ExtraTrackers;
+        ExtraOptionsBox.Text = s.ExtraAria2Options;
+    }
+
+    private void OnTabChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    {
+        bool general = sender.Items.IndexOf(sender.SelectedItem) == 0;
+        GeneralPanel.Visibility = general ? Visibility.Visible : Visibility.Collapsed;
+        BtPanel.Visibility = general ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private async void OnBrowseClick(object sender, RoutedEventArgs e)
@@ -54,6 +74,7 @@ public sealed partial class SettingsDialog : ContentDialog
         var deferral = args.GetDeferral();
         try
         {
+            var old = Aria2Service.Instance.Settings;
             var s = new AppSettings
             {
                 DownloadDirectory = DirBox.Text,
@@ -61,12 +82,25 @@ public sealed partial class SettingsDialog : ContentDialog
                 MaxUploadLimit = MegabytesToSpeed(UpLimitBox.Value),
                 MaxConcurrentDownloads = (int)SafeValue(ConcurrentBox.Value, 5),
                 MaxConnectionsPerServer = (int)SafeValue(ConnectionsBox.Value, 8),
+                Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
+                LastAddDirectory = old.LastAddDirectory,
+
+                ListenPort = (int)SafeValue(ListenPortBox.Value, 0),
                 BtMaxPeers = (int)SafeValue(PeersBox.Value, 55),
                 SeedRatio = SafeValue(SeedRatioBox.Value, 1.0),
-                Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
+                EnableDht = DhtToggle.IsOn,
+                EnablePex = PexToggle.IsOn,
+                EnableLpd = LpdToggle.IsOn,
+                RequireCrypto = CryptoToggle.IsOn,
+                ExtraTrackers = TrackersBox.Text,
+                ExtraAria2Options = ExtraOptionsBox.Text,
             };
+
+            bool needsRestart = NeedsEngineRestart(old, s);
             await Aria2Service.Instance.ApplySettingsAsync(s);
             Helpers.ThemeHelper.Apply(s.Theme);
+            if (needsRestart)
+                await Aria2Service.Instance.RestartEngineAsync();
         }
         catch (Exception ex)
         {
@@ -81,6 +115,16 @@ public sealed partial class SettingsDialog : ContentDialog
             deferral.Complete();
         }
     }
+
+    /// <summary>These options only exist as aria2c command-line flags.</summary>
+    private static bool NeedsEngineRestart(AppSettings old, AppSettings updated) =>
+        old.ListenPort != updated.ListenPort
+        || old.EnableDht != updated.EnableDht
+        || old.EnablePex != updated.EnablePex
+        || old.EnableLpd != updated.EnableLpd
+        || old.RequireCrypto != updated.RequireCrypto
+        || old.ExtraTrackers != updated.ExtraTrackers
+        || old.ExtraAria2Options != updated.ExtraAria2Options;
 
     /// <summary>NumberBox yields NaN when cleared.</summary>
     private static double SafeValue(double value, double fallback) =>

@@ -1,6 +1,7 @@
 using Aria2Gui.Helpers;
 using Aria2Gui.Services;
 using Aria2Gui.Services.Aria2;
+using Aria2Gui.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Storage;
@@ -15,19 +16,29 @@ namespace Aria2Gui.Views;
 /// </summary>
 public sealed partial class AddDownloadDialog : ContentDialog
 {
-    /// <summary>TreeView node payload; leaves carry the aria2 1-based file index.</summary>
-    private sealed record FileNodeContent(string Title, int? FileIndex)
-    {
-        public override string ToString() => Title;
-    }
-
     private byte[]? _torrentBytes;
     private TorrentContent? _torrentContent;
 
     public AddDownloadDialog()
     {
         InitializeComponent();
-        DirBox.Text = Aria2Service.Instance.Settings.DownloadDirectory;
+        var settings = Aria2Service.Instance.Settings;
+        DirBox.Text = ResolveStartDirectory(settings.LastAddDirectory, settings.DownloadDirectory);
+    }
+
+    /// <summary>Last used folder, unless it disappeared (e.g. unplugged drive) — then the default.</summary>
+    private static string ResolveStartDirectory(string last, string fallback)
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(last) && Directory.Exists(last))
+                return last;
+        }
+        catch (Exception)
+        {
+            // Unreachable network path etc. — use the default.
+        }
+        return fallback;
     }
 
     private async void OnBrowseFolderClick(object sender, RoutedEventArgs e)
@@ -99,7 +110,7 @@ public sealed partial class AddDownloadDialog : ContentDialog
             var single = content.Files[0];
             FileTree.RootNodes.Add(new TreeViewNode
             {
-                Content = new FileNodeContent($"{single.PathSegments[^1]}  ({FormatUtils.FormatSize(single.Length)})", single.Index),
+                Content = new TorrentNodeContent($"{single.PathSegments[^1]}  ({FormatUtils.FormatSize(single.Length)})", single.Index),
             });
         }
         else
@@ -120,7 +131,7 @@ public sealed partial class AddDownloadDialog : ContentDialog
 
             var rootNode = new TreeViewNode
             {
-                Content = new FileNodeContent($"{content.Name}  ({FormatUtils.FormatSize(root.TotalSize())})", null),
+                Content = new TorrentNodeContent($"{content.Name}  ({FormatUtils.FormatSize(root.TotalSize())})", null),
                 IsExpanded = false,
             };
             AppendBucket(rootNode, root);
@@ -136,7 +147,7 @@ public sealed partial class AddDownloadDialog : ContentDialog
         {
             var node = new TreeViewNode
             {
-                Content = new FileNodeContent($"{name}  ({FormatUtils.FormatSize(dir.TotalSize())})", null),
+                Content = new TorrentNodeContent($"{name}  ({FormatUtils.FormatSize(dir.TotalSize())})", null),
                 IsExpanded = false,
             };
             AppendBucket(node, dir);
@@ -146,7 +157,7 @@ public sealed partial class AddDownloadDialog : ContentDialog
         {
             parent.Children.Add(new TreeViewNode
             {
-                Content = new FileNodeContent($"{file.PathSegments[^1]}  ({FormatUtils.FormatSize(file.Length)})", file.Index),
+                Content = new TorrentNodeContent($"{file.PathSegments[^1]}  ({FormatUtils.FormatSize(file.Length)})", file.Index),
             });
         }
     }
@@ -177,7 +188,7 @@ public sealed partial class AddDownloadDialog : ContentDialog
         void Walk(TreeViewNode node, bool parentSelected)
         {
             bool isSelected = parentSelected || FileTree.SelectedNodes.Contains(node);
-            if (node.Content is FileNodeContent { FileIndex: int index } && isSelected)
+            if (node.Content is TorrentNodeContent { FileIndex: int index } && isSelected)
                 selected.Add(index);
             foreach (var child in node.Children)
                 Walk(child, isSelected);
@@ -248,6 +259,9 @@ public sealed partial class AddDownloadDialog : ContentDialog
                     return;
                 }
             }
+
+            // Reached only when everything was queued — remember the folder.
+            RememberDirectory(directory);
         }
         catch (Exception ex)
         {
@@ -259,6 +273,24 @@ public sealed partial class AddDownloadDialog : ContentDialog
         finally
         {
             deferral.Complete();
+        }
+    }
+
+    private static void RememberDirectory(string? directory)
+    {
+        if (string.IsNullOrWhiteSpace(directory))
+            return;
+        try
+        {
+            var settings = Aria2Service.Instance.Settings;
+            if (settings.LastAddDirectory == directory)
+                return;
+            settings.LastAddDirectory = directory;
+            SettingsService.Save(settings);
+        }
+        catch (Exception)
+        {
+            // Remembering the folder is a convenience — never block the add.
         }
     }
 

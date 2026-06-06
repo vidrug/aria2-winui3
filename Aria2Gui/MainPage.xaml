@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Aria2Gui"
     xmlns:vm="using:Aria2Gui.ViewModels"
+    xmlns:helpers="using:Aria2Gui.Helpers"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -19,6 +20,12 @@
         <Style x:Key="CellTextStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="ColumnResizeHandleStyle" TargetType="helpers:ResizeHandle">
+            <Setter Property="Width" Value="10" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="0,-6,-9,-6" />
         </Style>
         <Style x:Key="DetailLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
             <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
@@ -190,7 +197,7 @@
                     <RowDefinition Height="230" MinHeight="130" MaxHeight="500" />
                 </Grid.RowDefinitions>
 
-                <!-- Column headers -->
+                <!-- Column headers (dividers are draggable to resize columns) -->
                 <Grid
                     Grid.Row="0"
                     Padding="16,6,12,6"
@@ -198,27 +205,36 @@
                     BorderThickness="0,0,0,1"
                     BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" MinWidth="160" />
-                        <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="150" />
-                        <ColumnDefinition Width="100" />
-                        <ColumnDefinition Width="48" />
-                        <ColumnDefinition Width="48" />
-                        <ColumnDefinition Width="88" />
-                        <ColumnDefinition Width="88" />
-                        <ColumnDefinition Width="88" />
-                        <ColumnDefinition Width="52" />
+                        <ColumnDefinition Width="*" MinWidth="120" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.SizeWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.ProgressWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.StatusWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.SeedsWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.PeersWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.DownWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.UpWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.EtaWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.RatioWidth, Mode=OneWay}" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Имя" Style="{StaticResource ColumnHeaderTextStyle}" />
                     <TextBlock Grid.Column="1" Text="Размер" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <helpers:ResizeHandle Grid.Column="1" Tag="size" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="2" Text="Прогресс" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <helpers:ResizeHandle Grid.Column="2" Tag="progress" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="3" Text="Статус" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <helpers:ResizeHandle Grid.Column="3" Tag="status" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="4" Text="Сиды" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <helpers:ResizeHandle Grid.Column="4" Tag="seeds" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="5" Text="Пиры" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <helpers:ResizeHandle Grid.Column="5" Tag="peers" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="6" Text="Загрузка" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <helpers:ResizeHandle Grid.Column="6" Tag="down" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="7" Text="Отдача" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <helpers:ResizeHandle Grid.Column="7" Tag="up" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="8" Text="Осталось" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <helpers:ResizeHandle Grid.Column="8" Tag="eta" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="9" Text="Рейтинг" Style="{StaticResource ColumnHeaderTextStyle}" />
+                    <helpers:ResizeHandle Grid.Column="9" Tag="ratio" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                 </Grid>
 
                 <!-- Downloads table -->
@@ -277,16 +293,16 @@
                                     </MenuFlyout>
                                 </Grid.ContextFlyout>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" MinWidth="160" />
-                                    <ColumnDefinition Width="80" />
-                                    <ColumnDefinition Width="150" />
-                                    <ColumnDefinition Width="100" />
-                                    <ColumnDefinition Width="48" />
-                                    <ColumnDefinition Width="48" />
-                                    <ColumnDefinition Width="88" />
-                                    <ColumnDefinition Width="88" />
-                                    <ColumnDefinition Width="88" />
-                                    <ColumnDefinition Width="52" />
+                                    <ColumnDefinition Width="*" MinWidth="120" />
+                                    <ColumnDefinition Width="{x:Bind Columns.SizeWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="{x:Bind Columns.ProgressWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="{x:Bind Columns.StatusWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="{x:Bind Columns.SeedsWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="{x:Bind Columns.PeersWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="{x:Bind Columns.DownWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="{x:Bind Columns.UpWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="{x:Bind Columns.EtaWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="{x:Bind Columns.RatioWidth, Mode=OneWay}" />
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">

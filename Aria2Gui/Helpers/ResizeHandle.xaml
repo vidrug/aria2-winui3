@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="Aria2Gui.Helpers.ResizeHandle"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="Transparent">
+        <Rectangle
+            Width="1"
+            HorizontalAlignment="Center"
+            Fill="{ThemeResource DividerStrokeColorDefaultBrush}"
+            IsHitTestVisible="False" />
+        <!-- Invisible but hit-testable drag surface (Thumb is sealed — can't subclass). -->
+        <Thumb
+            x:Name="InnerThumb"
+            Opacity="0"
+            Background="Transparent"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            DragDelta="InnerThumb_DragDelta" />
+    </Grid>
+</UserControl>

@@ -29,6 +29,32 @@ public sealed class AppSettings
 
     /// <summary>"Default" (follow system), "Light" or "Dark".</summary>
     public string Theme { get; set; } = "Default";
+
+    /// <summary>Folder chosen in the add dialog last time; falls back to
+    /// <see cref="DownloadDirectory"/> when it no longer exists (e.g. removable drive).</summary>
+    public string LastAddDirectory { get; set; } = "";
+
+    // ---- BitTorrent engine flags (applied on the aria2c command line) ----
+
+    /// <summary>BT/DHT listen port; 0 = aria2 default range (6881–6999).</summary>
+    public int ListenPort { get; set; }
+
+    public bool EnableDht { get; set; } = true;
+
+    /// <summary>Peer exchange (PEX).</summary>
+    public bool EnablePex { get; set; } = true;
+
+    /// <summary>Local peer discovery (LPD).</summary>
+    public bool EnableLpd { get; set; }
+
+    /// <summary>Require encrypted peer connections (bt-require-crypto).</summary>
+    public bool RequireCrypto { get; set; }
+
+    /// <summary>Extra trackers appended to every torrent (one URI per line).</summary>
+    public string ExtraTrackers { get; set; } = "";
+
+    /// <summary>Raw aria2 options, one "key=value" per line — full access to any flag.</summary>
+    public string ExtraAria2Options { get; set; } = "";
 }
 
 public static class SettingsService
@@ -58,6 +84,7 @@ public static class SettingsService
         settings.SeedRatio = double.IsFinite(settings.SeedRatio) ? Math.Clamp(settings.SeedRatio, 0, 1000) : 1.0;
         settings.MaxDownloadLimit = SanitizeSpeed(settings.MaxDownloadLimit);
         settings.MaxUploadLimit = SanitizeSpeed(settings.MaxUploadLimit);
+        settings.ListenPort = settings.ListenPort is 0 ? 0 : Math.Clamp(settings.ListenPort, 1024, 65535);
         return settings;
     }
 

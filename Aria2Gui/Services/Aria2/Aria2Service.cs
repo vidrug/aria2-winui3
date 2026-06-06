@@ -85,6 +85,47 @@ public sealed class Aria2Service
     }
 
     /// <summary>
+    /// Graceful engine restart for settings that only exist as command-line flags
+    /// (BT port, DHT/PEX, extra options): saves the session, relaunches aria2c with
+    /// the new flags and reconnects. Unfinished downloads resume from the session.
+    /// </summary>
+    public async Task RestartEngineAsync()
+    {
+        await _recoveryLock.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            SetState(Aria2ServiceState.Restarting);
+            try
+            {
+                if (_rpc.IsConnected)
+                    await _rpc.ShutdownAsync(force: true).ConfigureAwait(false);
+            }
+            catch
+            {
+                // Best effort — WaitForExitOrKill below covers a wedged engine.
+            }
+            await Task.Run(() => _process.WaitForExitOrKill(TimeSpan.FromSeconds(8))).ConfigureAwait(false);
+            try
+            {
+                await StartProcessAndConnectAsync(CancellationToken.None).ConfigureAwait(false);
+                _restartAttempts = 0;
+                SetState(Aria2ServiceState.Running);
+            }
+            catch (Exception ex)
+            {
+                LastError = BuildStartupError(ex);
+                _process.Stop();
+                SetState(Aria2ServiceState.Failed);
+                throw;
+            }
+        }
+        finally
+        {
+            _recoveryLock.Release();
+        }
+    }
+
+    /// <summary>
     /// Synchronous shutdown for app exit: ask aria2 to save its session and quit,
     /// then force-kill if it dawdles. The Job Object is the final safety net.
     /// forceShutdown still saves the session on exit — it only skips slow tracker
@@ -257,9 +298,54 @@ public sealed class Aria2Service
             ["max-connection-per-server"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
             ["split"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
             ["bt-max-peers"] = s.BtMaxPeers.ToString(CultureInfo.InvariantCulture),
+            ["enable-dht"] = s.EnableDht ? "true" : "false",
+            ["enable-peer-exchange"] = s.EnablePex ? "true" : "false",
+            ["bt-enable-lpd"] = s.EnableLpd ? "true" : "false",
+            ["bt-require-crypto"] = s.RequireCrypto ? "true" : "false",
         };
+        if (s.ListenPort > 0)
+        {
+            options["listen-port"] = s.ListenPort.ToString(CultureInfo.InvariantCulture);
+            options["dht-listen-port"] = s.ListenPort.ToString(CultureInfo.InvariantCulture);
+        }
+        string trackers = NormalizeTrackers(s.ExtraTrackers);
+        if (trackers.Length > 0)
+            options["bt-tracker"] = trackers;
         AddSeedOptions(options, s);
+        ApplyExtraOptions(options, s.ExtraAria2Options);
         return options;
+    }
+
+    /// <summary>Lines/commas/spaces → aria2's comma-separated tracker list.</summary>
+    private static string NormalizeTrackers(string raw) =>
+        string.Join(',', raw.Split(['\r', '\n', ',', ' '], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+
+    /// <summary>
+    /// Free-form "key=value" lines giving access to any aria2 flag. Applied last so
+    /// they override our defaults — except keys the app's own plumbing depends on.
+    /// </summary>
+    private static void ApplyExtraOptions(Dictionary<string, string> options, string raw)
+    {
+        // These keys are owned by the app: overriding them breaks RPC/session wiring.
+        string[] blocked =
+        [
+            "enable-rpc", "rpc-listen-port", "rpc-secret", "rpc-listen-all",
+            "stop-with-process", "save-session", "input-file", "no-conf", "conf-path", "dir",
+        ];
+        foreach (var rawLine in raw.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            string line = rawLine.StartsWith("--", StringComparison.Ordinal) ? rawLine[2..] : rawLine;
+            if (line.StartsWith('#'))
+                continue;
+            int eq = line.IndexOf('=');
+            string key = (eq < 0 ? line : line[..eq]).Trim().ToLowerInvariant();
+            string value = eq < 0 ? "true" : line[(eq + 1)..].Trim();
+            if (key.Length == 0 || !key.All(c => char.IsAsciiLetterLower(c) || char.IsAsciiDigit(c) || c == '-'))
+                continue;
+            if (blocked.Contains(key))
+                continue;
+            options[key] = value;
+        }
     }
 
     /// <summary>Subset of options aria2.changeGlobalOption accepts at runtime.</summary>

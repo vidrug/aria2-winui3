@@ -15,6 +15,8 @@
     <Nullable>enable</Nullable>
     <!-- Custom Program.Main enforces single-instancing via AppInstance redirection. -->
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+    <!-- WUI2010: nested x:Bind to ViewModel.Columns.* — both segments are inline-initialized, never null. -->
+    <NoWarn>$(NoWarn);WUI2010</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

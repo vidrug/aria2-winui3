@@ -39,6 +39,12 @@ public sealed partial class MainPage : Page
     private void DetailsTabs_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args) =>
         ViewModel.DetailsTabIndex = sender.Items.IndexOf(sender.SelectedItem);
 
+    private void HeaderHandle_Resize(object? sender, double horizontalChange)
+    {
+        if ((sender as FrameworkElement)?.Tag is string key)
+            ViewModel.Columns.ResizeBy(key, horizontalChange);
+    }
+
     private void Row_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
     {
         if ((sender as FrameworkElement)?.DataContext is DownloadItemViewModel item)

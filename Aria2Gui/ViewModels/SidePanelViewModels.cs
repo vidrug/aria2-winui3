@@ -29,6 +29,14 @@ public sealed partial class FileRowViewModel : ObservableObject
     public partial string ProgressText { get; set; } = "";
 }
 
+/// <summary>TreeView node payload for the torrent file picker; leaves carry the
+/// aria2 1-based file index.</summary>
+public sealed class TorrentNodeContent(string label, int? fileIndex)
+{
+    public string Label { get; } = label;
+    public int? FileIndex { get; } = fileIndex;
+}
+
 /// <summary>One peer row in the details pane.</summary>
 public sealed partial class PeerRowViewModel : ObservableObject
 {

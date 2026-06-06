@@ -12,113 +12,206 @@
     DefaultButton="Primary"
     PrimaryButtonClick="OnSaveClick">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="520">
-        <StackPanel Spacing="16" MinWidth="440" Padding="0,0,12,0">
-            <Grid ColumnSpacing="8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBox
-                    x:Name="DirBox"
-                    AutomationProperties.AutomationId="DownloadDirBox"
-                    Header="Папка загрузок"
-                    IsReadOnly="True" />
-                <Button
-                    AutomationProperties.AutomationId="BrowseFolderButton"
-                    Grid.Column="1"
-                    Content="Обзор…"
-                    VerticalAlignment="Bottom"
-                    Click="OnBrowseClick" />
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMaxWidth">760</x:Double>
+    </ContentDialog.Resources>
+
+    <StackPanel Spacing="12" MinWidth="560">
+        <SelectorBar x:Name="Tabs" SelectionChanged="OnTabChanged">
+            <SelectorBarItem Text="Основные" IsSelected="True" AutomationProperties.AutomationId="SettingsTabGeneral" />
+            <SelectorBarItem Text="BitTorrent" AutomationProperties.AutomationId="SettingsTabBt" />
+        </SelectorBar>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="420">
+            <Grid>
+                <!-- Основные -->
+                <StackPanel x:Name="GeneralPanel" Spacing="16" Padding="0,4,12,0">
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                            x:Name="DirBox"
+                            AutomationProperties.AutomationId="DownloadDirBox"
+                            Header="Папка загрузок"
+                            IsReadOnly="True" />
+                        <Button
+                            AutomationProperties.AutomationId="BrowseFolderButton"
+                            Grid.Column="1"
+                            Content="Обзор…"
+                            VerticalAlignment="Bottom"
+                            Click="OnBrowseClick" />
+                    </Grid>
+
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <NumberBox
+                            x:Name="DownLimitBox"
+                            AutomationProperties.AutomationId="DownLimitBox"
+                            Header="Лимит загрузки, МБ/с"
+                            Minimum="0"
+                            Maximum="10000"
+                            SmallChange="0.5"
+                            SpinButtonPlacementMode="Compact"
+                            PlaceholderText="0 — без лимита" />
+                        <NumberBox
+                            x:Name="UpLimitBox"
+                            AutomationProperties.AutomationId="UpLimitBox"
+                            Grid.Column="1"
+                            Header="Лимит отдачи, МБ/с"
+                            Minimum="0"
+                            Maximum="10000"
+                            SmallChange="0.5"
+                            SpinButtonPlacementMode="Compact"
+                            PlaceholderText="0 — без лимита" />
+                    </Grid>
+
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <NumberBox
+                            x:Name="ConcurrentBox"
+                            AutomationProperties.AutomationId="ConcurrentBox"
+                            Header="Одновременных загрузок"
+                            Minimum="1"
+                            Maximum="50"
+                            SpinButtonPlacementMode="Compact" />
+                        <NumberBox
+                            x:Name="ConnectionsBox"
+                            AutomationProperties.AutomationId="ConnectionsBox"
+                            Grid.Column="1"
+                            Header="Соединений на сервер (HTTP)"
+                            Minimum="1"
+                            Maximum="16"
+                            SpinButtonPlacementMode="Compact" />
+                    </Grid>
+
+                    <ComboBox
+                        x:Name="ThemeBox"
+                        AutomationProperties.AutomationId="ThemeBox"
+                        Header="Тема оформления"
+                        MinWidth="200">
+                        <ComboBoxItem Content="Как в системе" Tag="Default" />
+                        <ComboBoxItem Content="Светлая" Tag="Light" />
+                        <ComboBoxItem Content="Тёмная" Tag="Dark" />
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- BitTorrent -->
+                <StackPanel x:Name="BtPanel" Spacing="16" Padding="0,4,12,0" Visibility="Collapsed">
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <NumberBox
+                            x:Name="ListenPortBox"
+                            AutomationProperties.AutomationId="ListenPortBox"
+                            Header="Порт BT/DHT"
+                            Minimum="0"
+                            Maximum="65535"
+                            SpinButtonPlacementMode="Compact"
+                            PlaceholderText="0 — авто" />
+                        <NumberBox
+                            x:Name="PeersBox"
+                            AutomationProperties.AutomationId="PeersBox"
+                            Grid.Column="1"
+                            Header="Макс. пиров на торрент"
+                            Minimum="0"
+                            Maximum="1000"
+                            SpinButtonPlacementMode="Compact" />
+                        <NumberBox
+                            x:Name="SeedRatioBox"
+                            AutomationProperties.AutomationId="SeedRatioBox"
+                            Grid.Column="2"
+                            Header="Раздавать до рейтинга"
+                            Minimum="0"
+                            Maximum="100"
+                            SmallChange="0.1"
+                            SpinButtonPlacementMode="Compact"
+                            PlaceholderText="0 — не раздавать" />
+                    </Grid>
+
+                    <Grid ColumnSpacing="24" RowSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ToggleSwitch
+                            x:Name="DhtToggle"
+                            AutomationProperties.AutomationId="DhtToggle"
+                            Header="DHT (децентрализованный поиск пиров)"
+                            OnContent="Вкл"
+                            OffContent="Выкл" />
+                        <ToggleSwitch
+                            x:Name="PexToggle"
+                            AutomationProperties.AutomationId="PexToggle"
+                            Grid.Column="1"
+                            Header="Обмен пирами (PEX)"
+                            OnContent="Вкл"
+                            OffContent="Выкл" />
+                        <ToggleSwitch
+                            x:Name="LpdToggle"
+                            AutomationProperties.AutomationId="LpdToggle"
+                            Grid.Row="1"
+                            Header="Локальное обнаружение (LPD)"
+                            OnContent="Вкл"
+                            OffContent="Выкл" />
+                        <ToggleSwitch
+                            x:Name="CryptoToggle"
+                            AutomationProperties.AutomationId="CryptoToggle"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Header="Требовать шифрование"
+                            OnContent="Вкл"
+                            OffContent="Выкл" />
+                    </Grid>
+
+                    <TextBox
+                        x:Name="TrackersBox"
+                        AutomationProperties.AutomationId="TrackersBox"
+                        Header="Дополнительные трекеры (по одному в строке)"
+                        PlaceholderText="udp://tracker.example.org:1337/announce"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        Height="88"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+                    <TextBox
+                        x:Name="ExtraOptionsBox"
+                        AutomationProperties.AutomationId="ExtraOptionsBox"
+                        Header="Доп. опции aria2 — key=value, по одной в строке (применяются последними)"
+                        PlaceholderText="bt-request-peer-speed-limit=100K&#x0a;bt-stop-timeout=0"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        Height="88"
+                        FontFamily="Consolas"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+                    <InfoBar
+                        Severity="Informational"
+                        IsOpen="True"
+                        IsClosable="False"
+                        Message="Изменения на этой вкладке перезапускают движок aria2 (сессия сохраняется, загрузки продолжатся)." />
+                </StackPanel>
             </Grid>
+        </ScrollViewer>
 
-            <Grid ColumnSpacing="12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <NumberBox
-                    x:Name="DownLimitBox"
-                    AutomationProperties.AutomationId="DownLimitBox"
-                    Header="Лимит загрузки, МБ/с"
-                    Minimum="0"
-                    Maximum="10000"
-                    SmallChange="0.5"
-                    SpinButtonPlacementMode="Compact"
-                    PlaceholderText="0 — без лимита" />
-                <NumberBox
-                    x:Name="UpLimitBox"
-                    AutomationProperties.AutomationId="UpLimitBox"
-                    Grid.Column="1"
-                    Header="Лимит отдачи, МБ/с"
-                    Minimum="0"
-                    Maximum="10000"
-                    SmallChange="0.5"
-                    SpinButtonPlacementMode="Compact"
-                    PlaceholderText="0 — без лимита" />
-            </Grid>
-
-            <Grid ColumnSpacing="12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <NumberBox
-                    x:Name="ConcurrentBox"
-                    AutomationProperties.AutomationId="ConcurrentBox"
-                    Header="Одновременных загрузок"
-                    Minimum="1"
-                    Maximum="50"
-                    SpinButtonPlacementMode="Compact" />
-                <NumberBox
-                    x:Name="ConnectionsBox"
-                    AutomationProperties.AutomationId="ConnectionsBox"
-                    Grid.Column="1"
-                    Header="Соединений на сервер (HTTP)"
-                    Minimum="1"
-                    Maximum="16"
-                    SpinButtonPlacementMode="Compact" />
-            </Grid>
-
-            <Grid ColumnSpacing="12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <NumberBox
-                    x:Name="PeersBox"
-                    AutomationProperties.AutomationId="PeersBox"
-                    Header="Макс. пиров на торрент"
-                    Minimum="0"
-                    Maximum="500"
-                    SpinButtonPlacementMode="Compact" />
-                <NumberBox
-                    x:Name="SeedRatioBox"
-                    AutomationProperties.AutomationId="SeedRatioBox"
-                    Grid.Column="1"
-                    Header="Раздавать до рейтинга"
-                    Minimum="0"
-                    Maximum="100"
-                    SmallChange="0.1"
-                    SpinButtonPlacementMode="Compact"
-                    PlaceholderText="0 — не раздавать" />
-            </Grid>
-
-            <ComboBox
-                x:Name="ThemeBox"
-                AutomationProperties.AutomationId="ThemeBox"
-                Header="Тема оформления"
-                MinWidth="200">
-                <ComboBoxItem Content="Как в системе" Tag="Default" />
-                <ComboBoxItem Content="Светлая" Tag="Light" />
-                <ComboBoxItem Content="Тёмная" Tag="Dark" />
-            </ComboBox>
-
-            <InfoBar
-                x:Name="ErrorBar"
-                Severity="Error"
-                IsOpen="False"
-                IsClosable="False" />
-        </StackPanel>
-    </ScrollViewer>
+        <InfoBar
+            x:Name="ErrorBar"
+            Severity="Error"
+            IsOpen="False"
+            IsClosable="False" />
+    </StackPanel>
 </ContentDialog>

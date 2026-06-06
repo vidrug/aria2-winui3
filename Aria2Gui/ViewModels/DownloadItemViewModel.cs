@@ -32,6 +32,9 @@ public sealed partial class DownloadItemViewModel : ObservableObject
 
     public string Gid { get; }
 
+    /// <summary>Shared column widths — row templates bind cell widths to these.</summary>
+    public TableColumns Columns { get; }
+
     [ObservableProperty]
     public partial string Name { get; set; } = "";
 
@@ -111,9 +114,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     private bool _isStopped;
     private string? _firstFilePath;
 
-    public DownloadItemViewModel(string gid)
+    public DownloadItemViewModel(string gid, TableColumns columns)
     {
         Gid = gid;
+        Columns = columns;
     }
 
     /// <summary>Applies the latest aria2 snapshot entry to the bindable properties.</summary>

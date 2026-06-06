@@ -28,6 +28,9 @@ public sealed partial class MainPageViewModel : ObservableObject
     /// <summary>Filtered projection of <see cref="_all"/> shown in the table.</summary>
     public ObservableCollection<DownloadItemViewModel> Downloads { get; } = [];
 
+    /// <summary>Shared resizable column widths (header + all rows).</summary>
+    public TableColumns Columns { get; } = new();
+
     public FilterItemViewModel[] Filters { get; } =
     [
         new("all", "Все", ""),
@@ -248,7 +251,7 @@ public sealed partial class MainPageViewModel : ObservableObject
             }
             else
             {
-                item = new DownloadItemViewModel(download.Gid);
+                item = new DownloadItemViewModel(download.Gid, Columns);
                 item.UpdateFrom(download);
                 _byGid[download.Gid] = item;
                 // A download spawned from a metadata fetch takes its parent's
