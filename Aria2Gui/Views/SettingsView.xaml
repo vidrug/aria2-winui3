@@ -10,18 +10,32 @@
     mc:Ignorable="d">
 
     <Grid Background="Transparent">
-        <!-- Section navigation (WinUI-style left pane) + content. The NavigationView's
-             own back button gives the WinUI Gallery look: a system back arrow in the
-             top-left corner, with the page title sitting in the content area below. -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- WinUI Gallery look: the system back arrow in the top-left corner, page
+             title in the content below. Uses the framework back-button style but a
+             plain Button with a direct Click handler, so a real pointer click always
+             closes settings (the NavigationView's own back button only exposes the
+             BackRequested event, which is easy to mis-wire). -->
+        <Button
+            Grid.Row="0"
+            AutomationProperties.AutomationId="SettingsBackButton"
+            AutomationProperties.Name="Назад"
+            Style="{StaticResource NavigationBackButtonNormalStyle}"
+            Margin="4,4,0,0"
+            Click="OnBackClick" />
+
         <NavigationView
             x:Name="SettingsNav"
+            Grid.Row="1"
             PaneDisplayMode="Left"
             IsSettingsVisible="False"
-            IsBackButtonVisible="Visible"
-            IsBackEnabled="True"
+            IsBackButtonVisible="Collapsed"
             IsPaneToggleButtonVisible="False"
             OpenPaneLength="240"
-            BackRequested="OnBackRequested"
             SelectionChanged="OnSectionChanged">
             <NavigationView.Resources>
                 <!-- Transparent surfaces so the window's Mica backdrop shows through,
