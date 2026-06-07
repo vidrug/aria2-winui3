@@ -513,48 +513,51 @@
                         </Grid>
                     </ScrollViewer>
 
-                    <!-- Files -->
-                    <ListView
+                    <!-- Files: torrent folder tree (same structure as the add window) with
+                         per-file download checkboxes, size and live progress. Folders show
+                         aggregate size/progress and a three-state checkbox that cascades. -->
+                    <TreeView
                         Grid.Row="1"
                         Margin="0,8,0,0"
-                        Padding="0"
                         SelectionMode="None"
-                        ItemsSource="{x:Bind ViewModel.SelectedFiles, Mode=OneWay}"
+                        ItemsSource="{x:Bind ViewModel.FileTree, Mode=OneWay}"
                         Visibility="{x:Bind local:MainPage.TabVisible(ViewModel.DetailsTabIndex, 1, ViewModel.HasSelection), Mode=OneWay}">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <Setter Property="MinHeight" Value="32" />
-                                <Setter Property="Padding" Value="0,0,12,0" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="vm:FileRowViewModel">
-                                <Grid ColumnSpacing="8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="80" />
-                                        <ColumnDefinition Width="152" />
-                                        <ColumnDefinition Width="52" />
-                                    </Grid.ColumnDefinitions>
-                                    <CheckBox
-                                        MinWidth="0"
-                                        VerticalAlignment="Center"
-                                        IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
-                                        ToolTipService.ToolTip="Качать этот файл" />
-                                    <TextBlock Grid.Column="1" Text="{x:Bind Name, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                    <TextBlock Grid.Column="2" Text="{x:Bind SizeText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                    <ProgressBar
-                                        Grid.Column="3"
-                                        Value="{x:Bind Progress, Mode=OneWay}"
-                                        Maximum="100"
-                                        VerticalAlignment="Center" />
-                                    <TextBlock Grid.Column="4" Text="{x:Bind ProgressText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
-                                </Grid>
+                        <TreeView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:FileTreeNodeViewModel">
+                                <TreeViewItem
+                                    ItemsSource="{x:Bind Children}"
+                                    IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}"
+                                    HorizontalContentAlignment="Stretch">
+                                    <Grid ColumnSpacing="8" HorizontalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="64" />
+                                            <ColumnDefinition Width="120" />
+                                            <ColumnDefinition Width="44" />
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox
+                                            MinWidth="0"
+                                            VerticalAlignment="Center"
+                                            IsThreeState="{x:Bind IsFolder}"
+                                            IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
+                                            ToolTipService.ToolTip="Качать" />
+                                        <FontIcon
+                                            Grid.Column="1"
+                                            FontSize="14"
+                                            VerticalAlignment="Center"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Glyph="{x:Bind local:MainPage.FileNodeGlyph(IsFolder)}" />
+                                        <TextBlock Grid.Column="2" Text="{x:Bind Name, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                        <TextBlock Grid.Column="3" Text="{x:Bind SizeText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" HorizontalAlignment="Right" />
+                                        <ProgressBar Grid.Column="4" Value="{x:Bind Progress, Mode=OneWay}" Maximum="100" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="5" Text="{x:Bind ProgressText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" />
+                                    </Grid>
+                                </TreeViewItem>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
 
                     <!-- Peers -->
                     <ListView

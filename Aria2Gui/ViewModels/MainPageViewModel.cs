@@ -117,7 +117,11 @@ public sealed partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     public partial bool DetHasError { get; set; }
 
-    public ObservableCollection<FileRowViewModel> SelectedFiles { get; } = [];
+    /// <summary>Folder/file tree of the selected torrent, shown in the details "Files" tab.</summary>
+    public ObservableCollection<FileTreeNodeViewModel> FileTree { get; } = [];
+
+    private readonly Dictionary<int, FileTreeNodeViewModel> _fileLeaves = [];
+    private string? _fileTreeGid;
 
     public ObservableCollection<PeerRowViewModel> Peers { get; } = [];
 
@@ -456,8 +460,12 @@ public sealed partial class MainPageViewModel : ObservableObject
         var item = SelectedDownload;
         if (item is null || !_byGid.ContainsKey(item.Gid))
         {
-            if (SelectedFiles.Count > 0)
-                SelectedFiles.Clear();
+            if (FileTree.Count > 0)
+            {
+                FileTree.Clear();
+                _fileLeaves.Clear();
+                _fileTreeGid = null;
+            }
             if (Peers.Count > 0)
                 Peers.Clear();
             return;
@@ -478,39 +486,132 @@ public sealed partial class MainPageViewModel : ObservableObject
         DetError = item.ErrorMessage ?? "";
         DetHasError = !string.IsNullOrEmpty(item.ErrorMessage);
 
-        MergeFiles(item);
+        UpdateFileTree(item);
         if (DetailsTabIndex == 2)
             _ = RefreshPeersAsync();
     }
 
-    private void MergeFiles(DownloadItemViewModel item)
+    /// <summary>
+    /// Builds the folder/file tree for the details "Files" tab the first time a
+    /// torrent is selected, then refreshes per-file progress/selection in place on
+    /// each poll (rebuilding only when the selection or file set changes), so the
+    /// expand state and folder aggregates survive the 1-second refresh.
+    /// </summary>
+    private void UpdateFileTree(DownloadItemViewModel item)
     {
         var files = item.Files;
         int count = files?.Count ?? 0;
-        for (int i = 0; i < count; i++)
+        if (count == 0)
         {
-            var file = files![i];
-            FileRowViewModel row;
-            if (i < SelectedFiles.Count)
+            if (FileTree.Count > 0)
             {
-                row = SelectedFiles[i];
+                FileTree.Clear();
+                _fileLeaves.Clear();
+                _fileTreeGid = null;
             }
-            else
-            {
-                row = new FileRowViewModel();
-                SelectedFiles.Add(row);
-            }
-            string name = Path.GetFileName(file.Path);
-            row.Name = string.IsNullOrEmpty(name) ? file.Path : name;
-            row.Index = (int)file.Index;
-            row.SizeText = FormatUtils.FormatSize(file.Length);
-            row.Progress = file.Length > 0 ? file.CompletedLength * 100.0 / file.Length : 0;
-            row.ProgressText = row.Progress.ToString("0.#", CultureInfo.CurrentCulture) + " %";
-            row.SetSelectedFromSnapshot(file.Selected);
-            row.SelectionToggled = () => _ = ApplyFileSelectionAsync(item);
+            return;
         }
-        for (int i = SelectedFiles.Count - 1; i >= count; i--)
-            SelectedFiles.RemoveAt(i);
+
+        if (_fileTreeGid != item.Gid || _fileLeaves.Count != count)
+            BuildFileTree(item, files!);
+
+        foreach (var file in files!)
+        {
+            if (!_fileLeaves.TryGetValue((int)file.Index, out var leaf))
+                continue;
+            leaf.Length = file.Length;
+            leaf.CompletedLength = file.CompletedLength;
+            leaf.SizeText = FormatUtils.FormatSize(file.Length);
+            leaf.Progress = file.Length > 0 ? file.CompletedLength * 100.0 / file.Length : 0;
+            leaf.ProgressText = leaf.Progress.ToString("0.#", CultureInfo.CurrentCulture) + " %";
+            leaf.SetSelectedFromSnapshot(file.Selected);
+        }
+        foreach (var root in FileTree)
+            Aggregate(root);
+    }
+
+    /// <summary>Groups aria2's flat file list into a folder tree by relative path.</summary>
+    private void BuildFileTree(DownloadItemViewModel item, IReadOnlyList<Aria2File> files)
+    {
+        FileTree.Clear();
+        _fileLeaves.Clear();
+        _fileTreeGid = item.Gid;
+
+        string dir = (item.Directory ?? "").Replace('/', '\\').TrimEnd('\\');
+        var root = new FileBucket();
+        foreach (var file in files)
+        {
+            string full = file.Path.Replace('/', '\\');
+            string rel = dir.Length > 0 && full.StartsWith(dir + "\\", StringComparison.OrdinalIgnoreCase)
+                ? full[(dir.Length + 1)..]
+                : Path.GetFileName(full);
+            var segments = rel.Split('\\', StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length == 0)
+                segments = [Path.GetFileName(full)];
+
+            var bucket = root;
+            for (int s = 0; s < segments.Length - 1; s++)
+            {
+                if (!bucket.Dirs.TryGetValue(segments[s], out var next))
+                    bucket.Dirs[segments[s]] = next = new FileBucket();
+                bucket = next;
+            }
+            bucket.Files.Add((segments[^1], file));
+        }
+
+        foreach (var node in Materialize(root, item))
+            FileTree.Add(node);
+    }
+
+    private IEnumerable<FileTreeNodeViewModel> Materialize(FileBucket bucket, DownloadItemViewModel item)
+    {
+        foreach (var (name, sub) in bucket.Dirs)
+        {
+            var folder = new FileTreeNodeViewModel { IsFolder = true, Name = name, IsExpanded = false };
+            folder.SelectionToggled = () => _ = ApplyFileSelectionAsync(item);
+            foreach (var child in Materialize(sub, item))
+                folder.Children.Add(child);
+            yield return folder;
+        }
+        foreach (var (name, file) in bucket.Files.OrderBy(f => f.Name, StringComparer.CurrentCultureIgnoreCase))
+        {
+            var leaf = new FileTreeNodeViewModel { IsFolder = false, Name = name, Index = (int)file.Index };
+            leaf.SelectionToggled = () => _ = ApplyFileSelectionAsync(item);
+            _fileLeaves[(int)file.Index] = leaf;
+            yield return leaf;
+        }
+    }
+
+    /// <summary>Rolls a folder's children up into its size/progress and three-state checkbox.</summary>
+    private static (long Length, long Completed, int Selected, int Total) Aggregate(FileTreeNodeViewModel node)
+    {
+        if (!node.IsFolder)
+            return (node.Length, node.CompletedLength, node.IsSelected == true ? 1 : 0, 1);
+
+        long length = 0, completed = 0;
+        int selected = 0, total = 0;
+        foreach (var child in node.Children)
+        {
+            var (l, c, s, t) = Aggregate(child);
+            length += l;
+            completed += c;
+            selected += s;
+            total += t;
+        }
+        node.Length = length;
+        node.CompletedLength = completed;
+        node.SizeText = FormatUtils.FormatSize(length);
+        node.Progress = length > 0 ? completed * 100.0 / length : 0;
+        node.ProgressText = node.Progress.ToString("0.#", CultureInfo.CurrentCulture) + " %";
+        node.SetSelectedFromSnapshot(selected == 0 ? false : selected == total ? true : null);
+        return (length, completed, selected, total);
+    }
+
+    /// <summary>Intermediate folder used while grouping path segments into the tree.</summary>
+    private sealed class FileBucket
+    {
+        public SortedDictionary<string, FileBucket> Dirs { get; } = new(StringComparer.CurrentCultureIgnoreCase);
+        public List<(string Name, Aria2File File)> Files { get; } = [];
     }
 
     /// <summary>
@@ -521,12 +622,18 @@ public sealed partial class MainPageViewModel : ObservableObject
     {
         if (!ReferenceEquals(SelectedDownload, item))
             return;
-        var indices = SelectedFiles.Where(f => f.IsSelected).Select(f => f.Index).OrderBy(i => i).ToList();
+        // A folder toggle cascades to leaves; refresh ancestor folder checkboxes
+        // before reading which files are now selected.
+        foreach (var root in FileTree)
+            Aggregate(root);
+        var indices = _fileLeaves.Values.Where(f => f.IsSelected == true).Select(f => f.Index).OrderBy(i => i).ToList();
         if (indices.Count == 0)
         {
-            // Can't deselect everything — re-check the file the user just cleared.
-            foreach (var f in SelectedFiles)
-                f.SetSelectedFromSnapshot(true);
+            // Can't deselect everything — re-check all files.
+            foreach (var leaf in _fileLeaves.Values)
+                leaf.SetSelectedFromSnapshot(true);
+            foreach (var root in FileTree)
+                Aggregate(root);
             return;
         }
         try

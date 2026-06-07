@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Aria2Gui.ViewModels;
@@ -13,15 +14,27 @@ public sealed partial class FilterItemViewModel(string key, string title, string
     public partial int Count { get; set; }
 }
 
-/// <summary>One file row in the details pane, updated in place per tick. The
-/// checkbox toggles whether aria2 downloads this file (select-file).</summary>
-public sealed partial class FileRowViewModel : ObservableObject
+/// <summary>
+/// One node in the details "Files" tab tree: a folder (which aggregates its
+/// children's size/progress and shows a three-state checkbox) or a leaf file.
+/// The checkbox toggles whether aria2 downloads the file(s) (select-file); a
+/// folder cascades its state to all descendants.
+/// </summary>
+public sealed partial class FileTreeNodeViewModel : ObservableObject
 {
-    /// <summary>1-based file index aria2 uses in select-file.</summary>
-    public int Index { get; set; }
+    public bool IsFolder { get; init; }
 
-    /// <summary>Raised when the user toggles the checkbox (not on snapshot refresh).</summary>
+    /// <summary>1-based aria2 file index (leaf nodes only).</summary>
+    public int Index { get; init; }
+
+    public ObservableCollection<FileTreeNodeViewModel> Children { get; } = [];
+
+    /// <summary>Raised when the user changes the checkbox (push select-file to aria2).</summary>
     public Action? SelectionToggled { get; set; }
+
+    // Raw sizes used to roll up folder aggregates.
+    public long Length { get; set; }
+    public long CompletedLength { get; set; }
 
     private bool _suppress;
 
@@ -37,21 +50,42 @@ public sealed partial class FileRowViewModel : ObservableObject
     [ObservableProperty]
     public partial string ProgressText { get; set; } = "";
 
+    /// <summary>True/false for files; nullable (three-state) for partially selected folders.</summary>
     [ObservableProperty]
-    public partial bool IsSelected { get; set; } = true;
+    public partial bool? IsSelected { get; set; } = true;
 
-    /// <summary>Updates the checked state from a poll snapshot without firing the toggle callback.</summary>
-    public void SetSelectedFromSnapshot(bool selected)
+    [ObservableProperty]
+    public partial bool IsExpanded { get; set; }
+
+    /// <summary>Sets the checked state from a poll/aggregate without firing the toggle callback.</summary>
+    public void SetSelectedFromSnapshot(bool? selected)
     {
         _suppress = true;
         IsSelected = selected;
         _suppress = false;
     }
 
-    partial void OnIsSelectedChanged(bool value)
+    partial void OnIsSelectedChanged(bool? value)
     {
-        if (!_suppress)
-            SelectionToggled?.Invoke();
+        if (_suppress)
+            return;
+        if (IsFolder)
+        {
+            // A three-state click can land on indeterminate — treat that as "deselect all".
+            bool target = value == true;
+            foreach (var child in Children)
+                child.CascadeSelect(target);
+            if (value is null)
+                SetSelectedFromSnapshot(false);
+        }
+        SelectionToggled?.Invoke();
+    }
+
+    private void CascadeSelect(bool value)
+    {
+        SetSelectedFromSnapshot(value);
+        foreach (var child in Children)
+            child.CascadeSelect(value);
     }
 }
 

@@ -91,6 +91,9 @@ public sealed partial class MainPage : Page
     public static string HeaderLabel(string label, string key, string? sortKey, bool descending) =>
         key == sortKey ? $"{label}  {(descending ? "▾" : "▴")}" : label;
 
+    /// <summary>x:Bind helper: folder vs file glyph for the details file tree.</summary>
+    public static string FileNodeGlyph(bool isFolder) => isFolder ? "" : "";
+
     /// <summary>
     /// Keep the table content at least as wide as the viewport so the columns fill
     /// the window when they fit; when their total exceeds it, the content grows
