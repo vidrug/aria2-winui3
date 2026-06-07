@@ -19,6 +19,7 @@ public sealed class TrayIconManager : IDisposable
     private readonly AppWindow _appWindow;
     private TaskbarIcon? _icon;
     private MainPageViewModel? _viewModel;
+    private bool _restoring;
 
     public TrayIconManager(Window window, AppWindow appWindow)
     {
@@ -90,19 +91,35 @@ public sealed class TrayIconManager : IDisposable
 
     private void OnAppWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
     {
-        if (args.DidPresenterChange && sender.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized })
+        // React to the presenter STATE (minimize), not DidPresenterChange — the latter
+        // fires only when the presenter object is swapped, not on a normal minimize, so
+        // gating on it would skip hide-to-tray. _restoring suppresses a re-hide during
+        // the brief Minimized moment while we restore.
+        if (!_restoring && sender.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized })
             _appWindow.Hide();
     }
 
     private void ShowWindow()
     {
         // The window was AppWindow.Hide()'d while Minimized, so it's both hidden and
-        // minimized. Make it visible first, then SW_RESTORE un-minimizes AND activates
-        // — more reliable than Presenter.Restore() right after Show().
-        nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_window);
-        _appWindow.Show();
-        ShowWindow(hwnd, SW_RESTORE);
-        SetForegroundWindow(hwnd);
+        // minimized. Un-hide, un-minimize (both Presenter.Restore and SW_RESTORE for
+        // reliability), then force it to the foreground. _restoring stops the Changed
+        // handler from re-hiding it mid-flight.
+        _restoring = true;
+        try
+        {
+            nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_window);
+            _appWindow.Show(true); // un-hide AND activate (Show() alone may leave it inactive)
+            if (_appWindow.Presenter is OverlappedPresenter presenter)
+                presenter.Restore();
+            ShowWindow(hwnd, SW_RESTORE);
+            _window.Activate();
+            SetForegroundWindow(hwnd);
+        }
+        finally
+        {
+            _restoring = false;
+        }
     }
 
     private void Quit()

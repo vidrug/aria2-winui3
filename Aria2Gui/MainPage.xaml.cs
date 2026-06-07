@@ -80,6 +80,17 @@ public sealed partial class MainPage : Page
             ViewModel.Columns.ResizeBy(key, horizontalChange);
     }
 
+    /// <summary>Header tap → sort by that column (a repeat tap flips the direction).</summary>
+    private void Header_Tapped(object sender, TappedRoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string key })
+            ViewModel.ToggleSort(key);
+    }
+
+    /// <summary>x:Bind helper: appends a sort-direction arrow to the active column header.</summary>
+    public static string HeaderLabel(string label, string key, string? sortKey, bool descending) =>
+        key == sortKey ? $"{label}  {(descending ? "▾" : "▴")}" : label;
+
     /// <summary>
     /// Keep the table content at least as wide as the viewport so the columns fill
     /// the window when they fit; when their total exceeds it, the content grows

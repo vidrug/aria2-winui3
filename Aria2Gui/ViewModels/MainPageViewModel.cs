@@ -54,6 +54,13 @@ public sealed partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     public partial int DetailsTabIndex { get; set; }
 
+    /// <summary>Active sort column key (null = aria2 master order); see <see cref="ToggleSort"/>.</summary>
+    [ObservableProperty]
+    public partial string? SortKey { get; set; }
+
+    [ObservableProperty]
+    public partial bool SortDescending { get; set; }
+
     [ObservableProperty]
     public partial string EngineStatusText { get; set; } = "Запуск aria2…";
 
@@ -293,6 +300,7 @@ public sealed partial class MainPageViewModel : ObservableObject
 
         UpdateFilterCounts();
         UpdateDetails();
+        ApplySortToView();
 
         IsEmpty = Downloads.Count == 0;
         GlobalSpeedText = $"↓ {FormatUtils.FormatSpeed(snapshot.GlobalStat.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(snapshot.GlobalStat.UploadSpeed)}";
@@ -352,8 +360,74 @@ public sealed partial class MainPageViewModel : ObservableObject
                 Downloads.Add(item);
             }
         }
+        ApplySortToView();
         IsEmpty = Downloads.Count == 0;
     }
+
+    // ------------------------------------------------------------------ sorting
+
+    /// <summary>
+    /// Header click: first click sorts ascending by that column, a repeat click on
+    /// the same column flips the direction. Sorting overrides the aria2 master order
+    /// and is re-applied on every poll so live columns (speed, progress) stay ordered.
+    /// </summary>
+    public void ToggleSort(string key)
+    {
+        if (SortKey == key)
+            SortDescending = !SortDescending;
+        else
+        {
+            SortKey = key;
+            SortDescending = false;
+        }
+        ApplySortToView();
+    }
+
+    /// <summary>Reorders the visible collection in place (Move keeps selection/scroll).</summary>
+    private void ApplySortToView()
+    {
+        if (SortKey is null || Downloads.Count < 2)
+            return;
+        var ordered = Downloads.ToList();
+        ordered.Sort(CompareItems);
+        for (int i = 0; i < ordered.Count; i++)
+        {
+            if (!ReferenceEquals(Downloads[i], ordered[i]))
+                Downloads.Move(Downloads.IndexOf(ordered[i]), i);
+        }
+    }
+
+    private int CompareItems(DownloadItemViewModel a, DownloadItemViewModel b)
+    {
+        int c = SortKey switch
+        {
+            "name" => string.Compare(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase),
+            "size" => a.TotalLength.CompareTo(b.TotalLength),
+            "progress" => a.Progress.CompareTo(b.Progress),
+            "status" => ((int)a.Category).CompareTo((int)b.Category),
+            "seeds" => a.NumSeeders.CompareTo(b.NumSeeders),
+            "peers" => a.Connections.CompareTo(b.Connections),
+            "down" => a.DownloadSpeed.CompareTo(b.DownloadSpeed),
+            "up" => a.UploadSpeed.CompareTo(b.UploadSpeed),
+            "eta" => EtaSeconds(a).CompareTo(EtaSeconds(b)),
+            "ratio" => Ratio(a).CompareTo(Ratio(b)),
+            _ => 0,
+        };
+        // Stable tiebreaker so equal rows don't shuffle each poll.
+        if (c == 0)
+            c = string.Compare(a.Gid, b.Gid, StringComparison.Ordinal);
+        return SortDescending ? -c : c;
+    }
+
+    /// <summary>Seconds left, or long.MaxValue when there is no finite ETA (sorts last).</summary>
+    private static long EtaSeconds(DownloadItemViewModel d)
+    {
+        long remaining = d.TotalLength - d.CompletedLength;
+        return d.DownloadSpeed > 0 && remaining > 0 ? remaining / d.DownloadSpeed : long.MaxValue;
+    }
+
+    private static double Ratio(DownloadItemViewModel d) =>
+        d.CompletedLength > 0 ? d.UploadLength / (double)d.CompletedLength : 0;
 
     private void UpdateFilterCounts()
     {
