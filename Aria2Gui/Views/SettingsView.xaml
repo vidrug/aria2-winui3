@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:tk="using:CommunityToolkit.WinUI.Controls"
-    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
@@ -72,16 +71,7 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Основные" Tag="general" IsSelected="True" AutomationProperties.AutomationId="NavGeneral">
                     <NavigationViewItem.Icon>
-                        <!-- NavigationViewItem drives the AnimatedIcon state itself, so
-                             the gear animates on hover/selection with no code-behind. -->
-                        <AnimatedIcon>
-                            <AnimatedIcon.Source>
-                                <animatedvisuals:AnimatedSettingsVisualSource />
-                            </AnimatedIcon.Source>
-                            <AnimatedIcon.FallbackIconSource>
-                                <FontIconSource Glyph="&#xE713;" />
-                            </AnimatedIcon.FallbackIconSource>
-                        </AnimatedIcon>
+                        <FontIcon Glyph="&#xE713;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="Подключение" Tag="connection" AutomationProperties.AutomationId="NavConnection">
