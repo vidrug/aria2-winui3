@@ -123,6 +123,12 @@ public sealed partial class MainPageViewModel : ObservableObject
     private readonly Dictionary<int, FileTreeNodeViewModel> _fileLeaves = [];
     private string? _fileTreeGid;
 
+    /// <summary>
+    /// The user's just-requested selected-file set, held as the source of truth for
+    /// the checkboxes until aria2 confirms it (so a poll can't revert the choice mid-flight).
+    /// </summary>
+    private (string Gid, HashSet<int> Selected, int Attempts)? _pendingSelection;
+
     public ObservableCollection<PeerRowViewModel> Peers { get; } = [];
 
     /// <summary>Hooked by MainPage to open the add dialog (views own dialogs).</summary>
@@ -465,6 +471,7 @@ public sealed partial class MainPageViewModel : ObservableObject
                 FileTree.Clear();
                 _fileLeaves.Clear();
                 _fileTreeGid = null;
+                _pendingSelection = null;
             }
             if (Peers.Count > 0)
                 Peers.Clear();
@@ -508,12 +515,19 @@ public sealed partial class MainPageViewModel : ObservableObject
                 FileTree.Clear();
                 _fileLeaves.Clear();
                 _fileTreeGid = null;
+                _pendingSelection = null;
             }
             return;
         }
 
         if (_fileTreeGid != item.Gid || _fileLeaves.Count != count)
             BuildFileTree(item, files!);
+
+        // While a selection the user just made hasn't been confirmed by aria2 yet,
+        // show THAT selection (not aria2's lagging snapshot) so the poll can't revert
+        // the checkbox the moment it's clicked.
+        bool pending = _pendingSelection is { } p && p.Gid == item.Gid;
+        HashSet<int>? desired = pending ? _pendingSelection!.Value.Selected : null;
 
         foreach (var file in files!)
         {
@@ -524,10 +538,32 @@ public sealed partial class MainPageViewModel : ObservableObject
             leaf.SizeText = FormatUtils.FormatSize(file.Length);
             leaf.Progress = file.Length > 0 ? file.CompletedLength * 100.0 / file.Length : 0;
             leaf.ProgressText = leaf.Progress.ToString("0.#", CultureInfo.CurrentCulture) + " %";
-            leaf.SetSelectedFromSnapshot(file.Selected);
+            leaf.SetSelectedFromSnapshot(desired is not null ? desired.Contains((int)file.Index) : file.Selected);
         }
         foreach (var root in FileTree)
             Aggregate(root);
+
+        if (pending)
+            ReconcilePendingSelection(files!, desired!);
+    }
+
+    /// <summary>
+    /// Holds the user's just-made selection visible until aria2 confirms it. Applying
+    /// select-file makes aria2 pause+restart the torrent (~5s, it may re-contact the
+    /// tracker), so we must NOT re-push every poll — that would retrigger the restart
+    /// and never settle. Just wait; give up after ~15s so a change aria2 won't apply
+    /// (e.g. magnet metadata not ready) eventually resyncs to aria2's real state.
+    /// </summary>
+    private void ReconcilePendingSelection(IReadOnlyList<Aria2File> files, HashSet<int> desired)
+    {
+        var actual = files.Where(f => f.Selected).Select(f => (int)f.Index).ToHashSet();
+        if (actual.SetEquals(desired))
+        {
+            _pendingSelection = null; // aria2 applied the change
+            return;
+        }
+        var (gid, set, attempts) = _pendingSelection!.Value;
+        _pendingSelection = attempts >= 15 ? null : (gid, set, attempts + 1);
     }
 
     /// <summary>Groups aria2's flat file list into a folder tree by relative path.</summary>
@@ -536,6 +572,7 @@ public sealed partial class MainPageViewModel : ObservableObject
         FileTree.Clear();
         _fileLeaves.Clear();
         _fileTreeGid = item.Gid;
+        _pendingSelection = null; // a different torrent / changed file set invalidates the pending pick
 
         string dir = (item.Directory ?? "").Replace('/', '\\').TrimEnd('\\');
         var root = new FileBucket();
@@ -615,13 +652,15 @@ public sealed partial class MainPageViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Pushes the per-file checkbox state to aria2 (select-file). aria2 needs at
-    /// least one file selected, so an all-unchecked state is rejected and reverted.
+    /// Records the user's per-file checkbox state as the pending selection and pushes
+    /// it to aria2 (select-file). The pending set keeps the checkboxes from being
+    /// reverted by the poll until aria2 confirms it. aria2 needs at least one file
+    /// selected, so an all-unchecked state is rejected and reverted to "all".
     /// </summary>
-    private async Task ApplyFileSelectionAsync(DownloadItemViewModel item)
+    private Task ApplyFileSelectionAsync(DownloadItemViewModel item)
     {
         if (!ReferenceEquals(SelectedDownload, item))
-            return;
+            return Task.CompletedTask;
         // A folder toggle cascades to leaves; refresh ancestor folder checkboxes
         // before reading which files are now selected.
         foreach (var root in FileTree)
@@ -630,22 +669,29 @@ public sealed partial class MainPageViewModel : ObservableObject
         if (indices.Count == 0)
         {
             // Can't deselect everything — re-check all files.
+            _pendingSelection = null;
             foreach (var leaf in _fileLeaves.Values)
                 leaf.SetSelectedFromSnapshot(true);
             foreach (var root in FileTree)
                 Aggregate(root);
-            return;
+            return Task.CompletedTask;
         }
+        _pendingSelection = (item.Gid, [.. indices], 0);
+        return PushSelectFileAsync(item.Gid, indices);
+    }
+
+    private async Task PushSelectFileAsync(string gid, IReadOnlyList<int> indices)
+    {
         try
         {
-            await _service.Rpc.ChangeOptionAsync(item.Gid, new Dictionary<string, string>
+            await _service.Rpc.ChangeOptionAsync(gid, new Dictionary<string, string>
             {
                 ["select-file"] = string.Join(',', indices),
             });
         }
         catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
         {
-            // Engine busy/reconnecting — next poll resyncs the checkboxes.
+            // Engine busy/reconnecting — the pending set re-pushes on the next poll.
         }
     }
 

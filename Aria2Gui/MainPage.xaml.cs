@@ -4,6 +4,8 @@ using Aria2Gui.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
@@ -33,9 +35,45 @@ public sealed partial class MainPage : Page
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        // Refresh the settings form from disk each time the page is shown.
+        // Refresh the settings form from disk each time the page is shown, and play
+        // a WinUI-style page-entrance transition (fade + slide up) as it opens.
         if (e.PropertyName == nameof(MainPageViewModel.SettingsOpen) && ViewModel.SettingsOpen)
+        {
             SettingsPage.LoadFromSettings();
+            AnimateSettingsIn();
+        }
+    }
+
+    /// <summary>Mimics WinUI's navigation entrance transition for the settings page.</summary>
+    private void AnimateSettingsIn()
+    {
+        var translate = new TranslateTransform { Y = 28 };
+        SettingsPage.RenderTransform = translate;
+        SettingsPage.Opacity = 0;
+
+        var fade = new DoubleAnimation
+        {
+            From = 0,
+            To = 1,
+            Duration = TimeSpan.FromMilliseconds(220),
+        };
+        Storyboard.SetTarget(fade, SettingsPage);
+        Storyboard.SetTargetProperty(fade, "Opacity");
+
+        var slide = new DoubleAnimation
+        {
+            From = 28,
+            To = 0,
+            Duration = TimeSpan.FromMilliseconds(320),
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+        };
+        Storyboard.SetTarget(slide, translate);
+        Storyboard.SetTargetProperty(slide, "Y");
+
+        var storyboard = new Storyboard();
+        storyboard.Children.Add(fade);
+        storyboard.Children.Add(slide);
+        storyboard.Begin();
     }
 
     private void SettingsPage_Closed(object? sender, EventArgs e) => ViewModel.SettingsOpen = false;
