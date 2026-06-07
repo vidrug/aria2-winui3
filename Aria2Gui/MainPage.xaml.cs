@@ -20,7 +20,13 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         InitializeComponent();
-        ViewModel.AddDownloadRequested = () => DialogService.ShowAsync(new AddDownloadDialog());
+        // A separate modal window (not an in-window dialog) hosts the add UI; it
+        // shows itself in its constructor and blocks the main window until closed.
+        ViewModel.AddDownloadRequested = () =>
+        {
+            _ = new AddDownloadWindow();
+            return Task.CompletedTask;
+        };
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         Loaded += (_, _) => ViewModel.Initialize();
     }
@@ -45,6 +51,16 @@ public sealed partial class MainPage : Page
     /// <summary>x:Bind helper: bool→Visibility.</summary>
     public static Visibility VisIf(bool value) =>
         value ? Visibility.Visible : Visibility.Collapsed;
+
+    /// <summary>
+    /// AppBarButton doesn't drive AnimatedIcon state on its own (unlike Button or
+    /// NavigationViewItem), so play the hover animation from the pointer events.
+    /// </summary>
+    private void AnimatedButton_PointerEntered(object sender, PointerRoutedEventArgs e) =>
+        AnimatedIcon.SetState(SettingsAnimatedIcon, "PointerOver");
+
+    private void AnimatedButton_PointerExited(object sender, PointerRoutedEventArgs e) =>
+        AnimatedIcon.SetState(SettingsAnimatedIcon, "Normal");
 
     private void ColumnToggle_Click(object sender, RoutedEventArgs e)
     {

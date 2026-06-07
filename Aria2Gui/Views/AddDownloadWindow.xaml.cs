@@ -1,29 +1,66 @@
+using System.Runtime.InteropServices;
 using Aria2Gui.Helpers;
 using Aria2Gui.Services;
 using Aria2Gui.Services.Aria2;
 using Aria2Gui.ViewModels;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Windows.Storage;
 using Windows.Storage.Pickers;
 
 namespace Aria2Gui.Views;
 
 /// <summary>
-/// Dialog for queueing new downloads: URI/magnet lines and/or a .torrent file with
+/// Separate modal window (AppWindow + OverlappedPresenter.CreateForDialog, IsModal)
+/// for queueing new downloads: URI/magnet lines and/or a .torrent file with
 /// qBittorrent-style per-file selection (tree, folders collapsed, select all/none),
-/// plus a save-destination picker.
+/// plus a save-destination picker. Replaces the old in-window ContentDialog.
 /// </summary>
-public sealed partial class AddDownloadDialog : ContentDialog
+public sealed partial class AddDownloadWindow : Window
 {
+    private const int GWLP_HWNDPARENT = -8;
+
+    private readonly nint _hwnd;
     private byte[]? _torrentBytes;
     private TorrentContent? _torrentContent;
+    private bool _busy;
 
-    public AddDownloadDialog()
+    public AddDownloadWindow()
     {
         InitializeComponent();
+        _hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+
         var settings = Aria2Service.Instance.Settings;
         DirBox.Text = ResolveStartDirectory(settings.LastAddDirectory, settings.DownloadDirectory);
+
+        // Match the app's saved theme on this separate top-level window.
+        ThemeHelper.Apply(Content as FrameworkElement, settings.Theme);
+
+        double scale = GetDpiForWindow(_hwnd) / 96.0;
+        AppWindow.SetIcon("Assets/AppIcon.ico");
+        AppWindow.Resize(new Windows.Graphics.SizeInt32((int)(660 * scale), (int)(600 * scale)));
+        AppWindow.TitleBar.PreferredTheme = TitleBarTheme.UseDefaultAppMode;
+
+        // Dialog-style presenter, made modal over the main window so the user
+        // can't fire a second add or fight a blocked toolbar while it's open.
+        // The owner MUST be set before applying a modal presenter, otherwise
+        // SetPresenter throws "The window should have an owner when IsModal=true".
+        var presenter = OverlappedPresenter.CreateForDialog();
+        presenter.IsModal = true;
+        SetOwner(App.Window);
+        AppWindow.SetPresenter(presenter);
+
+        Closed += (_, _) => App.Window?.Activate();
+        AppWindow.Show();
+    }
+
+    /// <summary>Parents this window to the main one so the modal blocks the right owner.</summary>
+    private void SetOwner(Window owner)
+    {
+        nint ownerHwnd = WinRT.Interop.WindowNative.GetWindowHandle(owner);
+        nint ownedHwnd = Win32Interop.GetWindowFromWindowId(AppWindow.Id);
+        SetWindowLongPtr(ownedHwnd, GWLP_HWNDPARENT, ownerHwnd);
     }
 
     /// <summary>Last used folder, unless it disappeared (e.g. unplugged drive) — then the default.</summary>
@@ -46,7 +83,7 @@ public sealed partial class AddDownloadDialog : ContentDialog
         try
         {
             var picker = new FolderPicker();
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, _hwnd);
             picker.FileTypeFilter.Add("*");
             var folder = await picker.PickSingleFolderAsync();
             if (folder is not null)
@@ -63,7 +100,7 @@ public sealed partial class AddDownloadDialog : ContentDialog
         try
         {
             var picker = new FileOpenPicker();
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, _hwnd);
             picker.FileTypeFilter.Add(".torrent");
             var file = await picker.PickSingleFileAsync();
             if (file is null)
@@ -206,9 +243,13 @@ public sealed partial class AddDownloadDialog : ContentDialog
 
     // ------------------------------------------------------------------ add
 
-    private async void OnAddClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+    private void OnCancelClick(object sender, RoutedEventArgs e) => Close();
+
+    private async void OnAddClick(object sender, RoutedEventArgs e)
     {
-        var deferral = args.GetDeferral();
+        if (_busy)
+            return;
+        _busy = true;
         try
         {
             string text = UrlsBox.Text;
@@ -216,7 +257,6 @@ public sealed partial class AddDownloadDialog : ContentDialog
             if (!hasUris && _torrentBytes is null)
             {
                 ShowError("Укажите хотя бы одну ссылку или выберите .torrent-файл.");
-                args.Cancel = true;
                 return;
             }
 
@@ -230,7 +270,6 @@ public sealed partial class AddDownloadDialog : ContentDialog
                 if (selectFile is "")
                 {
                     ShowError("Выберите хотя бы один файл торрента.");
-                    args.Cancel = true;
                     return;
                 }
                 try
@@ -257,30 +296,26 @@ public sealed partial class AddDownloadDialog : ContentDialog
                 if (result.Error is not null)
                 {
                     ShowError($"Добавлено: {result.Added}. Остальные не добавились: {result.Error.Message}");
-                    args.Cancel = true;
                     return;
                 }
                 if (result.Skipped > 0)
                 {
                     ShowError($"Строк пропущено: {result.Skipped} — поддерживаются только http, https, ftp и magnet.");
-                    args.Cancel = true;
                     return;
                 }
             }
 
-            // Reached only when everything was queued — remember the folder.
+            // Reached only when everything was queued — remember the folder and close.
             RememberDirectory(directory);
+            Close();
         }
         catch (Exception ex)
         {
-            // Dialog-local catch-all: an escaped exception here closes the dialog
-            // with zero feedback (the deferral completes in finally regardless).
             ShowError($"Не удалось добавить загрузку: {ex.Message}");
-            args.Cancel = true;
         }
         finally
         {
-            deferral.Complete();
+            _busy = false;
         }
     }
 
@@ -311,4 +346,10 @@ public sealed partial class AddDownloadDialog : ContentDialog
         ErrorBar.Message = message;
         ErrorBar.IsOpen = true;
     }
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW")]
+    private static extern nint SetWindowLongPtr(nint hWnd, int nIndex, nint dwNewLong);
+
+    [DllImport("user32.dll")]
+    private static extern uint GetDpiForWindow(nint hwnd);
 }

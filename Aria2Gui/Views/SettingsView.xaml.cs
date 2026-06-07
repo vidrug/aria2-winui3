@@ -59,7 +59,8 @@ public sealed partial class SettingsView : UserControl
         ErrorBar.IsOpen = false;
     }
 
-    private void OnBackClick(object sender, RoutedEventArgs e) => Closed?.Invoke(this, EventArgs.Empty);
+    private void OnBackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args) =>
+        Closed?.Invoke(this, EventArgs.Empty);
 
     /// <summary>Shows only the selected section's panel (WinUI NavigationView style).</summary>
     private void OnSectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

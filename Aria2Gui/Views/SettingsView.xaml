@@ -5,45 +5,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:tk="using:CommunityToolkit.WinUI.Controls"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Grid Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <!-- Header with back button -->
-        <StackPanel
-            Grid.Row="0"
-            Orientation="Horizontal"
-            Spacing="12"
-            Padding="20,16,20,8">
-            <Button
-                AutomationProperties.AutomationId="SettingsBackButton"
-                AutomationProperties.Name="Назад"
-                Width="40"
-                Height="40"
-                Padding="0"
-                Background="Transparent"
-                BorderThickness="0"
-                Click="OnBackClick"
-                ToolTipService.ToolTip="Назад">
-                <FontIcon Glyph="&#xE72B;" FontSize="16" />
-            </Button>
-            <TextBlock Text="Настройки" Style="{StaticResource TitleTextBlockStyle}" VerticalAlignment="Center" />
-        </StackPanel>
-
-        <!-- Section navigation (WinUI-style left pane) + content -->
+        <!-- Section navigation (WinUI-style left pane) + content. The NavigationView's
+             own back button gives the WinUI Gallery look: a system back arrow in the
+             top-left corner, with the page title sitting in the content area below. -->
         <NavigationView
             x:Name="SettingsNav"
-            Grid.Row="1"
             PaneDisplayMode="Left"
             IsSettingsVisible="False"
-            IsBackButtonVisible="Collapsed"
+            IsBackButtonVisible="Visible"
+            IsBackEnabled="True"
             IsPaneToggleButtonVisible="False"
             OpenPaneLength="240"
+            BackRequested="OnBackRequested"
             SelectionChanged="OnSectionChanged">
             <NavigationView.Resources>
                 <!-- Transparent surfaces so the window's Mica backdrop shows through,
@@ -74,7 +52,16 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Основные" Tag="general" IsSelected="True" AutomationProperties.AutomationId="NavGeneral">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE713;" />
+                        <!-- NavigationViewItem drives the AnimatedIcon state itself, so
+                             the gear animates on hover/selection with no code-behind. -->
+                        <AnimatedIcon>
+                            <AnimatedIcon.Source>
+                                <animatedvisuals:AnimatedSettingsVisualSource />
+                            </AnimatedIcon.Source>
+                            <AnimatedIcon.FallbackIconSource>
+                                <FontIconSource Glyph="&#xE713;" />
+                            </AnimatedIcon.FallbackIconSource>
+                        </AnimatedIcon>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="Подключение" Tag="connection" AutomationProperties.AutomationId="NavConnection">
@@ -108,6 +95,8 @@
                      to MaxWidth and centre (a Center StackPanel would shrink to fit). -->
                 <Grid HorizontalAlignment="Stretch">
                 <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
+
+                    <TextBlock Text="Настройки" Style="{StaticResource TitleTextBlockStyle}" Margin="0,8,0,20" />
 
                     <!-- ===== Основные ===== -->
                     <StackPanel x:Name="GeneralPanel" Spacing="4">

@@ -9,6 +9,7 @@
     xmlns:views="using:Aria2Gui.Views"
     xmlns:helpers="using:Aria2Gui.Helpers"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
@@ -113,9 +114,18 @@
                 Label="Настройки"
                 Command="{x:Bind ViewModel.OpenSettingsCommand}"
                 AutomationProperties.Name="Настройки"
-                AutomationProperties.AutomationId="SettingsButton">
+                AutomationProperties.AutomationId="SettingsButton"
+                PointerEntered="AnimatedButton_PointerEntered"
+                PointerExited="AnimatedButton_PointerExited">
                 <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE713;" />
+                    <AnimatedIcon x:Name="SettingsAnimatedIcon">
+                        <AnimatedIcon.Source>
+                            <animatedvisuals:AnimatedSettingsVisualSource />
+                        </AnimatedIcon.Source>
+                        <AnimatedIcon.FallbackIconSource>
+                            <FontIconSource Glyph="&#xE713;" />
+                        </AnimatedIcon.FallbackIconSource>
+                    </AnimatedIcon>
                 </AppBarButton.Icon>
             </AppBarButton>
             <AppBarButton
