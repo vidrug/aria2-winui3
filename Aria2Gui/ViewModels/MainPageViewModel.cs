@@ -471,7 +471,8 @@ public sealed partial class MainPageViewModel : ObservableObject
                 FileTree.Clear();
                 _fileLeaves.Clear();
                 _fileTreeGid = null;
-                _pendingSelection = null;
+                // Keep _pendingSelection: a mid-restart blip can momentarily drop the
+                // selection; re-selecting the same torrent re-applies the held pick.
             }
             if (Peers.Count > 0)
                 Peers.Clear();
@@ -510,6 +511,10 @@ public sealed partial class MainPageViewModel : ObservableObject
         int count = files?.Count ?? 0;
         if (count == 0)
         {
+            // The same torrent can transiently report no files mid-restart (select-file
+            // change) — keep its tree and pending pick instead of tearing them down.
+            if (_fileTreeGid == item.Gid)
+                return;
             if (FileTree.Count > 0)
             {
                 FileTree.Clear();
@@ -572,7 +577,12 @@ public sealed partial class MainPageViewModel : ObservableObject
         FileTree.Clear();
         _fileLeaves.Clear();
         _fileTreeGid = item.Gid;
-        _pendingSelection = null; // a different torrent / changed file set invalidates the pending pick
+        // Keep a pending pick alive when the SAME torrent's tree is rebuilt — aria2's
+        // select-file restart momentarily empties/recreates the file list — and only drop
+        // it when switching to a different torrent. UpdateFileTree re-applies the held
+        // selection to the rebuilt leaves right after this returns.
+        if (_pendingSelection is { } ps && ps.Gid != item.Gid)
+            _pendingSelection = null;
 
         string dir = (item.Directory ?? "").Replace('/', '\\').TrimEnd('\\');
         var root = new FileBucket();
@@ -659,7 +669,9 @@ public sealed partial class MainPageViewModel : ObservableObject
     /// </summary>
     private Task ApplyFileSelectionAsync(DownloadItemViewModel item)
     {
-        if (!ReferenceEquals(SelectedDownload, item))
+        // Compare by gid, not reference: the magnet metadata→real transition can recreate
+        // the VM for the same gid, and the leaf closures captured the build-time instance.
+        if (SelectedDownload is null || SelectedDownload.Gid != item.Gid)
             return Task.CompletedTask;
         // A folder toggle cascades to leaves; refresh ancestor folder checkboxes
         // before reading which files are now selected.
