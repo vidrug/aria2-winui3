@@ -270,11 +270,43 @@
                             </tk:SettingsCard.HeaderIcon>
                             <ToggleSwitch x:Name="LpdToggle" AutomationProperties.AutomationId="LpdToggle" OnContent="Вкл" OffContent="Выкл" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard Header="Требовать шифрование" Description="Только зашифрованные соединения с пирами">
+                        <tk:SettingsCard Header="Требовать шифрование" Description="Только зашифрованные соединения с пирами (bt-require-crypto)">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE72E;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <ToggleSwitch x:Name="CryptoToggle" AutomationProperties.AutomationId="CryptoToggle" OnContent="Вкл" OffContent="Выкл" />
+                            <ToggleSwitch x:Name="CryptoToggle" AutomationProperties.AutomationId="CryptoToggle" Toggled="OnCryptoToggled" OnContent="Вкл" OffContent="Выкл" />
+                        </tk:SettingsCard>
+                        <!-- Shown only when encryption is required: picks bt-min-crypto-level. -->
+                        <tk:SettingsCard x:Name="CryptoLevelCard" Header="Уровень шифрования" Description="Минимальный метод шифрования соединения (bt-min-crypto-level)" ContentAlignment="Vertical" Visibility="Collapsed">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE8D7;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <RadioButtons x:Name="CryptoLevelRadio" AutomationProperties.AutomationId="CryptoLevelRadio">
+                                <RadioButton AutomationProperties.AutomationId="CryptoLevelPlain">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Только рукопожатие — plain" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                        <TextBlock
+                                            Text="Шифруется (обфусцируется) только рукопожатие, сами данные идут открытым текстом. Минимальная нагрузка на процессор; обычно достаточно, чтобы обойти ограничение BitTorrent у провайдера."
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            TextWrapping="Wrap"
+                                            MaxWidth="560"
+                                            HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton AutomationProperties.AutomationId="CryptoLevelArc4">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Полное шифрование RC4 — arc4" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                        <TextBlock
+                                            Text="Шифруется весь поток данных алгоритмом ARC4 (RC4), а не только рукопожатие. Надёжнее скрывает содержимое трафика, нагрузка на процессор немного выше."
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            TextWrapping="Wrap"
+                                            MaxWidth="560"
+                                            HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </RadioButton>
+                            </RadioButtons>
                         </tk:SettingsCard>
                         <tk:SettingsCard Header="Макс. пиров на торрент" Description="Предел подключений для одного торрента">
                             <tk:SettingsCard.HeaderIcon>

@@ -50,6 +50,12 @@ public sealed class AppSettings
     /// <summary>Require encrypted peer connections (bt-require-crypto).</summary>
     public bool RequireCrypto { get; set; }
 
+    /// <summary>
+    /// Minimum BT encryption method (bt-min-crypto-level): "plain" obfuscates only
+    /// the handshake, "arc4" encrypts the whole data stream with RC4.
+    /// </summary>
+    public string BtMinCryptoLevel { get; set; } = "plain";
+
     /// <summary>Extra trackers appended to every torrent (one URI per line).</summary>
     public string ExtraTrackers { get; set; } = "";
 
@@ -133,6 +139,8 @@ public static class SettingsService
         settings.MinSplitSize = SanitizeSize(settings.MinSplitSize, "20M");
         if (settings.FileAllocation is not ("none" or "prealloc" or "trunc" or "falloc" or "auto"))
             settings.FileAllocation = "auto";
+        if (settings.BtMinCryptoLevel is not ("plain" or "arc4"))
+            settings.BtMinCryptoLevel = "plain";
         return settings;
     }
 

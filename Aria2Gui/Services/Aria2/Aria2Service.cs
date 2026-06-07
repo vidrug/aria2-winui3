@@ -278,6 +278,7 @@ public sealed class Aria2Service
             ["enable-peer-exchange"] = s.EnablePex ? "true" : "false",
             ["bt-enable-lpd"] = s.EnableLpd ? "true" : "false",
             ["bt-require-crypto"] = s.RequireCrypto ? "true" : "false",
+            ["bt-min-crypto-level"] = s.BtMinCryptoLevel,
         };
         if (s.ListenPort > 0)
         {

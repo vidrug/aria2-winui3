@@ -54,6 +54,8 @@ public sealed partial class SettingsView : UserControl
         PexToggle.IsOn = s.EnablePex;
         LpdToggle.IsOn = s.EnableLpd;
         CryptoToggle.IsOn = s.RequireCrypto;
+        CryptoLevelRadio.SelectedIndex = s.BtMinCryptoLevel == "arc4" ? 1 : 0;
+        CryptoLevelCard.Visibility = s.RequireCrypto ? Visibility.Visible : Visibility.Collapsed;
         TrackersBox.Text = s.ExtraTrackers;
         ExtraOptionsBox.Text = s.ExtraAria2Options;
         ErrorBar.IsOpen = false;
@@ -71,6 +73,13 @@ public sealed partial class SettingsView : UserControl
         FilesPanel.Visibility = tag == "files" ? Visibility.Visible : Visibility.Collapsed;
         BtPanel.Visibility = tag == "bt" ? Visibility.Visible : Visibility.Collapsed;
         AdvancedPanel.Visibility = tag == "advanced" ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    /// <summary>The encryption-level choice only matters when crypto is required.</summary>
+    private void OnCryptoToggled(object sender, RoutedEventArgs e)
+    {
+        if (CryptoLevelCard is not null)
+            CryptoLevelCard.Visibility = CryptoToggle.IsOn ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private async void OnBrowseClick(object sender, RoutedEventArgs e)
@@ -125,6 +134,7 @@ public sealed partial class SettingsView : UserControl
                 EnablePex = PexToggle.IsOn,
                 EnableLpd = LpdToggle.IsOn,
                 RequireCrypto = CryptoToggle.IsOn,
+                BtMinCryptoLevel = CryptoLevelRadio.SelectedIndex == 1 ? "arc4" : "plain",
                 ExtraTrackers = TrackersBox.Text,
                 ExtraAria2Options = ExtraOptionsBox.Text,
             };
@@ -155,6 +165,7 @@ public sealed partial class SettingsView : UserControl
         || old.EnablePex != updated.EnablePex
         || old.EnableLpd != updated.EnableLpd
         || old.RequireCrypto != updated.RequireCrypto
+        || old.BtMinCryptoLevel != updated.BtMinCryptoLevel
         || old.ExtraTrackers != updated.ExtraTrackers
         || old.ExtraAria2Options != updated.ExtraAria2Options;
 
