@@ -10,7 +10,6 @@
     xmlns:views="using:Aria2Gui.Views"
     xmlns:helpers="using:Aria2Gui.Helpers"
     xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
-    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
@@ -51,193 +50,147 @@
         DragOver="RootGrid_DragOver"
         Drop="RootGrid_Drop">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Toolbar (hidden while the settings page is shown) -->
-        <CommandBar
+        <!--
+            Gallery-style NavigationView: the pane hosts the status filters as
+            data-bound menu items (icon-only in LeftCompact, labels + count InfoBadge
+            when expanded via the built-in hamburger pane toggle). The footer Settings
+            gear opens the in-app settings overlay. Content = action toolbar + table +
+            details. The selection pill is drawn by NavigationView itself, so it never
+            clips on the collapsed rail.
+        -->
+        <NavigationView
+            x:Name="NavView"
+            AutomationProperties.AutomationId="NavView"
             Grid.Row="0"
-            Background="Transparent"
-            DefaultLabelPosition="Right"
-            IsOpen="False"
-            HorizontalAlignment="Left"
+            PaneDisplayMode="LeftCompact"
+            IsBackButtonVisible="Collapsed"
+            IsPaneToggleButtonVisible="True"
+            IsSettingsVisible="True"
+            OpenPaneLength="220"
+            MenuItemsSource="{x:Bind ViewModel.Filters, Mode=OneWay}"
+            SelectedItem="{x:Bind ViewModel.SelectedFilter, Mode=TwoWay}"
+            SelectionChanged="NavView_SelectionChanged"
             Visibility="{x:Bind local:MainPage.CollapsedIf(ViewModel.SettingsOpen), Mode=OneWay}">
-            <AppBarButton
-                loc:Localize.Uid="SidebarToggleButton"
-                Click="OnToggleSidebar"
-                LabelPosition="Collapsed"
-                AutomationProperties.AutomationId="SidebarToggle">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE700;" />
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarSeparator />
-            <AppBarButton
-                loc:Localize.Uid="ToolbarAddButton"
-                Command="{x:Bind ViewModel.AddDownloadCommand}"
-                AutomationProperties.AutomationId="AddDownloadButton">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE710;" />
-                </AppBarButton.Icon>
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="Control" Key="N" />
-                </AppBarButton.KeyboardAccelerators>
-            </AppBarButton>
-            <AppBarSeparator />
-            <AppBarButton
-                loc:Localize.Uid="ToolbarResumeButton"
-                Command="{x:Bind ViewModel.ResumeSelectedCommand}"
-                IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
-                AutomationProperties.AutomationId="ResumeSelectedButton">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE768;" />
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton
-                loc:Localize.Uid="ToolbarPauseButton"
-                Command="{x:Bind ViewModel.PauseSelectedCommand}"
-                IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
-                AutomationProperties.AutomationId="PauseSelectedButton">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE769;" />
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton
-                loc:Localize.Uid="ToolbarRemoveButton"
-                Command="{x:Bind ViewModel.RemoveSelectedCommand}"
-                IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
-                AutomationProperties.AutomationId="RemoveSelectedButton">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE74D;" />
-                </AppBarButton.Icon>
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="Delete" />
-                </AppBarButton.KeyboardAccelerators>
-            </AppBarButton>
-            <AppBarSeparator />
-            <AppBarButton
-                loc:Localize.Uid="ToolbarSettingsButton"
-                Command="{x:Bind ViewModel.OpenSettingsCommand}"
-                AutomationProperties.AutomationId="SettingsButton"
-                PointerEntered="AnimatedButton_PointerEntered"
-                PointerExited="AnimatedButton_PointerExited">
-                <AppBarButton.Icon>
-                    <AnimatedIcon x:Name="SettingsAnimatedIcon">
-                        <AnimatedIcon.Source>
-                            <animatedvisuals:AnimatedSettingsVisualSource />
-                        </AnimatedIcon.Source>
-                        <AnimatedIcon.FallbackIconSource>
-                            <FontIconSource Glyph="&#xE713;" />
-                        </AnimatedIcon.FallbackIconSource>
-                    </AnimatedIcon>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton
-                loc:Localize.Uid="ToolbarMoreButton"
-                AutomationProperties.AutomationId="MoreButton">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE712;" />
-                </AppBarButton.Icon>
-                <AppBarButton.Flyout>
-                    <MenuFlyout>
-                        <MenuFlyoutItem
-                            loc:Localize.Uid="MenuResumeAll"
-                            Command="{x:Bind ViewModel.ResumeAllCommand}"
-                            IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                            AutomationProperties.AutomationId="ResumeAllButton">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE768;" />
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutItem
-                            loc:Localize.Uid="MenuPauseAll"
-                            Command="{x:Bind ViewModel.PauseAllCommand}"
-                            IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                            AutomationProperties.AutomationId="PauseAllButton">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE769;" />
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutSeparator />
-                        <MenuFlyoutItem
-                            loc:Localize.Uid="MenuClearStopped"
-                            Command="{x:Bind ViewModel.ClearStoppedCommand}"
-                            IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                            AutomationProperties.AutomationId="ClearStoppedButton">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE894;" />
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                    </MenuFlyout>
-                </AppBarButton.Flyout>
-            </AppBarButton>
-        </CommandBar>
+            <NavigationView.MenuItemTemplate>
+                <DataTemplate x:DataType="vm:FilterItemViewModel">
+                    <NavigationViewItem
+                        Content="{x:Bind Title}"
+                        AutomationProperties.AutomationId="{x:Bind Key}">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="{x:Bind Glyph}" />
+                        </NavigationViewItem.Icon>
+                        <NavigationViewItem.InfoBadge>
+                            <InfoBadge
+                                Value="{x:Bind Count, Mode=OneWay}"
+                                Visibility="{x:Bind local:MainPage.VisIf(HasCount), Mode=OneWay}" />
+                        </NavigationViewItem.InfoBadge>
+                    </NavigationViewItem>
+                </DataTemplate>
+            </NavigationView.MenuItemTemplate>
 
-        <!-- Sidebar | main area (hidden while the settings page is shown) -->
-        <Grid Grid.Row="1" Visibility="{x:Bind local:MainPage.CollapsedIf(ViewModel.SettingsOpen), Mode=OneWay}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="SidebarColumn" Width="220" MinWidth="160" MaxWidth="400" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" MinWidth="400" />
-            </Grid.ColumnDefinitions>
+            <!-- Content: action toolbar + table + details -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            <!-- Status filters; the toolbar hamburger collapses the labels to icons-only -->
-            <ListView
-                x:Name="FiltersList"
-                AutomationProperties.AutomationId="FiltersList"
-                Grid.Column="0"
-                Padding="4,8,4,8"
-                SelectionMode="Single"
-                ItemsSource="{x:Bind ViewModel.Filters, Mode=OneWay}"
-                SelectedItem="{x:Bind ViewModel.SelectedFilter, Mode=TwoWay}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="MinHeight" Value="36" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:FilterItemViewModel">
-                        <Grid ColumnSpacing="8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <FontIcon
-                                Glyph="{x:Bind Glyph}"
-                                FontSize="14"
-                                VerticalAlignment="Center" />
-                            <TextBlock
-                                Grid.Column="1"
-                                Text="{x:Bind Title}"
-                                VerticalAlignment="Center"
-                                TextTrimming="CharacterEllipsis"
-                                Visibility="{x:Bind local:MainPage.VisIf(LabelVisible), Mode=OneWay}" />
-                            <TextBlock
-                                Grid.Column="2"
-                                Text="{x:Bind Count, Mode=OneWay}"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                VerticalAlignment="Center"
-                                Visibility="{x:Bind local:MainPage.VisIf(LabelVisible), Mode=OneWay}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                <!-- Download action toolbar -->
+                <CommandBar
+                    Grid.Row="0"
+                    Background="Transparent"
+                    DefaultLabelPosition="Right"
+                    IsOpen="False"
+                    HorizontalAlignment="Left">
+                    <AppBarButton
+                        loc:Localize.Uid="ToolbarAddButton"
+                        Command="{x:Bind ViewModel.AddDownloadCommand}"
+                        AutomationProperties.AutomationId="AddDownloadButton">
+                        <AppBarButton.Icon>
+                            <FontIcon Glyph="&#xE710;" />
+                        </AppBarButton.Icon>
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="N" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+                    <AppBarSeparator />
+                    <AppBarButton
+                        loc:Localize.Uid="ToolbarResumeButton"
+                        Command="{x:Bind ViewModel.ResumeSelectedCommand}"
+                        IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
+                        AutomationProperties.AutomationId="ResumeSelectedButton">
+                        <AppBarButton.Icon>
+                            <FontIcon Glyph="&#xE768;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        loc:Localize.Uid="ToolbarPauseButton"
+                        Command="{x:Bind ViewModel.PauseSelectedCommand}"
+                        IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
+                        AutomationProperties.AutomationId="PauseSelectedButton">
+                        <AppBarButton.Icon>
+                            <FontIcon Glyph="&#xE769;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        loc:Localize.Uid="ToolbarRemoveButton"
+                        Command="{x:Bind ViewModel.RemoveSelectedCommand}"
+                        IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
+                        AutomationProperties.AutomationId="RemoveSelectedButton">
+                        <AppBarButton.Icon>
+                            <FontIcon Glyph="&#xE74D;" />
+                        </AppBarButton.Icon>
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="Delete" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+                    <AppBarButton
+                        loc:Localize.Uid="ToolbarMoreButton"
+                        AutomationProperties.AutomationId="MoreButton">
+                        <AppBarButton.Icon>
+                            <FontIcon Glyph="&#xE712;" />
+                        </AppBarButton.Icon>
+                        <AppBarButton.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem
+                                    loc:Localize.Uid="MenuResumeAll"
+                                    Command="{x:Bind ViewModel.ResumeAllCommand}"
+                                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                                    AutomationProperties.AutomationId="ResumeAllButton">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE768;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    loc:Localize.Uid="MenuPauseAll"
+                                    Command="{x:Bind ViewModel.PauseAllCommand}"
+                                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                                    AutomationProperties.AutomationId="PauseAllButton">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE769;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem
+                                    loc:Localize.Uid="MenuClearStopped"
+                                    Command="{x:Bind ViewModel.ClearStoppedCommand}"
+                                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                                    AutomationProperties.AutomationId="ClearStoppedButton">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE894;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyout>
+                        </AppBarButton.Flyout>
+                    </AppBarButton>
+                </CommandBar>
 
-            <toolkit:GridSplitter
-                Grid.Column="1"
-                loc:Localize.Uid="SidebarSplitter"
-                AutomationProperties.AutomationId="SidebarSplitter"
-                Width="8"
-                ResizeBehavior="BasedOnAlignment"
-                ResizeDirection="Auto" />
-
-            <!-- Table + details -->
-            <Grid Grid.Column="2">
+                <!-- Table + details -->
+                <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" MinHeight="120" />
                     <RowDefinition Height="Auto" />
@@ -615,19 +568,20 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </Grid>
+                </Grid>
             </Grid>
-        </Grid>
+        </NavigationView>
 
         <!-- Settings page: full width of the window, on the same Mica backdrop. -->
         <views:SettingsView
             x:Name="SettingsPage"
-            Grid.Row="1"
+            Grid.Row="0"
             Closed="SettingsPage_Closed"
             Visibility="{x:Bind local:MainPage.VisIf(ViewModel.SettingsOpen), Mode=OneWay}" />
 
         <!-- Engine failure surface -->
         <InfoBar
-            Grid.Row="1"
+            Grid.Row="0"
             loc:Localize.Uid="EngineErrorInfoBar"
             VerticalAlignment="Bottom"
             Margin="12"
@@ -637,7 +591,7 @@
 
         <!-- Transient notices for drag-and-drop adds (errors, duplicates). Set from code-behind. -->
         <InfoBar
-            Grid.Row="1"
+            Grid.Row="0"
             x:Name="AddNoticeBar"
             AutomationProperties.AutomationId="AddNoticeBar"
             VerticalAlignment="Top"
@@ -647,7 +601,7 @@
 
         <!-- Status bar -->
         <Grid
-            Grid.Row="2"
+            Grid.Row="1"
             Padding="16,8"
             BorderThickness="0,1,0,0"
             BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">

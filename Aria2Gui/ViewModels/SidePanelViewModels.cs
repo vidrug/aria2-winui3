@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Aria2Gui.ViewModels;
 
-/// <summary>One status filter in the left sidebar (qBittorrent-style).</summary>
+/// <summary>One status filter in the left NavigationView pane (qBittorrent-style).</summary>
 public sealed partial class FilterItemViewModel(string key, string title, string glyph) : ObservableObject
 {
     public string Key { get; } = key;
@@ -11,11 +11,12 @@ public sealed partial class FilterItemViewModel(string key, string title, string
     public string Glyph { get; } = glyph;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasCount))]
     public partial int Count { get; set; }
 
-    /// <summary>False collapses the sidebar to icons-only (hamburger toggle).</summary>
-    [ObservableProperty]
-    public partial bool LabelVisible { get; set; } = true;
+    /// <summary>Gallery-style: only show the NavigationViewItem's InfoBadge when there's
+    /// something to count (a zero badge is noise on every empty filter).</summary>
+    public bool HasCount => Count > 0;
 }
 
 /// <summary>

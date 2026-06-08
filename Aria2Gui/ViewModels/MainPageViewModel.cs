@@ -61,16 +61,6 @@ public sealed partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     public partial bool SortDescending { get; set; }
 
-    /// <summary>True hides the sidebar filter labels (icons-only) via the hamburger toggle.</summary>
-    [ObservableProperty]
-    public partial bool SidebarCollapsed { get; set; }
-
-    partial void OnSidebarCollapsedChanged(bool value)
-    {
-        foreach (var filter in Filters)
-            filter.LabelVisible = !value;
-    }
-
     [ObservableProperty]
     public partial string EngineStatusText { get; set; } = L.Get("EngineStarting");
 

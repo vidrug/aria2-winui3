@@ -78,6 +78,31 @@ public sealed partial class MainPage : Page
 
     private void SettingsPage_Closed(object? sender, EventArgs e) => ViewModel.SettingsOpen = false;
 
+    /// <summary>Guards <see cref="NavView_SelectionChanged"/> against the re-entrant change
+    /// raised when we restore the filter selection after the footer Settings gear is invoked.</summary>
+    private bool _restoringNavSelection;
+
+    /// <summary>
+    /// NavigationView selection: filter items flow through the TwoWay SelectedItem binding
+    /// (which drives <see cref="MainPageViewModel.SelectedFilter"/> and rebuilds the table).
+    /// The footer Settings gear instead opens the settings overlay and is bounced back to the
+    /// current filter, so returning from settings restores the previous filter and the gear
+    /// is never left selected.
+    /// </summary>
+    private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+    {
+        if (_restoringNavSelection)
+            return;
+
+        if (args.IsSettingsSelected)
+        {
+            ViewModel.OpenSettingsCommand.Execute(null);
+            _restoringNavSelection = true;
+            sender.SelectedItem = ViewModel.SelectedFilter;
+            _restoringNavSelection = false;
+        }
+    }
+
     /// <summary>x:Bind helper: visible when the given details tab is active AND something is selected.</summary>
     public static Visibility TabVisible(int current, int tab, bool hasSelection) =>
         hasSelection && current == tab ? Visibility.Visible : Visibility.Collapsed;
@@ -99,56 +124,10 @@ public sealed partial class MainPage : Page
             : null;
     }
 
-    /// <summary>
-    /// AppBarButton doesn't drive AnimatedIcon state on its own (unlike Button or
-    /// NavigationViewItem), so play the hover animation from the pointer events.
-    /// </summary>
-    private void AnimatedButton_PointerEntered(object sender, PointerRoutedEventArgs e) =>
-        AnimatedIcon.SetState(SettingsAnimatedIcon, "PointerOver");
-
-    private void AnimatedButton_PointerExited(object sender, PointerRoutedEventArgs e) =>
-        AnimatedIcon.SetState(SettingsAnimatedIcon, "Normal");
-
     private void ColumnToggle_Click(object sender, RoutedEventArgs e)
     {
         if (sender is ToggleMenuFlyoutItem { Tag: string key } item)
             ViewModel.Columns.SetVisible(key, item.IsChecked);
-    }
-
-    // Width the sidebar returns to when expanded again (remembers user resizing).
-    private double _expandedSidebarWidth = 220;
-
-    // Icons-only collapsed width: 48px column with the ListView's 4px L/R padding
-    // leaves a 40px content area, so the 14px filter icon and the rounded selection
-    // pill are both fully visible (not clipped on the right edge).
-    private const double CollapsedSidebarWidth = 48;
-    private const double DefaultExpandedMinWidth = 160;
-
-    /// <summary>Toolbar hamburger: collapse the sidebar to icons-only (narrow column,
-    /// labels hidden) or restore it to its previous width.</summary>
-    private void OnToggleSidebar(object sender, RoutedEventArgs e)
-    {
-        bool collapse = !ViewModel.SidebarCollapsed;
-        ViewModel.SidebarCollapsed = collapse;
-        if (collapse)
-        {
-            if (SidebarColumn.ActualWidth > CollapsedSidebarWidth)
-                _expandedSidebarWidth = SidebarColumn.ActualWidth;
-            // The toolkit GridSplitter clamps the column to its MinWidth and re-pins
-            // the measured width, so a bare Width assignment is overridden and the
-            // column stays wide. Pin MinWidth AND MaxWidth to the collapsed size so
-            // nothing can grow it back, then set the width to match.
-            SidebarColumn.MinWidth = 0;
-            SidebarColumn.MaxWidth = CollapsedSidebarWidth;
-            SidebarColumn.Width = new GridLength(CollapsedSidebarWidth);
-        }
-        else
-        {
-            // Restore the resize bounds first, then the remembered width.
-            SidebarColumn.MinWidth = DefaultExpandedMinWidth;
-            SidebarColumn.MaxWidth = 400;
-            SidebarColumn.Width = new GridLength(_expandedSidebarWidth);
-        }
     }
 
     private void DownloadsList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
