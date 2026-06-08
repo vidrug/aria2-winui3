@@ -250,4 +250,5 @@
   <data name="LimitUnlimited" xml:space="preserve"><value>Без обмеження</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Згорнути/розгорнути панель</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Згорнути/розгорнути панель</value></data>
+  <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Уже у списку - пропущено.</value></data>
 </root>

@@ -250,4 +250,5 @@
   <data name="LimitUnlimited" xml:space="preserve"><value>無制限</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>サイドバーの切り替え</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>サイドバーの切り替え</value></data>
+  <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>すでに一覧にあります（スキップしました）。</value></data>
 </root>

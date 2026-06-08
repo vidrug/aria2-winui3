@@ -179,17 +179,21 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
+                <!-- Pane-toggle, sized/aligned like NavigationView's hamburger: a 40x36
+                     transparent icon button whose glyph lines up with the filter icons. -->
                 <Button
                     x:Name="SidebarToggle"
                     loc:Localize.Uid="SidebarToggleButton"
                     AutomationProperties.AutomationId="SidebarToggle"
                     Click="OnToggleSidebar"
-                    Margin="4,8,4,0"
-                    Padding="10,6"
+                    Margin="4,4,4,2"
+                    Width="40"
+                    Height="36"
+                    Padding="0"
                     HorizontalAlignment="Left"
                     Background="Transparent"
                     BorderThickness="0">
-                    <FontIcon Glyph="&#xE700;" FontSize="14" />
+                    <FontIcon Glyph="&#xE700;" FontSize="16" />
                 </Button>
             <ListView
                 x:Name="FiltersList"
@@ -632,6 +636,16 @@
             Severity="Error"
             Message="{x:Bind ViewModel.EngineErrorText, Mode=OneWay}"
             IsOpen="{x:Bind ViewModel.HasEngineError, Mode=OneWay}" />
+
+        <!-- Transient notices for drag-and-drop adds (errors, duplicates). Set from code-behind. -->
+        <InfoBar
+            Grid.Row="1"
+            x:Name="AddNoticeBar"
+            AutomationProperties.AutomationId="AddNoticeBar"
+            VerticalAlignment="Top"
+            Margin="12"
+            IsOpen="False"
+            IsClosable="True" />
 
         <!-- Status bar -->
         <Grid

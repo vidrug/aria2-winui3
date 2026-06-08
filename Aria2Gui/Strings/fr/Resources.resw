@@ -250,4 +250,5 @@ un par ligne</value></data>
   <data name="LimitUnlimited" xml:space="preserve"><value>Illimité</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Afficher/masquer le volet</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Afficher/masquer le volet</value></data>
+  <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Déjà dans la liste - ignoré.</value></data>
 </root>

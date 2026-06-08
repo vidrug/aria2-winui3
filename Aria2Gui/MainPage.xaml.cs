@@ -192,6 +192,8 @@ public sealed partial class MainPage : Page
             {
                 string? dropDir = ResolveAddDirectory();
                 var items = await e.DataView.GetStorageItemsAsync();
+                int added = 0, duplicates = 0;
+                var errors = new List<string>();
                 foreach (var item in items)
                 {
                     if (item is not StorageFile file || !file.FileType.Equals(".torrent", StringComparison.OrdinalIgnoreCase))
@@ -199,27 +201,60 @@ public sealed partial class MainPage : Page
                     try
                     {
                         await DownloadAdder.AddTorrentFileAsync(file, dropDir);
+                        added++;
                     }
-                    catch (Exception)
+                    catch (Aria2Gui.Services.Aria2.Aria2RpcException ex) when (IsDuplicate(ex))
                     {
-                        // One bad file must not abort the rest of the dropped batch.
+                        duplicates++;
+                    }
+                    catch (Exception ex)
+                    {
+                        // One bad file must not abort the batch, but the user should see why.
+                        errors.Add($"{file.Name}: {ex.Message}");
                     }
                 }
+                if (errors.Count > 0)
+                    ShowAddNotice(Helpers.L.Get("AddErrorAddFailed", string.Join("; ", errors)), InfoBarSeverity.Error);
+                else if (added == 0 && duplicates > 0)
+                    ShowAddNotice(Helpers.L.Get("AddNoticeAlreadyAdded"), InfoBarSeverity.Informational);
             }
             else if (e.DataView.Contains(StandardDataFormats.WebLink))
             {
                 var uri = await e.DataView.GetWebLinkAsync();
-                await DownloadAdder.AddUrisAsync(uri.AbsoluteUri, ResolveAddDirectory());
+                await AddDroppedUrisAsync(uri.AbsoluteUri);
             }
             else if (e.DataView.Contains(StandardDataFormats.Text))
             {
-                await DownloadAdder.AddUrisAsync(await e.DataView.GetTextAsync(), ResolveAddDirectory());
+                await AddDroppedUrisAsync(await e.DataView.GetTextAsync());
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Drop is best-effort; bad payloads are ignored.
+            ShowAddNotice(Helpers.L.Get("AddErrorAddFailed", ex.Message), InfoBarSeverity.Error);
         }
+    }
+
+    /// <summary>Adds dropped URI text and surfaces any failure or skipped lines.</summary>
+    private async Task AddDroppedUrisAsync(string text)
+    {
+        var result = await DownloadAdder.AddUrisAsync(text, ResolveAddDirectory());
+        if (result.Error is not null)
+            ShowAddNotice(Helpers.L.Get("AddErrorPartial", result.Added, result.Error.Message), InfoBarSeverity.Error);
+        else if (result.Skipped > 0)
+            ShowAddNotice(Helpers.L.Get("AddErrorSkipped", result.Skipped), InfoBarSeverity.Warning);
+    }
+
+    /// <summary>aria2 reports a re-added torrent/URI with an "already exists" message.</summary>
+    private static bool IsDuplicate(Aria2Gui.Services.Aria2.Aria2RpcException ex) =>
+        ex.Message.Contains("already", StringComparison.OrdinalIgnoreCase)
+        || ex.Message.Contains("exists", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Shows a transient notice (error / warning / info) at the top of the window.</summary>
+    private void ShowAddNotice(string message, InfoBarSeverity severity)
+    {
+        AddNoticeBar.Severity = severity;
+        AddNoticeBar.Message = message;
+        AddNoticeBar.IsOpen = true;
     }
 
     /// <summary>Folder that drag-and-drop adds drop into: the one the user last added to

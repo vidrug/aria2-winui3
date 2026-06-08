@@ -250,4 +250,5 @@ jeden w wierszu</value></data>
   <data name="LimitUnlimited" xml:space="preserve"><value>Bez limitu</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zwiń/rozwiń panel</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Zwiń/rozwiń panel</value></data>
+  <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Już na liście - pominięto.</value></data>
 </root>
