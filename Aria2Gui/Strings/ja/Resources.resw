@@ -254,4 +254,9 @@
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>すでに一覧にあります（スキップしました）。</value></data>
   <data name="RowMenuRecheck.Text" xml:space="preserve"><value>再チェック</value></data>
   <data name="SidebarToggleButton.Label" xml:space="preserve"><value>サイドバーの切り替え</value></data>
+  <data name="RemoveConfirmTitle" xml:space="preserve"><value>ダウンロードを削除しますか？</value></data>
+  <data name="RemoveConfirmMessageOne" xml:space="preserve"><value>「{0}」を削除しますか？ファイルを削除するか、ディスクに残すか選択してください。</value></data>
+  <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>{0} 件のダウンロードを削除しますか？ファイルを削除するか残すか選択してください。</value></data>
+  <data name="RemoveDeleteFiles" xml:space="preserve"><value>ファイルを削除</value></data>
+  <data name="RemoveKeepFiles" xml:space="preserve"><value>ファイルを残す</value></data>
 </root>

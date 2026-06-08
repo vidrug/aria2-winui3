@@ -254,4 +254,9 @@ her satıra bir tane</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Zaten listede - atlandı.</value></data>
   <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Yeniden doğrula</value></data>
   <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Kenar çubuğunu aç/kapat</value></data>
+  <data name="RemoveConfirmTitle" xml:space="preserve"><value>İndirme kaldırılsın mı?</value></data>
+  <data name="RemoveConfirmMessageOne" xml:space="preserve"><value>“{0}” kaldırılsın mı? Dosyaları silmeyi veya diskte tutmayı seçin.</value></data>
+  <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>{0} indirme kaldırılsın mı? Dosyaları silmeyi veya tutmayı seçin.</value></data>
+  <data name="RemoveDeleteFiles" xml:space="preserve"><value>Dosyaları sil</value></data>
+  <data name="RemoveKeepFiles" xml:space="preserve"><value>Dosyaları tut</value></data>
 </root>

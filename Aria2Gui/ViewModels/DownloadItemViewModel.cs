@@ -267,7 +267,13 @@ public sealed partial class DownloadItemViewModel : ObservableObject
             L.Get("RemoveWithFilesConfirm"));
         if (!confirmed)
             return;
+        await RemoveWithFilesNoConfirmAsync();
+    }
 
+    /// <summary>Removes the entry AND deletes its files on disk, WITHOUT prompting —
+    /// for callers that already confirmed (e.g. a bulk delete that asks once).</summary>
+    public async Task RemoveWithFilesNoConfirmAsync()
+    {
         var files = Files;
         await RemoveAsync();
 
@@ -335,10 +341,20 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     {
         try
         {
-            if (!string.IsNullOrEmpty(_firstFilePath) && (File.Exists(_firstFilePath) || System.IO.Directory.Exists(_firstFilePath)))
-                Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{_firstFilePath}\"") { UseShellExecute = false });
-            else if (!string.IsNullOrEmpty(Directory) && System.IO.Directory.Exists(Directory))
-                Process.Start(new ProcessStartInfo("explorer.exe", $"\"{Directory}\"") { UseShellExecute = false });
+            // Open the folder that holds the files — the file's own directory
+            // (dir/<torrent name>/ for a multi-file torrent) when known, else the
+            // download dir. We open the FOLDER directly rather than Explorer's
+            // "/select,<file>": for the long, special-character paths torrents produce,
+            // /select silently falls back to the user's profile folder (the reported bug).
+            string? fileDir = !string.IsNullOrEmpty(_firstFilePath) ? Path.GetDirectoryName(_firstFilePath) : null;
+            foreach (var folder in new[] { fileDir, Directory })
+            {
+                if (!string.IsNullOrEmpty(folder) && System.IO.Directory.Exists(folder))
+                {
+                    Process.Start(new ProcessStartInfo("explorer.exe", $"\"{folder}\"") { UseShellExecute = true });
+                    return;
+                }
+            }
         }
         catch (Exception)
         {

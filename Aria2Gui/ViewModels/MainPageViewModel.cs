@@ -786,8 +786,29 @@ public sealed partial class MainPageViewModel : ObservableObject
     [RelayCommand]
     private async Task RemoveSelectedAsync()
     {
-        foreach (var item in _selection.ToArray())
-            await item.RemoveAsync();
+        var items = _selection.ToArray();
+        if (items.Length == 0)
+            return;
+
+        // One prompt for the whole selection: delete the files, keep them, or cancel.
+        string message = items.Length == 1
+            ? L.Get("RemoveConfirmMessageOne", items[0].Name)
+            : L.Get("RemoveConfirmMessageMany", items.Length);
+        var choice = await DialogService.ChooseAsync(
+            L.Get("RemoveConfirmTitle"),
+            message,
+            L.Get("RemoveDeleteFiles"),
+            L.Get("RemoveKeepFiles"));
+        if (choice == DialogChoice.Cancel)
+            return;
+
+        foreach (var item in items)
+        {
+            if (choice == DialogChoice.Primary)
+                await item.RemoveWithFilesNoConfirmAsync();
+            else
+                await item.RemoveAsync();
+        }
         await RefreshAsync();
     }
 

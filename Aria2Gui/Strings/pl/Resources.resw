@@ -254,4 +254,9 @@ jeden w wierszu</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Już na liście - pominięto.</value></data>
   <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Sprawdź ponownie</value></data>
   <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Zwiń/rozwiń panel</value></data>
+  <data name="RemoveConfirmTitle" xml:space="preserve"><value>Usunąć pobieranie?</value></data>
+  <data name="RemoveConfirmMessageOne" xml:space="preserve"><value>Usunąć „{0}”? Wybierz, czy usunąć pliki, czy zachować je na dysku.</value></data>
+  <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>Usunąć {0} pobierań? Wybierz, czy usunąć pliki, czy je zachować.</value></data>
+  <data name="RemoveDeleteFiles" xml:space="preserve"><value>Usuń pliki</value></data>
+  <data name="RemoveKeepFiles" xml:space="preserve"><value>Zachowaj pliki</value></data>
 </root>

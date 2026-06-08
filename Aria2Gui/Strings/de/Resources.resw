@@ -254,4 +254,9 @@ einer pro Zeile</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Bereits in der Liste - übersprungen.</value></data>
   <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Erneut prüfen</value></data>
   <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Seitenleiste ein-/ausklappen</value></data>
+  <data name="RemoveConfirmTitle" xml:space="preserve"><value>Download entfernen?</value></data>
+  <data name="RemoveConfirmMessageOne" xml:space="preserve"><value>„{0}“ entfernen? Dateien löschen oder auf der Festplatte behalten?</value></data>
+  <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>{0} Downloads entfernen? Dateien löschen oder behalten?</value></data>
+  <data name="RemoveDeleteFiles" xml:space="preserve"><value>Dateien löschen</value></data>
+  <data name="RemoveKeepFiles" xml:space="preserve"><value>Dateien behalten</value></data>
 </root>

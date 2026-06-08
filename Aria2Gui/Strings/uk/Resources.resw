@@ -254,4 +254,9 @@
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Уже у списку - пропущено.</value></data>
   <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Перевірити знову</value></data>
   <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Згорнути/розгорнути панель</value></data>
+  <data name="RemoveConfirmTitle" xml:space="preserve"><value>Вилучити завантаження?</value></data>
+  <data name="RemoveConfirmMessageOne" xml:space="preserve"><value>Вилучити «{0}»? Виберіть: видалити файли чи залишити їх на диску.</value></data>
+  <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>Вилучити завантажень: {0}? Виберіть: видалити файли чи залишити їх.</value></data>
+  <data name="RemoveDeleteFiles" xml:space="preserve"><value>Видалити файли</value></data>
+  <data name="RemoveKeepFiles" xml:space="preserve"><value>Залишити файли</value></data>
 </root>

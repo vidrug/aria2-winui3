@@ -254,4 +254,9 @@
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>已在列表中，已跳过。</value></data>
   <data name="RowMenuRecheck.Text" xml:space="preserve"><value>重新校验</value></data>
   <data name="SidebarToggleButton.Label" xml:space="preserve"><value>折叠/展开侧栏</value></data>
+  <data name="RemoveConfirmTitle" xml:space="preserve"><value>移除下载？</value></data>
+  <data name="RemoveConfirmMessageOne" xml:space="preserve"><value>移除“{0}”？选择删除其文件还是保留在磁盘上。</value></data>
+  <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>移除 {0} 个下载？选择删除其文件还是保留在磁盘上。</value></data>
+  <data name="RemoveDeleteFiles" xml:space="preserve"><value>删除文件</value></data>
+  <data name="RemoveKeepFiles" xml:space="preserve"><value>保留文件</value></data>
 </root>
