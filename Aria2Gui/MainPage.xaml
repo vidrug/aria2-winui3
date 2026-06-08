@@ -280,6 +280,7 @@
                     Padding="0"
                     SelectionMode="Extended"
                     SelectionChanged="DownloadsList_SelectionChanged"
+                    ContainerContentChanging="ZebraList_ContainerContentChanging"
                     ItemsSource="{x:Bind ViewModel.Downloads, Mode=OneWay}">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
@@ -424,12 +425,18 @@
                     ResizeBehavior="BasedOnAlignment"
                     ResizeDirection="Auto" />
 
-                <!-- Details pane -->
-                <Grid
+                <!-- Details pane: wrapped in a WinUI-style card surface (rounded,
+                     card fill + stroke, 16px inner padding) that floats over the
+                     window's Mica with a 16px outer margin from the table above. -->
+                <Border
                     Grid.Row="2"
-                    Padding="16,4,12,8"
-                    BorderThickness="0,1,0,0"
-                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                    Margin="16,8,16,16"
+                    Padding="16"
+                    CornerRadius="{StaticResource OverlayCornerRadius}"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1">
+                    <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -493,9 +500,11 @@
                          per-file download checkboxes, size and live progress. Folders show
                          aggregate size/progress and a three-state checkbox that cascades. -->
                     <TreeView
+                        x:Name="FilesTree"
                         Grid.Row="1"
                         Margin="0,8,0,0"
                         SelectionMode="None"
+                        Loaded="FilesTree_Loaded"
                         ItemsSource="{x:Bind ViewModel.FileTree, Mode=OneWay}"
                         Visibility="{x:Bind local:MainPage.TabVisible(ViewModel.DetailsTabIndex, 1, ViewModel.HasSelection), Mode=OneWay}">
                         <TreeView.ItemTemplate>
@@ -567,7 +576,8 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                </Grid>
+                    </Grid>
+                </Border>
                 </Grid>
             </Grid>
         </NavigationView>

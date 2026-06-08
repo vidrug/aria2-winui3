@@ -3,6 +3,7 @@ using Aria2Gui.ViewModels;
 using Aria2Gui.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -33,6 +34,10 @@ public sealed partial class MainPage : Page
         Loaded += (_, _) => ViewModel.Initialize();
     }
 
+    /// <summary>Suppresses the filter transition on the very first selection (the initial
+    /// "All" filter set in the ViewModel ctor) so the table doesn't slide in on launch.</summary>
+    private bool _firstFilterChange = true;
+
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         // Refresh the settings form from disk each time the page is shown, and play
@@ -42,6 +47,49 @@ public sealed partial class MainPage : Page
             SettingsPage.LoadFromSettings();
             AnimateSettingsIn();
         }
+        else if (e.PropertyName == nameof(MainPageViewModel.SelectedFilter))
+        {
+            if (_firstFilterChange)
+                _firstFilterChange = false;
+            else
+                AnimateFilterChange();
+        }
+    }
+
+    /// <summary>
+    /// Reproduces NavigationView's page-change transition for the in-place filtered table:
+    /// a quick fade-in plus a small upward slide on the table container, mirroring the
+    /// <see cref="AnimateSettingsIn"/> helper but shorter/snappier to suit a filter swap.
+    /// </summary>
+    private void AnimateFilterChange()
+    {
+        var translate = new TranslateTransform { Y = 16 };
+        TableScroll.RenderTransform = translate;
+        TableScroll.Opacity = 0;
+
+        var fade = new DoubleAnimation
+        {
+            From = 0,
+            To = 1,
+            Duration = TimeSpan.FromMilliseconds(180),
+        };
+        Storyboard.SetTarget(fade, TableScroll);
+        Storyboard.SetTargetProperty(fade, "Opacity");
+
+        var slide = new DoubleAnimation
+        {
+            From = 16,
+            To = 0,
+            Duration = TimeSpan.FromMilliseconds(250),
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+        };
+        Storyboard.SetTarget(slide, translate);
+        Storyboard.SetTargetProperty(slide, "Y");
+
+        var storyboard = new Storyboard();
+        storyboard.Children.Add(fade);
+        storyboard.Children.Add(slide);
+        storyboard.Begin();
     }
 
     /// <summary>Mimics WinUI's navigation entrance transition for the settings page.</summary>
@@ -132,6 +180,58 @@ public sealed partial class MainPage : Page
 
     private void DownloadsList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
         ViewModel.SetSelection([.. DownloadsList.SelectedItems.OfType<DownloadItemViewModel>()]);
+
+    /// <summary>
+    /// Zebra-stripes a ListView/TreeViewList in place: every odd realized row gets a
+    /// faint subtle tint, even rows stay transparent. Keying off the live realized index
+    /// (<see cref="ContainerContentChangingEventArgs.ItemIndex"/>) rather than a stored flag
+    /// makes the stripe survive virtualization recycling and add/remove/expand reordering —
+    /// a recycled container is restamped for whatever row it now shows. The tint is a
+    /// background fill, so the selection/hover visual states (drawn above it) still win.
+    /// </summary>
+    private void ZebraList_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
+    {
+        if (args.ItemContainer is not SelectorItem container)
+            return;
+        container.Background = (args.ItemIndex & 1) == 1 ? ZebraBrush : null;
+    }
+
+    /// <summary>The subtle, theme-aware tint used for odd zebra rows. Resolved once per call
+    /// from the live ThemeResource so it tracks Light/Dark switches.</summary>
+    private static Microsoft.UI.Xaml.Media.Brush? ZebraBrush =>
+        Application.Current.Resources.TryGetValue("SubtleFillColorTertiaryBrush", out var value)
+            ? value as Microsoft.UI.Xaml.Media.Brush
+            : null;
+
+    /// <summary>
+    /// The details Files <see cref="TreeView"/> renders its rows through an inner
+    /// <c>TreeViewList</c> (a <see cref="ListViewBase"/>); hook that list's
+    /// ContainerContentChanging so the same zebra striping applies to the flattened,
+    /// currently-visible file rows and recalculates as folders expand/collapse.
+    /// </summary>
+    private void FilesTree_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (FindDescendant<ListViewBase>((DependencyObject)sender) is { } innerList)
+        {
+            innerList.ContainerContentChanging -= ZebraList_ContainerContentChanging;
+            innerList.ContainerContentChanging += ZebraList_ContainerContentChanging;
+        }
+    }
+
+    /// <summary>Depth-first search of the visual tree for the first descendant of type T.</summary>
+    private static T? FindDescendant<T>(DependencyObject root) where T : class
+    {
+        int count = VisualTreeHelper.GetChildrenCount(root);
+        for (int i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(root, i);
+            if (child is T match)
+                return match;
+            if (FindDescendant<T>(child) is { } nested)
+                return nested;
+        }
+        return null;
+    }
 
     private void DetailsTabs_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args) =>
         ViewModel.DetailsTabIndex = sender.Items.IndexOf(sender.SelectedItem);

@@ -312,7 +312,7 @@
                             </tk:SettingsCard.HeaderIcon>
                             <RadioButtons x:Name="CryptoLevelRadio" AutomationProperties.AutomationId="CryptoLevelRadio" HorizontalAlignment="Left">
                                 <RadioButton AutomationProperties.AutomationId="CryptoLevelPlain">
-                                    <StackPanel Spacing="2">
+                                    <StackPanel Spacing="4">
                                         <TextBlock loc:Localize.Uid="CryptoLevelPlainTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
                                         <TextBlock
                                             loc:Localize.Uid="CryptoLevelPlainDesc"
@@ -324,7 +324,7 @@
                                     </StackPanel>
                                 </RadioButton>
                                 <RadioButton AutomationProperties.AutomationId="CryptoLevelArc4">
-                                    <StackPanel Spacing="2">
+                                    <StackPanel Spacing="4">
                                         <TextBlock loc:Localize.Uid="CryptoLevelArc4Title" Style="{StaticResource BodyStrongTextBlockStyle}" />
                                         <TextBlock
                                             loc:Localize.Uid="CryptoLevelArc4Desc"
