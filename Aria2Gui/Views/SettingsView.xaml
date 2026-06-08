@@ -374,7 +374,7 @@
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE713;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <TextBox x:Name="ExtraOptionsBox" AutomationProperties.AutomationId="ExtraOptionsBox" PlaceholderText="bt-request-peer-speed-limit=100K&#x0a;bt-stop-timeout=0" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="160" FontFamily="Consolas" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                            <TextBox x:Name="ExtraOptionsBox" AutomationProperties.AutomationId="ExtraOptionsBox" PlaceholderText="bt-request-peer-speed-limit=100K&#x0a;bt-stop-timeout=0" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="160" FontFamily="{StaticResource MonospaceFontFamily}" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                         </tk:SettingsCard>
                         <InfoBar loc:Localize.Uid="AdvancedInfoBar" Severity="Informational" IsOpen="True" IsClosable="False" Margin="0,8,0,0" />
                     </StackPanel>
@@ -385,13 +385,13 @@
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE946;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <HyperlinkButton Content="github.com/vidrug/aria2-winui3" NavigateUri="https://github.com/vidrug/aria2-winui3" />
+                            <HyperlinkButton AutomationProperties.AutomationId="AboutProjectLink" Content="github.com/vidrug/aria2-winui3" NavigateUri="https://github.com/vidrug/aria2-winui3" />
                         </tk:SettingsCard>
                         <tk:SettingsCard x:Name="AriaInfoCard" Header="aria2">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE896;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <HyperlinkButton Content="github.com/aria2/aria2" NavigateUri="https://github.com/aria2/aria2" />
+                            <HyperlinkButton AutomationProperties.AutomationId="AboutAria2Link" Content="github.com/aria2/aria2" NavigateUri="https://github.com/aria2/aria2" />
                         </tk:SettingsCard>
                     </StackPanel>
 

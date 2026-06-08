@@ -12,6 +12,9 @@
                 <ResourceDictionary Source="ms-appx:///CommunityToolkit.WinUI.Controls.SettingsControls/SettingsCard/SettingsCard.xaml" />
                 <ResourceDictionary Source="ms-appx:///CommunityToolkit.WinUI.Controls.SettingsControls/SettingsExpander/SettingsExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!-- Resource-backed monospace family for code-entry fields, with a fallback
+                 chain so it degrades gracefully where the preferred face is absent. -->
+            <FontFamily x:Key="MonospaceFontFamily">Cascadia Mono, Consolas, Courier New</FontFamily>
             <!-- Other app resources here -->
         </ResourceDictionary>
     </Application.Resources>

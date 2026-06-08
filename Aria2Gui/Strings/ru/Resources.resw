@@ -44,6 +44,7 @@
   <data name="RowMenuRemove.Text" xml:space="preserve"><value>Удалить из списка</value></data>
   <data name="RowMenuRemoveWithFiles.Text" xml:space="preserve"><value>Удалить с файлами…</value></data>
   <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Качать</value></data>
+  <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Скачать этот файл</value></data>
   <data name="EmptyStateTitle.Text" xml:space="preserve"><value>Нет загрузок</value></data>
   <data name="EmptyStateHint.Text" xml:space="preserve"><value>Нажмите «Добавить» (Ctrl+N) или перетащите сюда торрент-файл</value></data>
   <data name="DetailsSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Высота панели сведений</value></data>

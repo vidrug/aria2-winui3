@@ -163,15 +163,6 @@ public sealed partial class MainPage : Page
     public static Visibility VisIf(bool value) =>
         value ? Visibility.Visible : Visibility.Collapsed;
 
-    /// <summary>x:Bind helper: error rows show their status in the critical (red) colour.</summary>
-    public static Microsoft.UI.Xaml.Media.Brush? StatusBrush(bool isError)
-    {
-        string key = isError ? "SystemFillColorCriticalBrush" : "TextFillColorPrimaryBrush";
-        return Application.Current.Resources.TryGetValue(key, out var value)
-            ? value as Microsoft.UI.Xaml.Media.Brush
-            : null;
-    }
-
     private void ColumnToggle_Click(object sender, RoutedEventArgs e)
     {
         if (sender is ToggleMenuFlyoutItem { Tag: string key } item)
@@ -242,8 +233,8 @@ public sealed partial class MainPage : Page
             ViewModel.Columns.ResizeBy(key, horizontalChange);
     }
 
-    /// <summary>Header tap → sort by that column (a repeat tap flips the direction).</summary>
-    private void Header_Tapped(object sender, TappedRoutedEventArgs e)
+    /// <summary>Header click → sort by that column (a repeat click flips the direction).</summary>
+    private void Header_Tapped(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { Tag: string key })
             ViewModel.ToggleSort(key);

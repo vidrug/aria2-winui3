@@ -44,6 +44,7 @@
   <data name="RowMenuRemove.Text" xml:space="preserve"><value>Listeden kaldır</value></data>
   <data name="RowMenuRemoveWithFiles.Text" xml:space="preserve"><value>Dosyalarla birlikte kaldır…</value></data>
   <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>İndir</value></data>
+  <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bu dosyayı indir</value></data>
   <data name="EmptyStateTitle.Text" xml:space="preserve"><value>İndirme yok</value></data>
   <data name="EmptyStateHint.Text" xml:space="preserve"><value>«Ekle» düğmesine tıklayın (Ctrl+N) veya bir torrent dosyasını buraya sürükleyin</value></data>
   <data name="DetailsSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ayrıntılar bölmesinin yüksekliği</value></data>

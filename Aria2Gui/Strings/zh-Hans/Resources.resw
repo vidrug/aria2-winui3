@@ -44,6 +44,7 @@
   <data name="RowMenuRemove.Text" xml:space="preserve"><value>从列表中删除</value></data>
   <data name="RowMenuRemoveWithFiles.Text" xml:space="preserve"><value>连同文件删除…</value></data>
   <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>下载</value></data>
+  <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>下载此文件</value></data>
   <data name="EmptyStateTitle.Text" xml:space="preserve"><value>暂无下载</value></data>
   <data name="EmptyStateHint.Text" xml:space="preserve"><value>点击“添加”(Ctrl+N) 或将种子文件拖到此处</value></data>
   <data name="DetailsSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>详情面板高度</value></data>

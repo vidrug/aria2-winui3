@@ -44,6 +44,7 @@
   <data name="RowMenuRemove.Text" xml:space="preserve"><value>Retirer de la liste</value></data>
   <data name="RowMenuRemoveWithFiles.Text" xml:space="preserve"><value>Supprimer avec les fichiers…</value></data>
   <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Télécharger</value></data>
+  <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Télécharger ce fichier</value></data>
   <data name="EmptyStateTitle.Text" xml:space="preserve"><value>Aucun téléchargement</value></data>
   <data name="EmptyStateHint.Text" xml:space="preserve"><value>Cliquez sur « Ajouter » (Ctrl+N) ou glissez un fichier torrent ici</value></data>
   <data name="DetailsSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hauteur du volet de détails</value></data>

@@ -44,6 +44,7 @@
   <data name="RowMenuRemove.Text" xml:space="preserve"><value>リストから削除</value></data>
   <data name="RowMenuRemoveWithFiles.Text" xml:space="preserve"><value>ファイルごと削除…</value></data>
   <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>このファイルをダウンロード</value></data>
   <data name="EmptyStateTitle.Text" xml:space="preserve"><value>ダウンロードがありません</value></data>
   <data name="EmptyStateHint.Text" xml:space="preserve"><value>「追加」(Ctrl+N) をクリックするか、torrent ファイルをここにドラッグしてください</value></data>
   <data name="DetailsSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>詳細ペインの高さ</value></data>
