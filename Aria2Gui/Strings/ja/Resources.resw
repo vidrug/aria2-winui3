@@ -194,4 +194,52 @@
   <data name="LanguageCard.Header" xml:space="preserve"><value>表示言語</value></data>
   <data name="LanguageCard.Description" xml:space="preserve"><value>アプリの再起動後に適用されます</value></data>
   <data name="LanguageSystemItem.Content" xml:space="preserve"><value>システム既定</value></data>
+  <data name="FilterAll" xml:space="preserve"><value>すべて</value></data>
+  <data name="FilterDownloading" xml:space="preserve"><value>ダウンロード中</value></data>
+  <data name="FilterSeeding" xml:space="preserve"><value>シード中</value></data>
+  <data name="FilterCompleted" xml:space="preserve"><value>完了</value></data>
+  <data name="FilterPaused" xml:space="preserve"><value>一時停止</value></data>
+  <data name="FilterQueued" xml:space="preserve"><value>待機中</value></data>
+  <data name="FilterError" xml:space="preserve"><value>エラー</value></data>
+  <data name="ColName" xml:space="preserve"><value>名前</value></data>
+  <data name="ColSize" xml:space="preserve"><value>サイズ</value></data>
+  <data name="ColProgress" xml:space="preserve"><value>進捗</value></data>
+  <data name="ColStatus" xml:space="preserve"><value>状態</value></data>
+  <data name="ColSeeds" xml:space="preserve"><value>シード</value></data>
+  <data name="ColPeers" xml:space="preserve"><value>ピア</value></data>
+  <data name="ColDown" xml:space="preserve"><value>下り</value></data>
+  <data name="ColUp" xml:space="preserve"><value>上り</value></data>
+  <data name="ColEta" xml:space="preserve"><value>残り時間</value></data>
+  <data name="ColRatio" xml:space="preserve"><value>比率</value></data>
+  <data name="EngineStarting" xml:space="preserve"><value>aria2 を起動中…</value></data>
+  <data name="EngineRunning" xml:space="preserve"><value>aria2 は実行中です</value></data>
+  <data name="EngineRestarting" xml:space="preserve"><value>aria2 を再起動中…</value></data>
+  <data name="EngineFailed" xml:space="preserve"><value>aria2 の起動に失敗しました</value></data>
+  <data name="EngineStopped" xml:space="preserve"><value>aria2 が停止しました</value></data>
+  <data name="EngineUnknownError" xml:space="preserve"><value>不明なエラーです。</value></data>
+  <data name="CountsText" xml:space="preserve"><value>アクティブ: {0} • 待機中: {1} • 完了: {2}</value></data>
+  <data name="DetailSizeOf" xml:space="preserve"><value>{1} 中 {0}</value></data>
+  <data name="DetailSeedsPeers" xml:space="preserve"><value>シード: {0} • ピア: {1}</value></data>
+  <data name="DetailConnections" xml:space="preserve"><value>接続数: {0}</value></data>
+  <data name="PeerKindSeeder" xml:space="preserve"><value>シード</value></data>
+  <data name="PeerKindPeer" xml:space="preserve"><value>ピア</value></data>
+  <data name="UnitsSize" xml:space="preserve"><value>B,KB,MB,GB,TB</value></data>
+  <data name="UnitSpeedPerSecond" xml:space="preserve"><value>/秒</value></data>
+  <data name="UnitHour" xml:space="preserve"><value>時間</value></data>
+  <data name="UnitMinute" xml:space="preserve"><value>分</value></data>
+  <data name="UnitSecond" xml:space="preserve"><value>秒</value></data>
+  <data name="DialogCancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="NotifyDownloadComplete" xml:space="preserve"><value>ダウンロード完了</value></data>
+  <data name="NotifyDownloadError" xml:space="preserve"><value>ダウンロードエラー</value></data>
+  <data name="TorrentErrInvalidFile" xml:space="preserve"><value>このファイルは有効な torrent ファイルではありません。</value></data>
+  <data name="TorrentErrNoInfo" xml:space="preserve"><value>torrent ファイルに info セクションがありません。</value></data>
+  <data name="TorrentErrBadFileList" xml:space="preserve"><value>torrent のファイルリストが破損しています。</value></data>
+  <data name="TorrentErrUnexpectedEnd" xml:space="preserve"><value>torrent ファイルが予期せず終了しています。</value></data>
+  <data name="TorrentErrUnclosedInt" xml:space="preserve"><value>bencode 内に閉じられていない整数があります。</value></data>
+  <data name="TorrentErrKeyNotString" xml:space="preserve"><value>bencode 辞書のキーが文字列ではありません。</value></data>
+  <data name="TorrentErrBadString" xml:space="preserve"><value>bencode 文字列が破損しています。</value></data>
+  <data name="TorrentErrStringOOB" xml:space="preserve"><value>bencode 文字列がファイルの範囲を超えています。</value></data>
+  <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>予期しない bencode バイト: 0x{0}。</value></data>
+  <data name="RpcConnectionLost" xml:space="preserve"><value>aria2 との接続が切断されました。</value></data>
+  <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>切り詰め (trunc)</value></data>
 </root>

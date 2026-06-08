@@ -33,13 +33,13 @@ public sealed partial class MainPageViewModel : ObservableObject
 
     public FilterItemViewModel[] Filters { get; } =
     [
-        new("all", "Все", ""),
-        new("downloading", "Загружаются", ""),
-        new("seeding", "Раздаются", ""),
-        new("completed", "Завершённые", ""),
-        new("paused", "Приостановленные", ""),
-        new("queued", "В очереди", ""),
-        new("error", "Ошибки", ""),
+        new("all", L.Get("FilterAll"), ""),
+        new("downloading", L.Get("FilterDownloading"), ""),
+        new("seeding", L.Get("FilterSeeding"), ""),
+        new("completed", L.Get("FilterCompleted"), ""),
+        new("paused", L.Get("FilterPaused"), ""),
+        new("queued", L.Get("FilterQueued"), ""),
+        new("error", L.Get("FilterError"), ""),
     ];
 
     [ObservableProperty]
@@ -62,7 +62,7 @@ public sealed partial class MainPageViewModel : ObservableObject
     public partial bool SortDescending { get; set; }
 
     [ObservableProperty]
-    public partial string EngineStatusText { get; set; } = "Запуск aria2…";
+    public partial string EngineStatusText { get; set; } = L.Get("EngineStarting");
 
     [ObservableProperty]
     public partial bool IsEngineReady { get; set; }
@@ -74,7 +74,7 @@ public sealed partial class MainPageViewModel : ObservableObject
     public partial string EngineErrorText { get; set; } = "";
 
     [ObservableProperty]
-    public partial string GlobalSpeedText { get; set; } = "↓ 0 Б/с   ↑ 0 Б/с";
+    public partial string GlobalSpeedText { get; set; } = $"↓ {FormatUtils.FormatSpeed(0)}   ↑ {FormatUtils.FormatSpeed(0)}";
 
     [ObservableProperty]
     public partial string CountsText { get; set; } = "";
@@ -86,7 +86,7 @@ public sealed partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     public partial bool SettingsOpen { get; set; }
 
-    // ---- details pane (Общие) ----
+    // ---- details pane (General) ----
     [ObservableProperty]
     public partial string DetSavePath { get; set; } = "";
 
@@ -181,14 +181,14 @@ public sealed partial class MainPageViewModel : ObservableObject
         HasEngineError = state == Aria2ServiceState.Failed;
         EngineStatusText = state switch
         {
-            Aria2ServiceState.Starting => "Запуск aria2…",
-            Aria2ServiceState.Running => "aria2 работает",
-            Aria2ServiceState.Restarting => "Перезапуск aria2…",
-            Aria2ServiceState.Failed => "aria2 не запустился",
-            _ => "aria2 остановлен",
+            Aria2ServiceState.Starting => L.Get("EngineStarting"),
+            Aria2ServiceState.Running => L.Get("EngineRunning"),
+            Aria2ServiceState.Restarting => L.Get("EngineRestarting"),
+            Aria2ServiceState.Failed => L.Get("EngineFailed"),
+            _ => L.Get("EngineStopped"),
         };
         if (state == Aria2ServiceState.Failed)
-            EngineErrorText = _service.LastError ?? "Неизвестная ошибка.";
+            EngineErrorText = _service.LastError ?? L.Get("EngineUnknownError");
         if (state == Aria2ServiceState.Running)
             _ = RefreshAsync();
     }
@@ -314,7 +314,7 @@ public sealed partial class MainPageViewModel : ObservableObject
 
         IsEmpty = Downloads.Count == 0;
         GlobalSpeedText = $"↓ {FormatUtils.FormatSpeed(snapshot.GlobalStat.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(snapshot.GlobalStat.UploadSpeed)}";
-        CountsText = $"Активных: {snapshot.GlobalStat.NumActive} • В очереди: {snapshot.GlobalStat.NumWaiting} • Завершённых: {snapshot.GlobalStat.NumStopped}";
+        CountsText = L.Get("CountsText", snapshot.GlobalStat.NumActive, snapshot.GlobalStat.NumWaiting, snapshot.GlobalStat.NumStopped);
     }
 
     // ------------------------------------------------------------------ filtering
@@ -481,7 +481,7 @@ public sealed partial class MainPageViewModel : ObservableObject
 
         DetSavePath = item.Directory ?? "";
         DetSize = item.TotalLength > 0
-            ? $"{FormatUtils.FormatSize(item.CompletedLength)} из {FormatUtils.FormatSize(item.TotalLength)}"
+            ? L.Get("DetailSizeOf", FormatUtils.FormatSize(item.CompletedLength), FormatUtils.FormatSize(item.TotalLength))
             : FormatUtils.FormatSize(item.CompletedLength);
         DetStatus = item.StatusText;
         DetHash = item.InfoHash ?? "—";
@@ -489,8 +489,8 @@ public sealed partial class MainPageViewModel : ObservableObject
         DetUploaded = FormatUtils.FormatSize(item.UploadLength);
         DetSpeed = $"↓ {FormatUtils.FormatSpeed(item.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(item.UploadSpeed)}";
         DetConnections = item.IsTorrent
-            ? $"Сиды: {item.NumSeeders} • Пиры: {item.Connections}"
-            : $"Соединения: {item.Connections}";
+            ? L.Get("DetailSeedsPeers", item.NumSeeders, item.Connections)
+            : L.Get("DetailConnections", item.Connections);
         DetError = item.ErrorMessage ?? "";
         DetHasError = !string.IsNullOrEmpty(item.ErrorMessage);
 
@@ -735,7 +735,7 @@ public sealed partial class MainPageViewModel : ObservableObject
                     Peers.Add(row);
                 }
                 row.Address = $"{peers[i].Ip}:{peers[i].Port}";
-                row.Kind = peers[i].Seeder ? "Сид" : "Пир";
+                row.Kind = peers[i].Seeder ? L.Get("PeerKindSeeder") : L.Get("PeerKindPeer");
                 row.DownSpeedText = FormatUtils.FormatSpeed(peers[i].DownloadSpeed);
                 row.UpSpeedText = FormatUtils.FormatSpeed(peers[i].UploadSpeed);
             }

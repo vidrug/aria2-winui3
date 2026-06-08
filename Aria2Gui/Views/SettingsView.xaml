@@ -237,6 +237,7 @@
                                 <ComboBoxItem x:Uid="FileAllocAutoItem" Tag="auto" />
                                 <ComboBoxItem x:Uid="FileAllocNoneItem" Tag="none" />
                                 <ComboBoxItem x:Uid="FileAllocPreallocItem" Tag="prealloc" />
+                                <ComboBoxItem x:Uid="FileAllocTruncItem" Tag="trunc" />
                                 <ComboBoxItem x:Uid="FileAllocFallocItem" Tag="falloc" />
                             </ComboBox>
                         </tk:SettingsCard>
@@ -360,14 +361,7 @@
                         <InfoBar x:Uid="AdvancedInfoBar" Severity="Informational" IsOpen="True" IsClosable="False" Margin="0,8,0,0" />
                     </StackPanel>
 
-                    <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" IsClosable="False" Margin="0,8,0,0" />
-
-                    <Button
-                        x:Uid="SaveSettingsButton"
-                        AutomationProperties.AutomationId="SaveSettingsButton"
-                        Style="{StaticResource AccentButtonStyle}"
-                        Margin="0,16,0,0"
-                        Click="OnSaveClick" />
+                    <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" IsClosable="False" Margin="0,8,0,16" />
                 </StackPanel>
                 </Grid>
             </ScrollViewer>

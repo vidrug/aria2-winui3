@@ -73,11 +73,7 @@ public partial class App : Application
         Window = new MainWindow();
         DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         // Stop aria2c gracefully (saves the session) and remove the tray icon on close.
-        Window.Closed += (_, _) =>
-        {
-            (Window as MainWindow)?.Tray.Dispose();
-            Services.Aria2.Aria2Service.Instance.Shutdown();
-        };
+        Window.Closed += (_, _) => RunExitCleanup();
 
         // A second app launch redirects here (see Program) — surface our window.
         // Window.Activate() alone does not restore a minimized window.
@@ -99,6 +95,22 @@ public partial class App : Application
         // Start the aria2c engine in the background; the UI reflects service state.
         _ = InitializeEngineAsync();
     }
+
+    /// <summary>
+    /// Graceful teardown: save the aria2 session, stop the engine, and remove the tray icon.
+    /// Runs on window close and also before a language-change relaunch — <see cref="Microsoft.Windows.AppLifecycle.AppInstance.Restart"/>
+    /// terminates the process without raising <see cref="Window.Closed"/>. Idempotent.
+    /// </summary>
+    public static void RunExitCleanup()
+    {
+        if (_cleanedUp)
+            return;
+        _cleanedUp = true;
+        (Window as MainWindow)?.Tray.Dispose();
+        Services.Aria2.Aria2Service.Instance.Shutdown();
+    }
+
+    private static bool _cleanedUp;
 
     private static async Task InitializeEngineAsync()
     {

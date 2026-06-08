@@ -404,7 +404,7 @@ public sealed class Aria2RpcClient : IAsyncDisposable
         foreach (var key in _pending.Keys)
         {
             if (_pending.TryRemove(key, out var tcs))
-                tcs.TrySetException(new Aria2RpcException(-1, "Соединение с aria2 разорвано."));
+                tcs.TrySetException(new Aria2RpcException(-1, Aria2Gui.Helpers.L.Get("RpcConnectionLost")));
         }
     }
 

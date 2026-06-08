@@ -18,9 +18,9 @@ public static class TorrentParser
     {
         int pos = 0;
         if (ParseValue(data, ref pos) is not Dictionary<string, object> root)
-            throw new InvalidDataException("Файл не является корректным torrent-файлом.");
+            throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrInvalidFile"));
         if (!root.TryGetValue("info", out var infoObj) || infoObj is not Dictionary<string, object> info)
-            throw new InvalidDataException("В torrent-файле нет секции info.");
+            throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrNoInfo"));
 
         string name = GetUtf8(info, "name.utf-8") ?? GetUtf8(info, "name") ?? "torrent";
 
@@ -31,7 +31,7 @@ public static class TorrentParser
             foreach (var fileObj in files)
             {
                 if (fileObj is not Dictionary<string, object> file)
-                    throw new InvalidDataException("Повреждённый список файлов торрента.");
+                    throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrBadFileList"));
                 long length = file.TryGetValue("length", out var l) && l is long len ? len : 0;
                 object? pathObj = file.TryGetValue("path.utf-8", out var p8) ? p8
                     : file.TryGetValue("path", out var p) ? p : null;
@@ -59,7 +59,7 @@ public static class TorrentParser
     private static object ParseValue(byte[] data, ref int pos)
     {
         if (pos >= data.Length)
-            throw new InvalidDataException("Неожиданный конец torrent-файла.");
+            throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrUnexpectedEnd"));
         byte marker = data[pos];
 
         if (marker == (byte)'i')
@@ -67,7 +67,7 @@ public static class TorrentParser
             pos++;
             int end = Array.IndexOf(data, (byte)'e', pos);
             if (end < 0)
-                throw new InvalidDataException("Незакрытое целое в bencode.");
+                throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrUnclosedInt"));
             long value = long.Parse(Encoding.ASCII.GetString(data, pos, end - pos));
             pos = end + 1;
             return value;
@@ -90,7 +90,7 @@ public static class TorrentParser
             while (pos < data.Length && data[pos] != (byte)'e')
             {
                 if (ParseValue(data, ref pos) is not byte[] keyBytes)
-                    throw new InvalidDataException("Ключ bencode-словаря не строка.");
+                    throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrKeyNotString"));
                 dict[Encoding.UTF8.GetString(keyBytes)] = ParseValue(data, ref pos);
             }
             pos++; // 'e'
@@ -101,16 +101,16 @@ public static class TorrentParser
         {
             int colon = Array.IndexOf(data, (byte)':', pos);
             if (colon < 0)
-                throw new InvalidDataException("Повреждённая строка bencode.");
+                throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrBadString"));
             int length = int.Parse(Encoding.ASCII.GetString(data, pos, colon - pos));
             if (length < 0 || colon + 1 + length > data.Length)
-                throw new InvalidDataException("Строка bencode выходит за границы файла.");
+                throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrStringOOB"));
             byte[] bytes = new byte[length];
             Array.Copy(data, colon + 1, bytes, 0, length);
             pos = colon + 1 + length;
             return bytes;
         }
 
-        throw new InvalidDataException($"Неожиданный байт bencode: 0x{marker:X2}.");
+        throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrUnexpectedByte", marker.ToString("X2")));
     }
 }

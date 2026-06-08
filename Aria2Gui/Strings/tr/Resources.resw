@@ -194,4 +194,52 @@ her satıra bir tane</value></data>
   <data name="LanguageCard.Header" xml:space="preserve"><value>Arayüz dili</value></data>
   <data name="LanguageCard.Description" xml:space="preserve"><value>Uygulama yeniden başlatıldıktan sonra uygulanır</value></data>
   <data name="LanguageSystemItem.Content" xml:space="preserve"><value>Sistem varsayılanı</value></data>
+  <data name="FilterAll" xml:space="preserve"><value>Tümü</value></data>
+  <data name="FilterDownloading" xml:space="preserve"><value>İndiriliyor</value></data>
+  <data name="FilterSeeding" xml:space="preserve"><value>Tohumlanıyor</value></data>
+  <data name="FilterCompleted" xml:space="preserve"><value>Tamamlandı</value></data>
+  <data name="FilterPaused" xml:space="preserve"><value>Duraklatıldı</value></data>
+  <data name="FilterQueued" xml:space="preserve"><value>Kuyrukta</value></data>
+  <data name="FilterError" xml:space="preserve"><value>Hata</value></data>
+  <data name="ColName" xml:space="preserve"><value>Ad</value></data>
+  <data name="ColSize" xml:space="preserve"><value>Boyut</value></data>
+  <data name="ColProgress" xml:space="preserve"><value>İlerleme</value></data>
+  <data name="ColStatus" xml:space="preserve"><value>Durum</value></data>
+  <data name="ColSeeds" xml:space="preserve"><value>Tohumlar</value></data>
+  <data name="ColPeers" xml:space="preserve"><value>Eşler</value></data>
+  <data name="ColDown" xml:space="preserve"><value>İndirme</value></data>
+  <data name="ColUp" xml:space="preserve"><value>Gönderme</value></data>
+  <data name="ColEta" xml:space="preserve"><value>Kalan Süre</value></data>
+  <data name="ColRatio" xml:space="preserve"><value>Oran</value></data>
+  <data name="EngineStarting" xml:space="preserve"><value>aria2 başlatılıyor…</value></data>
+  <data name="EngineRunning" xml:space="preserve"><value>aria2 çalışıyor</value></data>
+  <data name="EngineRestarting" xml:space="preserve"><value>aria2 yeniden başlatılıyor…</value></data>
+  <data name="EngineFailed" xml:space="preserve"><value>aria2 başlatılamadı</value></data>
+  <data name="EngineStopped" xml:space="preserve"><value>aria2 durduruldu</value></data>
+  <data name="EngineUnknownError" xml:space="preserve"><value>Bilinmeyen hata.</value></data>
+  <data name="CountsText" xml:space="preserve"><value>Etkin: {0} • Kuyrukta: {1} • Tamamlanan: {2}</value></data>
+  <data name="DetailSizeOf" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="DetailSeedsPeers" xml:space="preserve"><value>Tohumlar: {0} • Eşler: {1}</value></data>
+  <data name="DetailConnections" xml:space="preserve"><value>Bağlantılar: {0}</value></data>
+  <data name="PeerKindSeeder" xml:space="preserve"><value>Tohum</value></data>
+  <data name="PeerKindPeer" xml:space="preserve"><value>Eş</value></data>
+  <data name="UnitsSize" xml:space="preserve"><value>B,KB,MB,GB,TB</value></data>
+  <data name="UnitSpeedPerSecond" xml:space="preserve"><value>/sn</value></data>
+  <data name="UnitHour" xml:space="preserve"><value>sa</value></data>
+  <data name="UnitMinute" xml:space="preserve"><value>dk</value></data>
+  <data name="UnitSecond" xml:space="preserve"><value>sn</value></data>
+  <data name="DialogCancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="NotifyDownloadComplete" xml:space="preserve"><value>İndirme tamamlandı</value></data>
+  <data name="NotifyDownloadError" xml:space="preserve"><value>İndirme hatası</value></data>
+  <data name="TorrentErrInvalidFile" xml:space="preserve"><value>Dosya geçerli bir torrent dosyası değil.</value></data>
+  <data name="TorrentErrNoInfo" xml:space="preserve"><value>Torrent dosyasında info bölümü yok.</value></data>
+  <data name="TorrentErrBadFileList" xml:space="preserve"><value>Bozuk torrent dosya listesi.</value></data>
+  <data name="TorrentErrUnexpectedEnd" xml:space="preserve"><value>Torrent dosyasının beklenmedik sonu.</value></data>
+  <data name="TorrentErrUnclosedInt" xml:space="preserve"><value>Bencode içinde sonlandırılmamış tam sayı.</value></data>
+  <data name="TorrentErrKeyNotString" xml:space="preserve"><value>Bencode sözlük anahtarı bir dize değil.</value></data>
+  <data name="TorrentErrBadString" xml:space="preserve"><value>Bozuk bencode dizesi.</value></data>
+  <data name="TorrentErrStringOOB" xml:space="preserve"><value>Bencode dizesi dosya sınırlarını aşıyor.</value></data>
+  <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>Beklenmeyen bencode baytı: 0x{0}.</value></data>
+  <data name="RpcConnectionLost" xml:space="preserve"><value>aria2 bağlantısı kesildi.</value></data>
+  <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Kırp (trunc)</value></data>
 </root>

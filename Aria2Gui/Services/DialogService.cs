@@ -44,7 +44,7 @@ public static class DialogService
                 Title = title,
                 Content = message,
                 PrimaryButtonText = confirmText,
-                CloseButtonText = "Отмена",
+                CloseButtonText = Aria2Gui.Helpers.L.Get("DialogCancel"),
                 DefaultButton = ContentDialogButton.Close,
                 XamlRoot = root,
             };

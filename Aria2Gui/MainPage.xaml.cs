@@ -125,9 +125,13 @@ public sealed partial class MainPage : Page
             ViewModel.ToggleSort(key);
     }
 
-    /// <summary>x:Bind helper: appends a sort-direction arrow to the active column header.</summary>
-    public static string HeaderLabel(string label, string key, string? sortKey, bool descending) =>
-        key == sortKey ? $"{label}  {(descending ? "▾" : "▴")}" : label;
+    /// <summary>x:Bind helper: resolves the localized column header (by resource key) and
+    /// appends a sort-direction arrow when that column is the active sort.</summary>
+    public static string HeaderLabel(string resKey, string key, string? sortKey, bool descending)
+    {
+        string label = Helpers.L.Get(resKey);
+        return key == sortKey ? $"{label}  {(descending ? "▾" : "▴")}" : label;
+    }
 
     /// <summary>x:Bind helper: folder vs file glyph for the details file tree.</summary>
     public static string FileNodeGlyph(bool isFolder) => isFolder ? "" : "";

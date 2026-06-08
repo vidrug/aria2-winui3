@@ -194,4 +194,52 @@ um por linha</value></data>
   <data name="LanguageCard.Header" xml:space="preserve"><value>Idioma da interface</value></data>
   <data name="LanguageCard.Description" xml:space="preserve"><value>Aplicado após reiniciar o aplicativo</value></data>
   <data name="LanguageSystemItem.Content" xml:space="preserve"><value>Padrão do sistema</value></data>
+  <data name="FilterAll" xml:space="preserve"><value>Todos</value></data>
+  <data name="FilterDownloading" xml:space="preserve"><value>Baixando</value></data>
+  <data name="FilterSeeding" xml:space="preserve"><value>Semeando</value></data>
+  <data name="FilterCompleted" xml:space="preserve"><value>Concluídos</value></data>
+  <data name="FilterPaused" xml:space="preserve"><value>Pausados</value></data>
+  <data name="FilterQueued" xml:space="preserve"><value>Na fila</value></data>
+  <data name="FilterError" xml:space="preserve"><value>Erros</value></data>
+  <data name="ColName" xml:space="preserve"><value>Nome</value></data>
+  <data name="ColSize" xml:space="preserve"><value>Tamanho</value></data>
+  <data name="ColProgress" xml:space="preserve"><value>Progresso</value></data>
+  <data name="ColStatus" xml:space="preserve"><value>Status</value></data>
+  <data name="ColSeeds" xml:space="preserve"><value>Seeds</value></data>
+  <data name="ColPeers" xml:space="preserve"><value>Peers</value></data>
+  <data name="ColDown" xml:space="preserve"><value>Down</value></data>
+  <data name="ColUp" xml:space="preserve"><value>Up</value></data>
+  <data name="ColEta" xml:space="preserve"><value>Restante</value></data>
+  <data name="ColRatio" xml:space="preserve"><value>Ratio</value></data>
+  <data name="EngineStarting" xml:space="preserve"><value>Iniciando aria2…</value></data>
+  <data name="EngineRunning" xml:space="preserve"><value>aria2 em execução</value></data>
+  <data name="EngineRestarting" xml:space="preserve"><value>Reiniciando aria2…</value></data>
+  <data name="EngineFailed" xml:space="preserve"><value>Falha ao iniciar o aria2</value></data>
+  <data name="EngineStopped" xml:space="preserve"><value>aria2 parado</value></data>
+  <data name="EngineUnknownError" xml:space="preserve"><value>Erro desconhecido.</value></data>
+  <data name="CountsText" xml:space="preserve"><value>Ativos: {0} • Na fila: {1} • Concluídos: {2}</value></data>
+  <data name="DetailSizeOf" xml:space="preserve"><value>{0} de {1}</value></data>
+  <data name="DetailSeedsPeers" xml:space="preserve"><value>Seeds: {0} • Peers: {1}</value></data>
+  <data name="DetailConnections" xml:space="preserve"><value>Conexões: {0}</value></data>
+  <data name="PeerKindSeeder" xml:space="preserve"><value>Seed</value></data>
+  <data name="PeerKindPeer" xml:space="preserve"><value>Peer</value></data>
+  <data name="UnitsSize" xml:space="preserve"><value>B,KB,MB,GB,TB</value></data>
+  <data name="UnitSpeedPerSecond" xml:space="preserve"><value>/s</value></data>
+  <data name="UnitHour" xml:space="preserve"><value>h</value></data>
+  <data name="UnitMinute" xml:space="preserve"><value>min</value></data>
+  <data name="UnitSecond" xml:space="preserve"><value>s</value></data>
+  <data name="DialogCancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="NotifyDownloadComplete" xml:space="preserve"><value>Download concluído</value></data>
+  <data name="NotifyDownloadError" xml:space="preserve"><value>Erro no download</value></data>
+  <data name="TorrentErrInvalidFile" xml:space="preserve"><value>O arquivo não é um arquivo torrent válido.</value></data>
+  <data name="TorrentErrNoInfo" xml:space="preserve"><value>O arquivo torrent não tem seção info.</value></data>
+  <data name="TorrentErrBadFileList" xml:space="preserve"><value>Lista de arquivos do torrent corrompida.</value></data>
+  <data name="TorrentErrUnexpectedEnd" xml:space="preserve"><value>Fim inesperado do arquivo torrent.</value></data>
+  <data name="TorrentErrUnclosedInt" xml:space="preserve"><value>Inteiro não terminado em bencode.</value></data>
+  <data name="TorrentErrKeyNotString" xml:space="preserve"><value>A chave do dicionário bencode não é uma string.</value></data>
+  <data name="TorrentErrBadString" xml:space="preserve"><value>String bencode corrompida.</value></data>
+  <data name="TorrentErrStringOOB" xml:space="preserve"><value>A string bencode ultrapassa os limites do arquivo.</value></data>
+  <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>Byte bencode inesperado: 0x{0}.</value></data>
+  <data name="RpcConnectionLost" xml:space="preserve"><value>A conexão com o aria2 foi perdida.</value></data>
+  <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Truncar (trunc)</value></data>
 </root>

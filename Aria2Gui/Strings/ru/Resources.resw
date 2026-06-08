@@ -194,4 +194,52 @@
   <data name="LanguageCard.Header" xml:space="preserve"><value>Язык интерфейса</value></data>
   <data name="LanguageCard.Description" xml:space="preserve"><value>Применяется после перезапуска приложения</value></data>
   <data name="LanguageSystemItem.Content" xml:space="preserve"><value>Как в системе</value></data>
+  <data name="FilterAll" xml:space="preserve"><value>Все</value></data>
+  <data name="FilterDownloading" xml:space="preserve"><value>Загружаются</value></data>
+  <data name="FilterSeeding" xml:space="preserve"><value>Раздаются</value></data>
+  <data name="FilterCompleted" xml:space="preserve"><value>Завершённые</value></data>
+  <data name="FilterPaused" xml:space="preserve"><value>Приостановленные</value></data>
+  <data name="FilterQueued" xml:space="preserve"><value>В очереди</value></data>
+  <data name="FilterError" xml:space="preserve"><value>Ошибки</value></data>
+  <data name="ColName" xml:space="preserve"><value>Имя</value></data>
+  <data name="ColSize" xml:space="preserve"><value>Размер</value></data>
+  <data name="ColProgress" xml:space="preserve"><value>Прогресс</value></data>
+  <data name="ColStatus" xml:space="preserve"><value>Статус</value></data>
+  <data name="ColSeeds" xml:space="preserve"><value>Сиды</value></data>
+  <data name="ColPeers" xml:space="preserve"><value>Пиры</value></data>
+  <data name="ColDown" xml:space="preserve"><value>Загрузка</value></data>
+  <data name="ColUp" xml:space="preserve"><value>Отдача</value></data>
+  <data name="ColEta" xml:space="preserve"><value>Осталось</value></data>
+  <data name="ColRatio" xml:space="preserve"><value>Рейтинг</value></data>
+  <data name="EngineStarting" xml:space="preserve"><value>Запуск aria2…</value></data>
+  <data name="EngineRunning" xml:space="preserve"><value>aria2 работает</value></data>
+  <data name="EngineRestarting" xml:space="preserve"><value>Перезапуск aria2…</value></data>
+  <data name="EngineFailed" xml:space="preserve"><value>aria2 не запустился</value></data>
+  <data name="EngineStopped" xml:space="preserve"><value>aria2 остановлен</value></data>
+  <data name="EngineUnknownError" xml:space="preserve"><value>Неизвестная ошибка.</value></data>
+  <data name="CountsText" xml:space="preserve"><value>Активных: {0} • В очереди: {1} • Завершённых: {2}</value></data>
+  <data name="DetailSizeOf" xml:space="preserve"><value>{0} из {1}</value></data>
+  <data name="DetailSeedsPeers" xml:space="preserve"><value>Сиды: {0} • Пиры: {1}</value></data>
+  <data name="DetailConnections" xml:space="preserve"><value>Соединения: {0}</value></data>
+  <data name="PeerKindSeeder" xml:space="preserve"><value>Сид</value></data>
+  <data name="PeerKindPeer" xml:space="preserve"><value>Пир</value></data>
+  <data name="UnitsSize" xml:space="preserve"><value>Б,КБ,МБ,ГБ,ТБ</value></data>
+  <data name="UnitSpeedPerSecond" xml:space="preserve"><value>/с</value></data>
+  <data name="UnitHour" xml:space="preserve"><value>ч</value></data>
+  <data name="UnitMinute" xml:space="preserve"><value>мин</value></data>
+  <data name="UnitSecond" xml:space="preserve"><value>с</value></data>
+  <data name="DialogCancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="NotifyDownloadComplete" xml:space="preserve"><value>Загрузка завершена</value></data>
+  <data name="NotifyDownloadError" xml:space="preserve"><value>Ошибка загрузки</value></data>
+  <data name="TorrentErrInvalidFile" xml:space="preserve"><value>Файл не является корректным torrent-файлом.</value></data>
+  <data name="TorrentErrNoInfo" xml:space="preserve"><value>В torrent-файле нет секции info.</value></data>
+  <data name="TorrentErrBadFileList" xml:space="preserve"><value>Повреждённый список файлов торрента.</value></data>
+  <data name="TorrentErrUnexpectedEnd" xml:space="preserve"><value>Неожиданный конец torrent-файла.</value></data>
+  <data name="TorrentErrUnclosedInt" xml:space="preserve"><value>Незакрытое целое в bencode.</value></data>
+  <data name="TorrentErrKeyNotString" xml:space="preserve"><value>Ключ bencode-словаря не строка.</value></data>
+  <data name="TorrentErrBadString" xml:space="preserve"><value>Повреждённая строка bencode.</value></data>
+  <data name="TorrentErrStringOOB" xml:space="preserve"><value>Строка bencode выходит за границы файла.</value></data>
+  <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>Неожиданный байт bencode: 0x{0}.</value></data>
+  <data name="RpcConnectionLost" xml:space="preserve"><value>Соединение с aria2 разорвано.</value></data>
+  <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Усечение (trunc)</value></data>
 </root>

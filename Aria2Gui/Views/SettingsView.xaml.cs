@@ -8,62 +8,180 @@ using Windows.Storage.Pickers;
 namespace Aria2Gui.Views;
 
 /// <summary>
-/// Settings as an in-app page (WinUI Gallery style) rather than a dialog. The host
-/// shows/hides it; <see cref="Closed"/> fires when the user goes back or saves.
+/// Settings as an in-app page (WinUI Gallery style). There is no Save button: every
+/// change is applied and persisted immediately (Windows 11 Settings style). Options that
+/// can only change via an aria2c restart (BT port, DHT/PEX/LPD, encryption, trackers,
+/// extra flags) are persisted on the spot but the single engine restart is deferred until
+/// the user leaves the page; a language change likewise defers the app relaunch to exit.
 /// </summary>
 public sealed partial class SettingsView : UserControl
 {
-    /// <summary>Raised when the page should be dismissed (back or save completed).</summary>
+    /// <summary>Raised when the page should be dismissed (the user pressed back).</summary>
     public event EventHandler? Closed;
+
+    /// <summary>True while the form is being populated, so change handlers don't fire.</summary>
+    private bool _loading;
+
+    /// <summary>Guards <see cref="OnBackClick"/> against re-entrancy (a fast double Back press
+    /// landing inside the apply await), which would otherwise restart the engine twice.</summary>
+    private bool _exiting;
+
+    /// <summary>Settings as they were when the page opened — the baseline for deciding,
+    /// on exit, whether an engine restart or app relaunch is needed. Replaced wholesale by
+    /// <see cref="Aria2Service.ApplySettingsAsync"/>, so this reference stays a stable snapshot.</summary>
+    private AppSettings _entrySettings = new();
 
     public SettingsView()
     {
         InitializeComponent();
+        WireChangeHandlers();
         LoadFromSettings();
+    }
+
+    /// <summary>Subscribes every input control to the auto-apply pipeline. Text boxes apply on
+    /// blur (not per keystroke); spinners/toggles/combos apply on change.</summary>
+    private void WireChangeHandlers()
+    {
+        foreach (var nb in new[]
+        {
+            DownLimitBox, UpLimitBox, ConcurrentBox, ConnectionsBox, TimeoutBox, ConnectTimeoutBox,
+            MaxTriesBox, RetryWaitBox, ListenPortBox, PeersBox, BtMaxOpenFilesBox, SeedRatioBox,
+        })
+            nb.ValueChanged += OnNumberChanged;
+
+        foreach (var cb in new[] { ThemeBox, LanguageBox, FileAllocBox })
+            cb.SelectionChanged += OnSelectionChanged;
+        CryptoLevelRadio.SelectionChanged += OnSelectionChanged;
+
+        // CryptoToggle keeps its own handler (OnCryptoToggled) which also applies.
+        foreach (var ts in new[] { CheckCertToggle, AllowOverwriteToggle, AutoRenameToggle, DhtToggle, PexToggle, LpdToggle })
+            ts.Toggled += OnToggled;
+
+        foreach (var tb in new[] { ProxyBox, MinSplitSizeBox, UserAgentBox, TrackersBox, ExtraOptionsBox })
+            tb.LostFocus += OnTextCommitted;
     }
 
     /// <summary>Reloads the form from the current settings (call each time it opens).</summary>
     public void LoadFromSettings()
     {
-        var s = Aria2Service.Instance.Settings;
-        DirText.Text = s.DownloadDirectory;
-        DownLimitBox.Value = SpeedToMegabytes(s.MaxDownloadLimit);
-        UpLimitBox.Value = SpeedToMegabytes(s.MaxUploadLimit);
-        ConcurrentBox.Value = s.MaxConcurrentDownloads;
-        ConnectionsBox.Value = s.MaxConnectionsPerServer;
-        ThemeBox.SelectedIndex = s.Theme switch { "Light" => 1, "Dark" => 2, _ => 0 };
-        LanguageBox.SelectedItem = LanguageBox.Items.OfType<ComboBoxItem>()
-            .FirstOrDefault(i => (i.Tag as string ?? "") == s.Language) ?? LanguageBox.Items[0];
+        _loading = true;
+        _exiting = false;
+        try
+        {
+            var s = Aria2Service.Instance.Settings;
+            _entrySettings = s;
+            DirText.Text = s.DownloadDirectory;
+            DownLimitBox.Value = SpeedToMegabytes(s.MaxDownloadLimit);
+            UpLimitBox.Value = SpeedToMegabytes(s.MaxUploadLimit);
+            ConcurrentBox.Value = s.MaxConcurrentDownloads;
+            ConnectionsBox.Value = s.MaxConnectionsPerServer;
+            ThemeBox.SelectedIndex = s.Theme switch { "Light" => 1, "Dark" => 2, _ => 0 };
+            LanguageBox.SelectedItem = LanguageBox.Items.OfType<ComboBoxItem>()
+                .FirstOrDefault(i => (i.Tag as string ?? "") == s.Language) ?? LanguageBox.Items[0];
 
-        ProxyBox.Text = s.AllProxy;
-        CheckCertToggle.IsOn = s.CheckCertificate;
-        TimeoutBox.Value = s.Timeout;
-        ConnectTimeoutBox.Value = s.ConnectTimeout;
-        MaxTriesBox.Value = s.MaxTries;
-        RetryWaitBox.Value = s.RetryWait;
-        MinSplitSizeBox.Text = s.MinSplitSize;
-        UserAgentBox.Text = s.UserAgent;
+            ProxyBox.Text = s.AllProxy;
+            CheckCertToggle.IsOn = s.CheckCertificate;
+            TimeoutBox.Value = s.Timeout;
+            ConnectTimeoutBox.Value = s.ConnectTimeout;
+            MaxTriesBox.Value = s.MaxTries;
+            RetryWaitBox.Value = s.RetryWait;
+            MinSplitSizeBox.Text = s.MinSplitSize;
+            UserAgentBox.Text = s.UserAgent;
 
-        FileAllocBox.SelectedIndex = s.FileAllocation switch { "none" => 1, "prealloc" => 2, "falloc" => 3, _ => 0 };
-        AllowOverwriteToggle.IsOn = s.AllowOverwrite;
-        AutoRenameToggle.IsOn = s.AutoFileRenaming;
+            FileAllocBox.SelectedIndex = s.FileAllocation switch { "none" => 1, "prealloc" => 2, "trunc" => 3, "falloc" => 4, _ => 0 };
+            AllowOverwriteToggle.IsOn = s.AllowOverwrite;
+            AutoRenameToggle.IsOn = s.AutoFileRenaming;
 
-        ListenPortBox.Value = s.ListenPort;
-        PeersBox.Value = s.BtMaxPeers;
-        BtMaxOpenFilesBox.Value = s.BtMaxOpenFiles;
-        SeedRatioBox.Value = s.SeedRatio;
-        DhtToggle.IsOn = s.EnableDht;
-        PexToggle.IsOn = s.EnablePex;
-        LpdToggle.IsOn = s.EnableLpd;
-        CryptoToggle.IsOn = s.RequireCrypto;
-        CryptoLevelRadio.SelectedIndex = s.BtMinCryptoLevel == "arc4" ? 1 : 0;
-        CryptoLevelCard.Visibility = s.RequireCrypto ? Visibility.Visible : Visibility.Collapsed;
-        TrackersBox.Text = s.ExtraTrackers;
-        ExtraOptionsBox.Text = s.ExtraAria2Options;
-        ErrorBar.IsOpen = false;
+            ListenPortBox.Value = s.ListenPort;
+            PeersBox.Value = s.BtMaxPeers;
+            BtMaxOpenFilesBox.Value = s.BtMaxOpenFiles;
+            SeedRatioBox.Value = s.SeedRatio;
+            DhtToggle.IsOn = s.EnableDht;
+            PexToggle.IsOn = s.EnablePex;
+            LpdToggle.IsOn = s.EnableLpd;
+            CryptoToggle.IsOn = s.RequireCrypto;
+            CryptoLevelRadio.SelectedIndex = s.BtMinCryptoLevel == "arc4" ? 1 : 0;
+            CryptoLevelCard.Visibility = s.RequireCrypto ? Visibility.Visible : Visibility.Collapsed;
+            TrackersBox.Text = s.ExtraTrackers;
+            ExtraOptionsBox.Text = s.ExtraAria2Options;
+            ErrorBar.IsOpen = false;
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
 
-    private void OnBackClick(object sender, RoutedEventArgs e) => Closed?.Invoke(this, EventArgs.Empty);
+    // ---- auto-apply pipeline ----
+
+    private void OnNumberChanged(NumberBox sender, NumberBoxValueChangedEventArgs args) => _ = ApplyChangeAsync();
+    private void OnSelectionChanged(object sender, SelectionChangedEventArgs e) => _ = ApplyChangeAsync();
+    private void OnToggled(object sender, RoutedEventArgs e) => _ = ApplyChangeAsync();
+    private void OnTextCommitted(object sender, RoutedEventArgs e) => _ = ApplyChangeAsync();
+
+    /// <summary>Applies and persists the current form state immediately (live aria2 options +
+    /// theme). Restart-only options are saved here too but take effect on the engine restart
+    /// performed when leaving the page.</summary>
+    private async Task ApplyChangeAsync()
+    {
+        if (_loading)
+            return;
+        try
+        {
+            var s = BuildSettings();
+            await Aria2Service.Instance.ApplySettingsAsync(s);
+            Helpers.ThemeHelper.Apply(s.Theme);
+            ErrorBar.IsOpen = false;
+        }
+        catch (Exception ex)
+        {
+            ShowError(Helpers.L.Get("SettingsErrorSave", ex.Message));
+        }
+    }
+
+    /// <summary>Back press: commit any still-focused field, then relaunch the app (language
+    /// change) or restart the engine (BT/advanced changes) once. The page closes immediately;
+    /// the engine restart runs in the background and surfaces via the main window's status.</summary>
+    private async void OnBackClick(object sender, RoutedEventArgs e)
+    {
+        if (_exiting)
+            return;
+        _exiting = true;
+
+        bool languageChanged;
+        bool needsRestart;
+        try
+        {
+            var s = BuildSettings();
+            languageChanged = _entrySettings.Language != s.Language;
+            needsRestart = NeedsEngineRestart(_entrySettings, s);
+            await Aria2Service.Instance.ApplySettingsAsync(s);
+            Helpers.ThemeHelper.Apply(s.Theme);
+        }
+        catch (Exception ex)
+        {
+            // Surface the failure and stay on the page so the user can react.
+            ShowError(Helpers.L.Get("SettingsErrorSave", ex.Message));
+            _exiting = false;
+            return;
+        }
+
+        if (languageChanged)
+        {
+            // Resource language is resolved at element-load time, so relaunch the app
+            // (Program.Main re-reads the saved language and applies it before any UI).
+            // AppInstance.Restart force-terminates without raising Window.Closed, so run the
+            // graceful teardown (save session, stop engine, remove tray icon) ourselves first.
+            App.RunExitCleanup();
+            Microsoft.Windows.AppLifecycle.AppInstance.Restart("");
+            return;
+        }
+
+        Closed?.Invoke(this, EventArgs.Empty);
+
+        if (needsRestart)
+            _ = Aria2Service.Instance.RestartEngineAsync();
+    }
 
     /// <summary>Shows only the selected section's panel (WinUI NavigationView style).</summary>
     private void OnSectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -82,6 +200,7 @@ public sealed partial class SettingsView : UserControl
     {
         if (CryptoLevelCard is not null)
             CryptoLevelCard.Visibility = CryptoToggle.IsOn ? Visibility.Visible : Visibility.Collapsed;
+        _ = ApplyChangeAsync();
     }
 
     private async void OnBrowseClick(object sender, RoutedEventArgs e)
@@ -93,7 +212,10 @@ public sealed partial class SettingsView : UserControl
             picker.FileTypeFilter.Add("*");
             var folder = await picker.PickSingleFolderAsync();
             if (folder is not null)
+            {
                 DirText.Text = folder.Path;
+                await ApplyChangeAsync();
+            }
         }
         catch (Exception ex)
         {
@@ -101,66 +223,45 @@ public sealed partial class SettingsView : UserControl
         }
     }
 
-    private async void OnSaveClick(object sender, RoutedEventArgs e)
+    /// <summary>Builds an <see cref="AppSettings"/> from the current control values.</summary>
+    private AppSettings BuildSettings()
     {
-        try
+        var old = Aria2Service.Instance.Settings;
+        return new AppSettings
         {
-            var old = Aria2Service.Instance.Settings;
-            var s = new AppSettings
-            {
-                DownloadDirectory = DirText.Text,
-                MaxDownloadLimit = MegabytesToSpeed(DownLimitBox.Value),
-                MaxUploadLimit = MegabytesToSpeed(UpLimitBox.Value),
-                MaxConcurrentDownloads = (int)SafeValue(ConcurrentBox.Value, 5),
-                MaxConnectionsPerServer = (int)SafeValue(ConnectionsBox.Value, 8),
-                Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
-                Language = (LanguageBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "",
-                LastAddDirectory = old.LastAddDirectory,
+            DownloadDirectory = DirText.Text,
+            MaxDownloadLimit = MegabytesToSpeed(DownLimitBox.Value),
+            MaxUploadLimit = MegabytesToSpeed(UpLimitBox.Value),
+            MaxConcurrentDownloads = (int)SafeValue(ConcurrentBox.Value, 5),
+            MaxConnectionsPerServer = (int)SafeValue(ConnectionsBox.Value, 8),
+            Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
+            Language = (LanguageBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "",
+            LastAddDirectory = old.LastAddDirectory,
 
-                AllProxy = ProxyBox.Text,
-                CheckCertificate = CheckCertToggle.IsOn,
-                Timeout = (int)SafeValue(TimeoutBox.Value, 60),
-                ConnectTimeout = (int)SafeValue(ConnectTimeoutBox.Value, 60),
-                MaxTries = (int)SafeValue(MaxTriesBox.Value, 5),
-                RetryWait = (int)SafeValue(RetryWaitBox.Value, 0),
-                MinSplitSize = MinSplitSizeBox.Text,
-                UserAgent = UserAgentBox.Text,
-                FileAllocation = (FileAllocBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "auto",
-                AllowOverwrite = AllowOverwriteToggle.IsOn,
-                AutoFileRenaming = AutoRenameToggle.IsOn,
+            AllProxy = ProxyBox.Text,
+            CheckCertificate = CheckCertToggle.IsOn,
+            Timeout = (int)SafeValue(TimeoutBox.Value, 60),
+            ConnectTimeout = (int)SafeValue(ConnectTimeoutBox.Value, 60),
+            MaxTries = (int)SafeValue(MaxTriesBox.Value, 5),
+            RetryWait = (int)SafeValue(RetryWaitBox.Value, 0),
+            MinSplitSize = MinSplitSizeBox.Text,
+            UserAgent = UserAgentBox.Text,
+            FileAllocation = (FileAllocBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "auto",
+            AllowOverwrite = AllowOverwriteToggle.IsOn,
+            AutoFileRenaming = AutoRenameToggle.IsOn,
 
-                ListenPort = (int)SafeValue(ListenPortBox.Value, 0),
-                BtMaxPeers = (int)SafeValue(PeersBox.Value, 55),
-                BtMaxOpenFiles = (int)SafeValue(BtMaxOpenFilesBox.Value, 100),
-                SeedRatio = SafeValue(SeedRatioBox.Value, 1.0),
-                EnableDht = DhtToggle.IsOn,
-                EnablePex = PexToggle.IsOn,
-                EnableLpd = LpdToggle.IsOn,
-                RequireCrypto = CryptoToggle.IsOn,
-                BtMinCryptoLevel = CryptoLevelRadio.SelectedIndex == 1 ? "arc4" : "plain",
-                ExtraTrackers = TrackersBox.Text,
-                ExtraAria2Options = ExtraOptionsBox.Text,
-            };
-
-            bool needsRestart = NeedsEngineRestart(old, s);
-            bool languageChanged = old.Language != s.Language;
-            await Aria2Service.Instance.ApplySettingsAsync(s);
-            Helpers.ThemeHelper.Apply(s.Theme);
-            if (languageChanged)
-            {
-                // Resource language is resolved at element-load time, so relaunch the app
-                // (Program.Main re-reads the saved language and applies it before any UI).
-                Microsoft.Windows.AppLifecycle.AppInstance.Restart("");
-                return;
-            }
-            if (needsRestart)
-                await Aria2Service.Instance.RestartEngineAsync();
-            Closed?.Invoke(this, EventArgs.Empty);
-        }
-        catch (Exception ex)
-        {
-            ShowError(Helpers.L.Get("SettingsErrorSave", ex.Message));
-        }
+            ListenPort = ClampListenPort((int)SafeValue(ListenPortBox.Value, 0)),
+            BtMaxPeers = (int)SafeValue(PeersBox.Value, 55),
+            BtMaxOpenFiles = (int)SafeValue(BtMaxOpenFilesBox.Value, 100),
+            SeedRatio = SafeValue(SeedRatioBox.Value, 1.0),
+            EnableDht = DhtToggle.IsOn,
+            EnablePex = PexToggle.IsOn,
+            EnableLpd = LpdToggle.IsOn,
+            RequireCrypto = CryptoToggle.IsOn,
+            BtMinCryptoLevel = CryptoLevelRadio.SelectedIndex == 1 ? "arc4" : "plain",
+            ExtraTrackers = TrackersBox.Text,
+            ExtraAria2Options = ExtraOptionsBox.Text,
+        };
     }
 
     private void ShowError(string message)
@@ -182,6 +283,10 @@ public sealed partial class SettingsView : UserControl
 
     private static double SafeValue(double value, double fallback) =>
         double.IsNaN(value) ? fallback : value;
+
+    // Matches SettingsService.Load: 0 means "let aria2 pick"; any explicit port is a
+    // non-privileged 1024-65535. Clamping here keeps the live value equal to what reloads.
+    private static int ClampListenPort(int port) => port == 0 ? 0 : Math.Clamp(port, 1024, 65535);
 
     private static double SpeedToMegabytes(string aria2Speed)
     {

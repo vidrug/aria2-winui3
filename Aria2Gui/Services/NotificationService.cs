@@ -24,14 +24,14 @@ public static class NotificationService
     public static void ShowDownloadComplete(string name)
     {
         Show(new AppNotificationBuilder()
-            .AddText("Загрузка завершена")
+            .AddText(Aria2Gui.Helpers.L.Get("NotifyDownloadComplete"))
             .AddText(name));
     }
 
     public static void ShowDownloadError(string name)
     {
         Show(new AppNotificationBuilder()
-            .AddText("Ошибка загрузки")
+            .AddText(Aria2Gui.Helpers.L.Get("NotifyDownloadError"))
             .AddText(name));
     }
 

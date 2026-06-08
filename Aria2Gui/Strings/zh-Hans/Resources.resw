@@ -194,4 +194,52 @@
   <data name="LanguageCard.Header" xml:space="preserve"><value>界面语言</value></data>
   <data name="LanguageCard.Description" xml:space="preserve"><value>重启应用后生效</value></data>
   <data name="LanguageSystemItem.Content" xml:space="preserve"><value>跟随系统</value></data>
+  <data name="FilterAll" xml:space="preserve"><value>全部</value></data>
+  <data name="FilterDownloading" xml:space="preserve"><value>下载中</value></data>
+  <data name="FilterSeeding" xml:space="preserve"><value>做种中</value></data>
+  <data name="FilterCompleted" xml:space="preserve"><value>已完成</value></data>
+  <data name="FilterPaused" xml:space="preserve"><value>已暂停</value></data>
+  <data name="FilterQueued" xml:space="preserve"><value>排队中</value></data>
+  <data name="FilterError" xml:space="preserve"><value>错误</value></data>
+  <data name="ColName" xml:space="preserve"><value>名称</value></data>
+  <data name="ColSize" xml:space="preserve"><value>大小</value></data>
+  <data name="ColProgress" xml:space="preserve"><value>进度</value></data>
+  <data name="ColStatus" xml:space="preserve"><value>状态</value></data>
+  <data name="ColSeeds" xml:space="preserve"><value>种子</value></data>
+  <data name="ColPeers" xml:space="preserve"><value>节点</value></data>
+  <data name="ColDown" xml:space="preserve"><value>下载</value></data>
+  <data name="ColUp" xml:space="preserve"><value>上传</value></data>
+  <data name="ColEta" xml:space="preserve"><value>剩余时间</value></data>
+  <data name="ColRatio" xml:space="preserve"><value>分享率</value></data>
+  <data name="EngineStarting" xml:space="preserve"><value>正在启动 aria2…</value></data>
+  <data name="EngineRunning" xml:space="preserve"><value>aria2 正在运行</value></data>
+  <data name="EngineRestarting" xml:space="preserve"><value>正在重启 aria2…</value></data>
+  <data name="EngineFailed" xml:space="preserve"><value>aria2 启动失败</value></data>
+  <data name="EngineStopped" xml:space="preserve"><value>aria2 已停止</value></data>
+  <data name="EngineUnknownError" xml:space="preserve"><value>未知错误。</value></data>
+  <data name="CountsText" xml:space="preserve"><value>活动：{0} • 排队：{1} • 已完成：{2}</value></data>
+  <data name="DetailSizeOf" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="DetailSeedsPeers" xml:space="preserve"><value>种子：{0} • 节点：{1}</value></data>
+  <data name="DetailConnections" xml:space="preserve"><value>连接数：{0}</value></data>
+  <data name="PeerKindSeeder" xml:space="preserve"><value>种子</value></data>
+  <data name="PeerKindPeer" xml:space="preserve"><value>节点</value></data>
+  <data name="UnitsSize" xml:space="preserve"><value>B,KB,MB,GB,TB</value></data>
+  <data name="UnitSpeedPerSecond" xml:space="preserve"><value>/s</value></data>
+  <data name="UnitHour" xml:space="preserve"><value>时</value></data>
+  <data name="UnitMinute" xml:space="preserve"><value>分</value></data>
+  <data name="UnitSecond" xml:space="preserve"><value>秒</value></data>
+  <data name="DialogCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="NotifyDownloadComplete" xml:space="preserve"><value>下载完成</value></data>
+  <data name="NotifyDownloadError" xml:space="preserve"><value>下载错误</value></data>
+  <data name="TorrentErrInvalidFile" xml:space="preserve"><value>该文件不是有效的 torrent 文件。</value></data>
+  <data name="TorrentErrNoInfo" xml:space="preserve"><value>该 torrent 文件没有 info 区段。</value></data>
+  <data name="TorrentErrBadFileList" xml:space="preserve"><value>torrent 文件列表已损坏。</value></data>
+  <data name="TorrentErrUnexpectedEnd" xml:space="preserve"><value>torrent 文件意外结束。</value></data>
+  <data name="TorrentErrUnclosedInt" xml:space="preserve"><value>bencode 中存在未结束的整数。</value></data>
+  <data name="TorrentErrKeyNotString" xml:space="preserve"><value>bencode 字典的键不是字符串。</value></data>
+  <data name="TorrentErrBadString" xml:space="preserve"><value>bencode 字符串已损坏。</value></data>
+  <data name="TorrentErrStringOOB" xml:space="preserve"><value>bencode 字符串超出了文件边界。</value></data>
+  <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>意外的 bencode 字节：0x{0}。</value></data>
+  <data name="RpcConnectionLost" xml:space="preserve"><value>与 aria2 的连接已断开。</value></data>
+  <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>截断 (trunc)</value></data>
 </root>
