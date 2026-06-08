@@ -3,6 +3,7 @@
     x:Class="Aria2Gui.Views.SettingsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:loc="using:Aria2Gui.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:tk="using:CommunityToolkit.WinUI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -20,7 +21,7 @@
              the default template's ControlCornerRadius and a reliable direct Click. -->
         <Button
             Grid.Row="0"
-            x:Uid="SettingsBackButton"
+            loc:Localize.Uid="SettingsBackButton"
             AutomationProperties.AutomationId="SettingsBackButton"
             Width="40"
             Height="40"
@@ -68,17 +69,17 @@
                 </ResourceDictionary>
             </NavigationView.Resources>
             <NavigationView.MenuItems>
-                <NavigationViewItem x:Uid="NavGeneral" Tag="general" IsSelected="True" AutomationProperties.AutomationId="NavGeneral">
+                <NavigationViewItem loc:Localize.Uid="NavGeneral" Tag="general" IsSelected="True" AutomationProperties.AutomationId="NavGeneral">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE713;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="NavConnection" Tag="connection" AutomationProperties.AutomationId="NavConnection">
+                <NavigationViewItem loc:Localize.Uid="NavConnection" Tag="connection" AutomationProperties.AutomationId="NavConnection">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE968;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="NavFiles" Tag="files" AutomationProperties.AutomationId="NavFiles">
+                <NavigationViewItem loc:Localize.Uid="NavFiles" Tag="files" AutomationProperties.AutomationId="NavFiles">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEDA2;" />
                     </NavigationViewItem.Icon>
@@ -88,7 +89,7 @@
                         <FontIcon Glyph="&#xE896;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="NavAdvanced" Tag="advanced" AutomationProperties.AutomationId="NavAdvanced">
+                <NavigationViewItem loc:Localize.Uid="NavAdvanced" Tag="advanced" AutomationProperties.AutomationId="NavAdvanced">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE712;" />
                     </NavigationViewItem.Icon>
@@ -105,60 +106,60 @@
                 <Grid HorizontalAlignment="Stretch">
                 <StackPanel MaxWidth="1000" HorizontalAlignment="Stretch">
 
-                    <TextBlock x:Uid="SettingsTitle" Style="{StaticResource TitleTextBlockStyle}" Margin="0,8,0,20" />
+                    <TextBlock loc:Localize.Uid="SettingsTitle" Style="{StaticResource TitleTextBlockStyle}" Margin="0,8,0,20" />
 
                     <!-- ===== Основные ===== -->
                     <StackPanel x:Name="GeneralPanel" Spacing="4">
-                        <tk:SettingsCard x:Uid="DownloadFolderCard">
+                        <tk:SettingsCard loc:Localize.Uid="DownloadFolderCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE838;" />
                             </tk:SettingsCard.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <TextBlock x:Name="DirText" AutomationProperties.AutomationId="DownloadDirText" VerticalAlignment="Center" MaxWidth="280" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                <Button x:Uid="BrowseFolderButton" AutomationProperties.AutomationId="BrowseFolderButton" Click="OnBrowseClick" />
+                                <Button loc:Localize.Uid="BrowseFolderButton" AutomationProperties.AutomationId="BrowseFolderButton" Click="OnBrowseClick" />
                             </StackPanel>
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="DownLimitCard">
+                        <tk:SettingsCard loc:Localize.Uid="DownLimitCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE896;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="DownLimitBox" AutomationProperties.AutomationId="DownLimitBox" Minimum="0" Maximum="10000" SmallChange="0.5" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="UpLimitCard">
+                        <tk:SettingsCard loc:Localize.Uid="UpLimitCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE898;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="UpLimitBox" AutomationProperties.AutomationId="UpLimitBox" Minimum="0" Maximum="10000" SmallChange="0.5" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="ConcurrentCard">
+                        <tk:SettingsCard loc:Localize.Uid="ConcurrentCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE71D;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="ConcurrentBox" AutomationProperties.AutomationId="ConcurrentBox" Minimum="1" Maximum="50" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="ConnectionsCard">
+                        <tk:SettingsCard loc:Localize.Uid="ConnectionsCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE968;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="ConnectionsBox" AutomationProperties.AutomationId="ConnectionsBox" Minimum="1" Maximum="16" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="ThemeCard">
+                        <tk:SettingsCard loc:Localize.Uid="ThemeCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE790;" />
                             </tk:SettingsCard.HeaderIcon>
                             <ComboBox x:Name="ThemeBox" AutomationProperties.AutomationId="ThemeBox" MinWidth="180">
-                                <ComboBoxItem x:Uid="ThemeSystemItem" Tag="Default" />
-                                <ComboBoxItem x:Uid="ThemeLightItem" Tag="Light" />
-                                <ComboBoxItem x:Uid="ThemeDarkItem" Tag="Dark" />
+                                <ComboBoxItem loc:Localize.Uid="ThemeSystemItem" Tag="Default" />
+                                <ComboBoxItem loc:Localize.Uid="ThemeLightItem" Tag="Light" />
+                                <ComboBoxItem loc:Localize.Uid="ThemeDarkItem" Tag="Dark" />
                             </ComboBox>
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="LanguageCard">
+                        <tk:SettingsCard loc:Localize.Uid="LanguageCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE774;" />
                             </tk:SettingsCard.HeaderIcon>
                             <!-- Language names are autonyms (shown the same regardless of UI language). -->
                             <ComboBox x:Name="LanguageBox" AutomationProperties.AutomationId="LanguageBox" MinWidth="200">
-                                <ComboBoxItem x:Uid="LanguageSystemItem" Tag="" />
+                                <ComboBoxItem loc:Localize.Uid="LanguageSystemItem" Tag="" />
                                 <ComboBoxItem Content="English" Tag="en-US" />
                                 <ComboBoxItem Content="Русский" Tag="ru" />
                                 <ComboBoxItem Content="Español" Tag="es" />
@@ -176,140 +177,140 @@
                         <!-- The UI language only changes on relaunch; offer it instead of forcing a restart. -->
                         <InfoBar
                             x:Name="LanguageRestartBar"
-                            x:Uid="LanguageRestartBar"
+                            loc:Localize.Uid="LanguageRestartBar"
                             Severity="Informational"
                             IsOpen="False"
                             IsClosable="False"
                             Margin="0,4,0,0">
                             <InfoBar.ActionButton>
-                                <Button x:Uid="LanguageRestartButton" AutomationProperties.AutomationId="LanguageRestartButton" Click="OnRestartForLanguage" />
+                                <Button loc:Localize.Uid="LanguageRestartButton" AutomationProperties.AutomationId="LanguageRestartButton" Click="OnRestartForLanguage" />
                             </InfoBar.ActionButton>
                         </InfoBar>
                     </StackPanel>
 
                     <!-- ===== Подключение ===== -->
                     <StackPanel x:Name="ConnectionPanel" Spacing="4" Visibility="Collapsed">
-                        <tk:SettingsCard x:Uid="ProxyCard">
+                        <tk:SettingsCard loc:Localize.Uid="ProxyCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE968;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <TextBox x:Name="ProxyBox" x:Uid="ProxyBox" AutomationProperties.AutomationId="ProxyBox" MinWidth="300" />
+                            <TextBox x:Name="ProxyBox" loc:Localize.Uid="ProxyBox" AutomationProperties.AutomationId="ProxyBox" MinWidth="300" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="CheckCertCard">
+                        <tk:SettingsCard loc:Localize.Uid="CheckCertCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE72E;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <ToggleSwitch x:Name="CheckCertToggle" x:Uid="CheckCertToggle" AutomationProperties.AutomationId="CheckCertToggle" />
+                            <ToggleSwitch x:Name="CheckCertToggle" loc:Localize.Uid="CheckCertToggle" AutomationProperties.AutomationId="CheckCertToggle" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="TimeoutCard">
+                        <tk:SettingsCard loc:Localize.Uid="TimeoutCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE916;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="TimeoutBox" AutomationProperties.AutomationId="TimeoutBox" Minimum="1" Maximum="600" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="ConnectTimeoutCard">
+                        <tk:SettingsCard loc:Localize.Uid="ConnectTimeoutCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE839;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="ConnectTimeoutBox" AutomationProperties.AutomationId="ConnectTimeoutBox" Minimum="1" Maximum="600" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="MaxTriesCard">
+                        <tk:SettingsCard loc:Localize.Uid="MaxTriesCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE72C;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="MaxTriesBox" AutomationProperties.AutomationId="MaxTriesBox" Minimum="0" Maximum="100" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="RetryWaitCard">
+                        <tk:SettingsCard loc:Localize.Uid="RetryWaitCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE823;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="RetryWaitBox" AutomationProperties.AutomationId="RetryWaitBox" Minimum="0" Maximum="600" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="MinSplitSizeCard">
+                        <tk:SettingsCard loc:Localize.Uid="MinSplitSizeCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE8B7;" />
                             </tk:SettingsCard.HeaderIcon>
                             <TextBox x:Name="MinSplitSizeBox" AutomationProperties.AutomationId="MinSplitSizeBox" MinWidth="148" PlaceholderText="20M" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="UserAgentCard">
+                        <tk:SettingsCard loc:Localize.Uid="UserAgentCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE7C1;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <TextBox x:Name="UserAgentBox" x:Uid="UserAgentBox" AutomationProperties.AutomationId="UserAgentBox" MinWidth="300" />
+                            <TextBox x:Name="UserAgentBox" loc:Localize.Uid="UserAgentBox" AutomationProperties.AutomationId="UserAgentBox" MinWidth="300" />
                         </tk:SettingsCard>
                     </StackPanel>
 
                     <!-- ===== Файлы ===== -->
                     <StackPanel x:Name="FilesPanel" Spacing="4" Visibility="Collapsed">
-                        <tk:SettingsCard x:Uid="FileAllocCard">
+                        <tk:SettingsCard loc:Localize.Uid="FileAllocCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xEDA2;" />
                             </tk:SettingsCard.HeaderIcon>
                             <ComboBox x:Name="FileAllocBox" AutomationProperties.AutomationId="FileAllocBox" MinWidth="180">
-                                <ComboBoxItem x:Uid="FileAllocAutoItem" Tag="auto" />
-                                <ComboBoxItem x:Uid="FileAllocNoneItem" Tag="none" />
-                                <ComboBoxItem x:Uid="FileAllocPreallocItem" Tag="prealloc" />
-                                <ComboBoxItem x:Uid="FileAllocTruncItem" Tag="trunc" />
-                                <ComboBoxItem x:Uid="FileAllocFallocItem" Tag="falloc" />
+                                <ComboBoxItem loc:Localize.Uid="FileAllocAutoItem" Tag="auto" />
+                                <ComboBoxItem loc:Localize.Uid="FileAllocNoneItem" Tag="none" />
+                                <ComboBoxItem loc:Localize.Uid="FileAllocPreallocItem" Tag="prealloc" />
+                                <ComboBoxItem loc:Localize.Uid="FileAllocTruncItem" Tag="trunc" />
+                                <ComboBoxItem loc:Localize.Uid="FileAllocFallocItem" Tag="falloc" />
                             </ComboBox>
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="AllowOverwriteCard">
+                        <tk:SettingsCard loc:Localize.Uid="AllowOverwriteCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE74D;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <ToggleSwitch x:Name="AllowOverwriteToggle" x:Uid="AllowOverwriteToggle" AutomationProperties.AutomationId="AllowOverwriteToggle" />
+                            <ToggleSwitch x:Name="AllowOverwriteToggle" loc:Localize.Uid="AllowOverwriteToggle" AutomationProperties.AutomationId="AllowOverwriteToggle" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="AutoRenameCard">
+                        <tk:SettingsCard loc:Localize.Uid="AutoRenameCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE8AC;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <ToggleSwitch x:Name="AutoRenameToggle" x:Uid="AutoRenameToggle" AutomationProperties.AutomationId="AutoRenameToggle" />
+                            <ToggleSwitch x:Name="AutoRenameToggle" loc:Localize.Uid="AutoRenameToggle" AutomationProperties.AutomationId="AutoRenameToggle" />
                         </tk:SettingsCard>
                     </StackPanel>
 
                     <!-- ===== BitTorrent ===== -->
                     <StackPanel x:Name="BtPanel" Spacing="4" Visibility="Collapsed">
-                        <tk:SettingsCard x:Uid="ListenPortCard">
+                        <tk:SettingsCard loc:Localize.Uid="ListenPortCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE945;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="ListenPortBox" AutomationProperties.AutomationId="ListenPortBox" Minimum="0" Maximum="65535" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="DhtCard">
+                        <tk:SettingsCard loc:Localize.Uid="DhtCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE71B;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <ToggleSwitch x:Name="DhtToggle" x:Uid="DhtToggle" AutomationProperties.AutomationId="DhtToggle" />
+                            <ToggleSwitch x:Name="DhtToggle" loc:Localize.Uid="DhtToggle" AutomationProperties.AutomationId="DhtToggle" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="PexCard">
+                        <tk:SettingsCard loc:Localize.Uid="PexCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE8AF;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <ToggleSwitch x:Name="PexToggle" x:Uid="PexToggle" AutomationProperties.AutomationId="PexToggle" />
+                            <ToggleSwitch x:Name="PexToggle" loc:Localize.Uid="PexToggle" AutomationProperties.AutomationId="PexToggle" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="LpdCard">
+                        <tk:SettingsCard loc:Localize.Uid="LpdCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE839;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <ToggleSwitch x:Name="LpdToggle" x:Uid="LpdToggle" AutomationProperties.AutomationId="LpdToggle" />
+                            <ToggleSwitch x:Name="LpdToggle" loc:Localize.Uid="LpdToggle" AutomationProperties.AutomationId="LpdToggle" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="CryptoCard">
+                        <tk:SettingsCard loc:Localize.Uid="CryptoCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE72E;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <ToggleSwitch x:Name="CryptoToggle" x:Uid="CryptoToggle" AutomationProperties.AutomationId="CryptoToggle" Toggled="OnCryptoToggled" />
+                            <ToggleSwitch x:Name="CryptoToggle" loc:Localize.Uid="CryptoToggle" AutomationProperties.AutomationId="CryptoToggle" Toggled="OnCryptoToggled" />
                         </tk:SettingsCard>
                         <!-- Shown only when encryption is required: picks bt-min-crypto-level. -->
-                        <tk:SettingsCard x:Name="CryptoLevelCard" x:Uid="CryptoLevelCard" ContentAlignment="Vertical" HorizontalContentAlignment="Stretch" Visibility="Collapsed">
+                        <tk:SettingsCard x:Name="CryptoLevelCard" loc:Localize.Uid="CryptoLevelCard" ContentAlignment="Vertical" HorizontalContentAlignment="Stretch" Visibility="Collapsed">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE8D7;" />
                             </tk:SettingsCard.HeaderIcon>
                             <RadioButtons x:Name="CryptoLevelRadio" AutomationProperties.AutomationId="CryptoLevelRadio" HorizontalAlignment="Left">
                                 <RadioButton AutomationProperties.AutomationId="CryptoLevelPlain">
                                     <StackPanel Spacing="2">
-                                        <TextBlock x:Uid="CryptoLevelPlainTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                        <TextBlock loc:Localize.Uid="CryptoLevelPlainTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
                                         <TextBlock
-                                            x:Uid="CryptoLevelPlainDesc"
+                                            loc:Localize.Uid="CryptoLevelPlainDesc"
                                             Style="{StaticResource CaptionTextBlockStyle}"
                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                             TextWrapping="Wrap"
@@ -319,9 +320,9 @@
                                 </RadioButton>
                                 <RadioButton AutomationProperties.AutomationId="CryptoLevelArc4">
                                     <StackPanel Spacing="2">
-                                        <TextBlock x:Uid="CryptoLevelArc4Title" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                        <TextBlock loc:Localize.Uid="CryptoLevelArc4Title" Style="{StaticResource BodyStrongTextBlockStyle}" />
                                         <TextBlock
-                                            x:Uid="CryptoLevelArc4Desc"
+                                            loc:Localize.Uid="CryptoLevelArc4Desc"
                                             Style="{StaticResource CaptionTextBlockStyle}"
                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                             TextWrapping="Wrap"
@@ -331,46 +332,46 @@
                                 </RadioButton>
                             </RadioButtons>
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="MaxPeersCard">
+                        <tk:SettingsCard loc:Localize.Uid="MaxPeersCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE716;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="PeersBox" AutomationProperties.AutomationId="PeersBox" Minimum="0" Maximum="1000" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="BtMaxOpenFilesCard">
+                        <tk:SettingsCard loc:Localize.Uid="BtMaxOpenFilesCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE8B7;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="BtMaxOpenFilesBox" AutomationProperties.AutomationId="BtMaxOpenFilesBox" Minimum="1" Maximum="10000" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard x:Uid="SeedRatioCard">
+                        <tk:SettingsCard loc:Localize.Uid="SeedRatioCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE898;" />
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="SeedRatioBox" AutomationProperties.AutomationId="SeedRatioBox" Minimum="0" Maximum="100" SmallChange="0.1" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsExpander x:Uid="TrackersExpander">
+                        <tk:SettingsExpander loc:Localize.Uid="TrackersExpander">
                             <tk:SettingsExpander.HeaderIcon>
                                 <FontIcon Glyph="&#xE774;" />
                             </tk:SettingsExpander.HeaderIcon>
                             <tk:SettingsExpander.Items>
                                 <tk:SettingsCard ContentAlignment="Vertical">
-                                    <TextBox x:Name="TrackersBox" x:Uid="TrackersBox" AutomationProperties.AutomationId="TrackersBox" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="96" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                                    <TextBox x:Name="TrackersBox" loc:Localize.Uid="TrackersBox" AutomationProperties.AutomationId="TrackersBox" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="96" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                                 </tk:SettingsCard>
                             </tk:SettingsExpander.Items>
                         </tk:SettingsExpander>
-                        <InfoBar x:Uid="BtRestartInfoBar" Severity="Informational" IsOpen="True" IsClosable="False" Margin="0,8,0,0" />
+                        <InfoBar loc:Localize.Uid="BtRestartInfoBar" Severity="Informational" IsOpen="True" IsClosable="False" Margin="0,8,0,0" />
                     </StackPanel>
 
                     <!-- ===== Дополнительно ===== -->
                     <StackPanel x:Name="AdvancedPanel" Spacing="4" Visibility="Collapsed">
-                        <tk:SettingsCard x:Uid="ExtraOptionsCard" ContentAlignment="Vertical">
+                        <tk:SettingsCard loc:Localize.Uid="ExtraOptionsCard" ContentAlignment="Vertical">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE713;" />
                             </tk:SettingsCard.HeaderIcon>
                             <TextBox x:Name="ExtraOptionsBox" AutomationProperties.AutomationId="ExtraOptionsBox" PlaceholderText="bt-request-peer-speed-limit=100K&#x0a;bt-stop-timeout=0" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="160" FontFamily="Consolas" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                         </tk:SettingsCard>
-                        <InfoBar x:Uid="AdvancedInfoBar" Severity="Informational" IsOpen="True" IsClosable="False" Margin="0,8,0,0" />
+                        <InfoBar loc:Localize.Uid="AdvancedInfoBar" Severity="Informational" IsOpen="True" IsClosable="False" Margin="0,8,0,0" />
                     </StackPanel>
 
                     <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" IsClosable="False" Margin="0,8,0,16" />

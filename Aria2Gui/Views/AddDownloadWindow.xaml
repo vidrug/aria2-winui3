@@ -3,6 +3,7 @@
     x:Class="Aria2Gui.Views.AddDownloadWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:loc="using:Aria2Gui.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:vm="using:Aria2Gui.ViewModels"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
@@ -26,7 +27,7 @@
             <StackPanel Spacing="12">
                 <TextBox
                     x:Name="UrlsBox"
-                    x:Uid="UrlsBox"
+                    loc:Localize.Uid="UrlsBox"
                     AutomationProperties.AutomationId="UrlsBox"
                     PlaceholderText="magnet:?xt=urn:btih:…"
                     AcceptsReturn="True"
@@ -42,11 +43,11 @@
                     </Grid.ColumnDefinitions>
                     <TextBox
                         x:Name="DirBox"
-                        x:Uid="AddDirBox"
+                        loc:Localize.Uid="AddDirBox"
                         AutomationProperties.AutomationId="AddDirBox"
                         IsReadOnly="True" />
                     <Button
-                        x:Uid="AddBrowseFolderButton"
+                        loc:Localize.Uid="AddBrowseFolderButton"
                         AutomationProperties.AutomationId="AddBrowseFolderButton"
                         Grid.Column="1"
                         VerticalAlignment="Bottom"
@@ -55,7 +56,7 @@
 
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Button
-                        x:Uid="PickTorrentButton"
+                        loc:Localize.Uid="PickTorrentButton"
                         AutomationProperties.AutomationId="PickTorrentButton"
                         Click="OnPickTorrentClick" />
                     <TextBlock
@@ -76,16 +77,16 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
-                            x:Uid="TorrentFilesHeader"
+                            loc:Localize.Uid="TorrentFilesHeader"
                             Style="{StaticResource BodyStrongTextBlockStyle}"
                             VerticalAlignment="Center" />
                         <Button
-                            x:Uid="SelectAllFilesButton"
+                            loc:Localize.Uid="SelectAllFilesButton"
                             AutomationProperties.AutomationId="SelectAllFilesButton"
                             Grid.Column="1"
                             Click="OnSelectAllClick" />
                         <Button
-                            x:Uid="DeselectAllFilesButton"
+                            loc:Localize.Uid="DeselectAllFilesButton"
                             AutomationProperties.AutomationId="DeselectAllFilesButton"
                             Grid.Column="2"
                             Click="OnDeselectAllClick" />
@@ -130,13 +131,13 @@
             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                 <Button
                     x:Name="AddButton"
-                    x:Uid="ConfirmAddButton"
+                    loc:Localize.Uid="ConfirmAddButton"
                     AutomationProperties.AutomationId="ConfirmAddButton"
                     Style="{StaticResource AccentButtonStyle}"
                     MinWidth="104"
                     Click="OnAddClick" />
                 <Button
-                    x:Uid="CancelAddButton"
+                    loc:Localize.Uid="CancelAddButton"
                     AutomationProperties.AutomationId="CancelAddButton"
                     MinWidth="104"
                     Click="OnCancelClick">
