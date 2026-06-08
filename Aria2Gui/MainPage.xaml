@@ -15,31 +15,81 @@
 
     <Page.Resources>
         <!-- Sortable column headers are real Buttons (focusable, keyboard-invokable, Invoke
-             pattern, Button role) but styled flat to read as plain header text. -->
+             pattern, Button role) but styled flat to read as plain header text. The button
+             stretches to fill the whole header cell (full column width and the full header-row
+             height) so hovering lights up the entire cell like a real clickable table header.
+             A minimal ControlTemplate drives the rest/PointerOver/Pressed backgrounds; the 8px
+             top/bottom padding lives on the button (not the Grid) so the highlight reaches the
+             row's edges. The label stays left-aligned, vertically centred. -->
         <Style x:Key="ColumnHeaderButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="0" />
+            <Setter Property="Padding" Value="8,8" />
             <Setter Property="MinHeight" Value="0" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid
+                            x:Name="RootGrid"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                            <ContentPresenter
+                                x:Name="ContentPresenter"
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}"
+                                Foreground="{TemplateBinding Foreground}"
+                                AutomationProperties.AccessibilityView="Raw" />
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SubtleFillColorSecondaryBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SubtleFillColorTertiaryBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style x:Key="CellTextStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
-        <!-- The grab strip straddles the column divider: negative top/bottom fill the
-             header's 8px vertical padding and the negative right (-(4 + Width/2)) centres
-             the 12px handle over the 8px column gap. This deliberate overlap is the one
-             place negative margins are used. -->
+        <!-- The grab strip straddles the column divider: it stretches the full header-row
+             height (the header Grid carries no vertical padding now — that lives inside the
+             header Buttons) and the negative right (-(4 + Width/2)) centres the 12px handle
+             over the 8px column gap. The handle is declared after each header Button in the
+             same Grid cell, so it renders above the button and the resize drag still works.
+             That single negative right is the one place a negative margin is used. -->
         <Style x:Key="ColumnResizeHandleStyle" TargetType="helpers:ResizeHandle">
             <Setter Property="Width" Value="12" />
             <Setter Property="HorizontalAlignment" Value="Right" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="Margin" Value="0,-8,-10,-8" />
+            <Setter Property="Margin" Value="0,0,-10,0" />
         </Style>
         <Style x:Key="DetailLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
             <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
@@ -218,10 +268,12 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                <!-- Column headers: dividers resize columns; right-click toggles which show. -->
+                <!-- Column headers: dividers resize columns; right-click toggles which show.
+                     The 8px top/bottom padding lives inside each header Button (not here) so a
+                     button's hover/pressed highlight fills the full header-row height. -->
                 <Grid
                     Grid.Row="0"
-                    Padding="16,8,12,8"
+                    Padding="16,0,12,0"
                     ColumnSpacing="8"
                     Background="Transparent"
                     BorderThickness="0,0,0,1"
@@ -453,11 +505,24 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <SelectorBar x:Name="DetailsTabs" SelectionChanged="DetailsTabs_SelectionChanged">
-                        <SelectorBarItem loc:Localize.Uid="DetailsTabGeneral" IsSelected="True" AutomationProperties.AutomationId="DetailsTabGeneral" />
-                        <SelectorBarItem loc:Localize.Uid="DetailsTabFiles" AutomationProperties.AutomationId="DetailsTabFiles" />
-                        <SelectorBarItem loc:Localize.Uid="DetailsTabPeers" AutomationProperties.AutomationId="DetailsTabPeers" />
-                    </SelectorBar>
+                    <!-- Details tabs: connected Segmented (pill/box) selector. SelectedIndex is a
+                         TwoWay DP bound straight to the VM's DetailsTabIndex (0=General, 1=Files,
+                         2=Peers); the panels below toggle off that same index. Labels reuse the
+                         existing DetailsTab*.Text resources; AutomationIds match the old SelectorBar. -->
+                    <toolkit:Segmented
+                        x:Name="DetailsTabs"
+                        Margin="0,0,0,4"
+                        SelectedIndex="{x:Bind ViewModel.DetailsTabIndex, Mode=TwoWay}">
+                        <toolkit:SegmentedItem
+                            AutomationProperties.AutomationId="DetailsTabGeneral"
+                            Content="{x:Bind local:MainPage.TabLabel('DetailsTabGeneral')}" />
+                        <toolkit:SegmentedItem
+                            AutomationProperties.AutomationId="DetailsTabFiles"
+                            Content="{x:Bind local:MainPage.TabLabel('DetailsTabFiles')}" />
+                        <toolkit:SegmentedItem
+                            AutomationProperties.AutomationId="DetailsTabPeers"
+                            Content="{x:Bind local:MainPage.TabLabel('DetailsTabPeers')}" />
+                    </toolkit:Segmented>
 
                     <!-- No selection placeholder -->
                     <TextBlock

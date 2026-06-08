@@ -224,8 +224,10 @@ public sealed partial class MainPage : Page
         return null;
     }
 
-    private void DetailsTabs_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args) =>
-        ViewModel.DetailsTabIndex = sender.Items.IndexOf(sender.SelectedItem);
+    /// <summary>x:Bind helper: localized label for a details-tab Segmented item. Reuses the
+    /// existing <c>DetailsTab*.Text</c> resources (the Segmented item is a ContentControl with no
+    /// Text property, so loc:Localize.Uid can't populate it the way the old SelectorBar relied on).</summary>
+    public static string TabLabel(string uid) => Helpers.L.Get($"{uid}.Text");
 
     private void HeaderHandle_Resize(object? sender, double horizontalChange)
     {
