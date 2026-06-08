@@ -20,12 +20,14 @@
 
         <TitleBar x:Name="AppTitleBar" Title="Aria2Gui">
             <TitleBar.IconSource>
-                <!-- Decode the crisp 32px .ico frame in PHYSICAL pixels: the title-bar slot
-                     is ~16-32px across 100-200% DPI, so the icon is always a clean downscale
-                     (never an upscale, and never a fractional-DPI frame mismatch) → sharp. -->
+                <!-- Decode the crisp 64px .ico frame in PHYSICAL pixels. The title-bar icon
+                     slot is far smaller than 64px at every DPI (≈16px at 100% … ≈48px at
+                     300%), so the bitmap is ALWAYS downscaled from a sharp source — never
+                     upscaled and never a fractional-DPI frame mismatch — so it stays crisp
+                     at all display scales. -->
                 <ImageIconSource>
                     <ImageIconSource.ImageSource>
-                        <BitmapImage UriSource="ms-appx:///Assets/AppIcon.ico" DecodePixelType="Physical" DecodePixelWidth="32" DecodePixelHeight="32" />
+                        <BitmapImage UriSource="ms-appx:///Assets/AppIcon.ico" DecodePixelType="Physical" DecodePixelWidth="64" DecodePixelHeight="64" />
                     </ImageIconSource.ImageSource>
                 </ImageIconSource>
             </TitleBar.IconSource>
