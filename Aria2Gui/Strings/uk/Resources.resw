@@ -244,4 +244,7 @@
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Перезапустіть, щоб змінити мову</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Перезапустити</value></data>
   <data name="NavAbout.Content" xml:space="preserve"><value>Про програму</value></data>
+  <data name="ColUploaded" xml:space="preserve"><value>Віддано</value></data>
+  <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Віддано</value></data>
+  <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Віддано»</value></data>
 </root>

@@ -75,6 +75,9 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     public partial string RatioText { get; set; } = "—";
 
     [ObservableProperty]
+    public partial string UploadedText { get; set; } = "—";
+
+    [ObservableProperty]
     public partial bool IsError { get; set; }
 
     [ObservableProperty]
@@ -182,6 +185,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         RatioText = IsTorrent && d.TotalLength > 0 && d.UploadLength > 0
             ? (d.UploadLength / (double)d.TotalLength).ToString("0.00", CultureInfo.CurrentCulture)
             : "—";
+        UploadedText = d.UploadLength > 0 ? FormatUtils.FormatSize(d.UploadLength) : "—";
 
         bool paused = d.Status == Aria2Status.Paused;
         CanPauseResume = !_isStopped;

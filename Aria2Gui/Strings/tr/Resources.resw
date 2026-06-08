@@ -244,4 +244,7 @@ her satıra bir tane</value></data>
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Yeni dili uygulamak için yeniden başlatın</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Şimdi yeniden başlat</value></data>
   <data name="NavAbout.Content" xml:space="preserve"><value>Hakkında</value></data>
+  <data name="ColUploaded" xml:space="preserve"><value>Gönderildi</value></data>
+  <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Gönderildi</value></data>
+  <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Gönderildi» sütununun genişliğini değiştir</value></data>
 </root>

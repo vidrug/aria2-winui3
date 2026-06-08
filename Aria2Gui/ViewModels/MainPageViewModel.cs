@@ -421,6 +421,7 @@ public sealed partial class MainPageViewModel : ObservableObject
             "up" => a.UploadSpeed.CompareTo(b.UploadSpeed),
             "eta" => EtaSeconds(a).CompareTo(EtaSeconds(b)),
             "ratio" => Ratio(a).CompareTo(Ratio(b)),
+            "uploaded" => a.UploadLength.CompareTo(b.UploadLength),
             _ => 0,
         };
         // Stable tiebreaker so equal rows don't shuffle each poll.

@@ -15,6 +15,9 @@ public static class AppPaths
 
     public static string SettingsFile => Path.Combine(DataDirectory, "settings.json");
 
+    /// <summary>Persisted downloads-table column layout (widths + visibility).</summary>
+    public static string ColumnLayoutFile => Path.Combine(DataDirectory, "columns.txt");
+
     /// <summary>aria2 session file — unfinished downloads survive app restarts.</summary>
     public static string SessionFile => Path.Combine(DataDirectory, "aria2.session");
 

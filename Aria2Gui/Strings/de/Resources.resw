@@ -244,4 +244,7 @@ einer pro Zeile</value></data>
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Zum Übernehmen der neuen Sprache neu starten</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Jetzt neu starten</value></data>
   <data name="NavAbout.Content" xml:space="preserve"><value>Über</value></data>
+  <data name="ColUploaded" xml:space="preserve"><value>Hochgeladen</value></data>
+  <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Hochgeladen</value></data>
+  <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Breite der Spalte „Hochgeladen“ ändern</value></data>
 </root>

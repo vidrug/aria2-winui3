@@ -244,4 +244,7 @@ one per line</value></data>
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Restart to apply the new language</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Restart now</value></data>
   <data name="NavAbout.Content" xml:space="preserve"><value>About</value></data>
+  <data name="ColUploaded" xml:space="preserve"><value>Uploaded</value></data>
+  <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Uploaded</value></data>
+  <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Resize the “Uploaded” column</value></data>
 </root>

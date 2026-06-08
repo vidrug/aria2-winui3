@@ -267,6 +267,7 @@
                             <ToggleMenuFlyoutItem loc:Localize.Uid="ColumnMenuUp" Tag="up" AutomationProperties.AutomationId="ColumnToggleUp" IsChecked="{x:Bind ViewModel.Columns.UpVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
                             <ToggleMenuFlyoutItem loc:Localize.Uid="ColumnMenuEta" Tag="eta" AutomationProperties.AutomationId="ColumnToggleEta" IsChecked="{x:Bind ViewModel.Columns.EtaVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
                             <ToggleMenuFlyoutItem loc:Localize.Uid="ColumnMenuRatio" Tag="ratio" AutomationProperties.AutomationId="ColumnToggleRatio" IsChecked="{x:Bind ViewModel.Columns.RatioVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem loc:Localize.Uid="ColumnMenuUploaded" Tag="uploaded" AutomationProperties.AutomationId="ColumnToggleUploaded" IsChecked="{x:Bind ViewModel.Columns.UploadedVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
                         </MenuFlyout>
                     </Grid.ContextFlyout>
                     <Grid.ColumnDefinitions>
@@ -280,6 +281,7 @@
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.UpWidth, Mode=OneWay}" />
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.EtaWidth, Mode=OneWay}" />
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.RatioWidth, Mode=OneWay}" />
+                        <ColumnDefinition Width="{x:Bind ViewModel.Columns.UploadedWidth, Mode=OneWay}" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Tag="name" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('ColName', 'name', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" />
                     <helpers:ResizeHandle Grid.Column="0" Tag="name" loc:Localize.Uid="ResizeHandleName" AutomationProperties.AutomationId="ResizeHandleName" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
@@ -301,6 +303,8 @@
                     <helpers:ResizeHandle Grid.Column="8" Tag="eta" loc:Localize.Uid="ResizeHandleEta" AutomationProperties.AutomationId="ResizeHandleEta" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.EtaVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="9" Tag="ratio" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('ColRatio', 'ratio', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
                     <helpers:ResizeHandle Grid.Column="9" Tag="ratio" loc:Localize.Uid="ResizeHandleRatio" AutomationProperties.AutomationId="ResizeHandleRatio" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
+                    <TextBlock Grid.Column="10" Tag="uploaded" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('ColUploaded', 'uploaded', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UploadedVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="10" Tag="uploaded" loc:Localize.Uid="ResizeHandleUploaded" AutomationProperties.AutomationId="ResizeHandleUploaded" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UploadedVisible), Mode=OneWay}" />
                 </Grid>
 
                 <!-- Downloads table -->
@@ -369,6 +373,7 @@
                                     <ColumnDefinition Width="{x:Bind Columns.UpWidth, Mode=OneWay}" />
                                     <ColumnDefinition Width="{x:Bind Columns.EtaWidth, Mode=OneWay}" />
                                     <ColumnDefinition Width="{x:Bind Columns.RatioWidth, Mode=OneWay}" />
+                                    <ColumnDefinition Width="{x:Bind Columns.UploadedWidth, Mode=OneWay}" />
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
@@ -406,6 +411,7 @@
                                 <TextBlock Grid.Column="7" Text="{x:Bind UpSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.UpVisible), Mode=OneWay}" />
                                 <TextBlock Grid.Column="8" Text="{x:Bind EtaText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.EtaVisible), Mode=OneWay}" />
                                 <TextBlock Grid.Column="9" Text="{x:Bind RatioText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.RatioVisible), Mode=OneWay}" />
+                                <TextBlock Grid.Column="10" Text="{x:Bind UploadedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.UploadedVisible), Mode=OneWay}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

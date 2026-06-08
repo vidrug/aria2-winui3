@@ -244,4 +244,7 @@ jeden w wierszu</value></data>
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Uruchom ponownie, aby zastosować nowy język</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Uruchom ponownie</value></data>
   <data name="NavAbout.Content" xml:space="preserve"><value>O programie</value></data>
+  <data name="ColUploaded" xml:space="preserve"><value>Wysłano</value></data>
+  <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Wysłano</value></data>
+  <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Wysłano”</value></data>
 </root>
