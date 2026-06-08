@@ -80,6 +80,11 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     [ObservableProperty]
     public partial bool IsError { get; set; }
 
+    /// <summary>aria2's error reason, shown as a row tooltip so failures are visible
+    /// without opening the details pane. Null on non-errored rows (no tooltip).</summary>
+    [ObservableProperty]
+    public partial string? StatusTooltip { get; set; }
+
     [ObservableProperty]
     public partial string PauseResumeText { get; set; } = L.Get("ActionPause");
 
@@ -171,6 +176,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
             _ => (d.Status, "", DownloadCategory.Completed),
         };
         IsError = d.Status == Aria2Status.Error;
+        StatusTooltip = IsError && !string.IsNullOrEmpty(d.ErrorMessage) ? d.ErrorMessage : null;
 
         bool active = d.Status == Aria2Status.Active;
         SeedsText = IsTorrent && active ? d.NumSeeders.ToString(CultureInfo.CurrentCulture) : "—";

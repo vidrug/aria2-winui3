@@ -90,6 +90,15 @@ public sealed partial class MainPage : Page
     public static Visibility VisIf(bool value) =>
         value ? Visibility.Visible : Visibility.Collapsed;
 
+    /// <summary>x:Bind helper: error rows show their status in the critical (red) colour.</summary>
+    public static Microsoft.UI.Xaml.Media.Brush? StatusBrush(bool isError)
+    {
+        string key = isError ? "SystemFillColorCriticalBrush" : "TextFillColorPrimaryBrush";
+        return Application.Current.Resources.TryGetValue(key, out var value)
+            ? value as Microsoft.UI.Xaml.Media.Brush
+            : null;
+    }
+
     /// <summary>
     /// AppBarButton doesn't drive AnimatedIcon state on its own (unlike Button or
     /// NavigationViewItem), so play the hover animation from the pointer events.

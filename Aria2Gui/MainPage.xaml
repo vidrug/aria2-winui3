@@ -349,7 +349,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:DownloadItemViewModel">
-                            <Grid ColumnSpacing="8" DoubleTapped="Row_DoubleTapped" Background="Transparent">
+                            <Grid ColumnSpacing="8" DoubleTapped="Row_DoubleTapped" Background="Transparent" ToolTipService.ToolTip="{x:Bind StatusTooltip, Mode=OneWay}">
                                 <Grid.ContextFlyout>
                                     <MenuFlyout>
                                         <MenuFlyoutItem
@@ -428,7 +428,7 @@
                                         Style="{StaticResource CellTextStyle}"
                                         TextAlignment="Right" />
                                 </Grid>
-                                <TextBlock Grid.Column="3" Text="{x:Bind StatusText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.StatusVisible), Mode=OneWay}" />
+                                <TextBlock Grid.Column="3" Text="{x:Bind StatusText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Foreground="{x:Bind local:MainPage.StatusBrush(IsError), Mode=OneWay}" Visibility="{x:Bind local:MainPage.VisIf(Columns.StatusVisible), Mode=OneWay}" />
                                 <TextBlock Grid.Column="4" Text="{x:Bind SeedsText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.SeedsVisible), Mode=OneWay}" />
                                 <TextBlock Grid.Column="5" Text="{x:Bind PeersText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.PeersVisible), Mode=OneWay}" />
                                 <TextBlock Grid.Column="6" Text="{x:Bind DownSpeedText, Mode=OneWay}" Style="{StaticResource CellTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(Columns.DownVisible), Mode=OneWay}" />
