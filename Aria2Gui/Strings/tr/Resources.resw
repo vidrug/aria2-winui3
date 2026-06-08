@@ -242,4 +242,6 @@ her satıra bir tane</value></data>
   <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>Beklenmeyen bencode baytı: 0x{0}.</value></data>
   <data name="RpcConnectionLost" xml:space="preserve"><value>aria2 bağlantısı kesildi.</value></data>
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Kırp (trunc)</value></data>
+  <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Yeni dili uygulamak için yeniden başlatın</value></data>
+  <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Şimdi yeniden başlat</value></data>
 </root>

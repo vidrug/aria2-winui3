@@ -37,6 +37,13 @@ public partial class App : Application
         WinRT.Interop.WindowNative.GetWindowHandle(Window);
 
     /// <summary>
+    /// The UI language the app launched with (the saved <c>Language</c> at startup, or "" for
+    /// the OS default). The language only takes effect at launch, so Settings compares the
+    /// picked language against this to know when to offer a restart.
+    /// </summary>
+    public static string ActiveLanguage { get; set; } = "";
+
+    /// <summary>
     /// Initializes the singleton application object.
     /// </summary>
     public App()

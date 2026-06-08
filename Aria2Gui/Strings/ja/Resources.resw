@@ -242,4 +242,6 @@
   <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>予期しない bencode バイト: 0x{0}。</value></data>
   <data name="RpcConnectionLost" xml:space="preserve"><value>aria2 との接続が切断されました。</value></data>
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>切り詰め (trunc)</value></data>
+  <data name="LanguageRestartBar.Title" xml:space="preserve"><value>新しい言語を適用するには再起動してください</value></data>
+  <data name="LanguageRestartButton.Content" xml:space="preserve"><value>今すぐ再起動</value></data>
 </root>

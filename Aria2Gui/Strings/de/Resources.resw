@@ -242,4 +242,6 @@ einer pro Zeile</value></data>
   <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>Unerwartetes bencode-Byte: 0x{0}.</value></data>
   <data name="RpcConnectionLost" xml:space="preserve"><value>Die Verbindung zu aria2 wurde unterbrochen.</value></data>
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Abschneiden (trunc)</value></data>
+  <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Zum Übernehmen der neuen Sprache neu starten</value></data>
+  <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Jetzt neu starten</value></data>
 </root>

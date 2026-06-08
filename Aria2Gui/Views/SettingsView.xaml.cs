@@ -105,6 +105,7 @@ public sealed partial class SettingsView : UserControl
             TrackersBox.Text = s.ExtraTrackers;
             ExtraOptionsBox.Text = s.ExtraAria2Options;
             ErrorBar.IsOpen = false;
+            UpdateLanguageRestartHint();
         }
         finally
         {
@@ -132,6 +133,7 @@ public sealed partial class SettingsView : UserControl
             await Aria2Service.Instance.ApplySettingsAsync(s);
             Helpers.ThemeHelper.Apply(s.Theme);
             ErrorBar.IsOpen = false;
+            UpdateLanguageRestartHint();
         }
         catch (Exception ex)
         {
@@ -148,12 +150,13 @@ public sealed partial class SettingsView : UserControl
             return;
         _exiting = true;
 
-        bool languageChanged;
+        // A language change is persisted but NOT auto-applied here — the user relaunches on
+        // their own via the in-page hint (the UI language only resolves at startup). Only the
+        // engine-restart settings are applied (in the background) on the way out.
         bool needsRestart;
         try
         {
             var s = BuildSettings();
-            languageChanged = _entrySettings.Language != s.Language;
             needsRestart = NeedsEngineRestart(_entrySettings, s);
             await Aria2Service.Instance.ApplySettingsAsync(s);
             Helpers.ThemeHelper.Apply(s.Theme);
@@ -166,21 +169,28 @@ public sealed partial class SettingsView : UserControl
             return;
         }
 
-        if (languageChanged)
-        {
-            // Resource language is resolved at element-load time, so relaunch the app
-            // (Program.Main re-reads the saved language and applies it before any UI).
-            // AppInstance.Restart force-terminates without raising Window.Closed, so run the
-            // graceful teardown (save session, stop engine, remove tray icon) ourselves first.
-            App.RunExitCleanup();
-            Microsoft.Windows.AppLifecycle.AppInstance.Restart("");
-            return;
-        }
-
         Closed?.Invoke(this, EventArgs.Empty);
 
         if (needsRestart)
             _ = Aria2Service.Instance.RestartEngineAsync();
+    }
+
+    /// <summary>Shows the "restart to change language" hint when the picked language differs
+    /// from the one the app is actually running in (it only resolves at startup).</summary>
+    private void UpdateLanguageRestartHint()
+    {
+        string picked = (LanguageBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "";
+        LanguageRestartBar.IsOpen = picked != App.ActiveLanguage;
+    }
+
+    /// <summary>Relaunch to apply the picked UI language (already saved by auto-apply).</summary>
+    private void OnRestartForLanguage(object sender, RoutedEventArgs e)
+    {
+        // Guarantee the picked language is on disk, then relaunch. AppInstance.Restart
+        // force-terminates without raising Window.Closed, so run the graceful teardown first.
+        SettingsService.Save(BuildSettings());
+        App.RunExitCleanup();
+        Microsoft.Windows.AppLifecycle.AppInstance.Restart("");
     }
 
     /// <summary>Shows only the selected section's panel (WinUI NavigationView style).</summary>

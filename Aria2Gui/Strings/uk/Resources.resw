@@ -242,4 +242,6 @@
   <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>Несподіваний байт bencode: 0x{0}.</value></data>
   <data name="RpcConnectionLost" xml:space="preserve"><value>З'єднання з aria2 розірвано.</value></data>
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Усічення (trunc)</value></data>
+  <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Перезапустіть, щоб змінити мову</value></data>
+  <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Перезапустити</value></data>
 </root>

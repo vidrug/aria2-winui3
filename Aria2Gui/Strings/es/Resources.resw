@@ -242,4 +242,6 @@ uno por línea</value></data>
   <data name="TorrentErrUnexpectedByte" xml:space="preserve"><value>Byte de bencode inesperado: 0x{0}.</value></data>
   <data name="RpcConnectionLost" xml:space="preserve"><value>Se perdió la conexión con aria2.</value></data>
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Truncar (trunc)</value></data>
+  <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Reinicia para aplicar el nuevo idioma</value></data>
+  <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Reiniciar ahora</value></data>
 </root>

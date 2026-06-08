@@ -20,6 +20,7 @@ public static class Program
 
         // Apply the saved UI language before any XAML/resources load. Empty = follow the OS.
         string language = Services.SettingsService.Load().Language;
+        App.ActiveLanguage = language;
         if (!string.IsNullOrEmpty(language))
             ApplyLanguageOverride(language);
 

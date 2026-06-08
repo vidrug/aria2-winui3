@@ -173,6 +173,18 @@
                                 <ComboBoxItem Content="Türkçe" Tag="tr" />
                             </ComboBox>
                         </tk:SettingsCard>
+                        <!-- The UI language only changes on relaunch; offer it instead of forcing a restart. -->
+                        <InfoBar
+                            x:Name="LanguageRestartBar"
+                            x:Uid="LanguageRestartBar"
+                            Severity="Informational"
+                            IsOpen="False"
+                            IsClosable="False"
+                            Margin="0,4,0,0">
+                            <InfoBar.ActionButton>
+                                <Button x:Uid="LanguageRestartButton" AutomationProperties.AutomationId="LanguageRestartButton" Click="OnRestartForLanguage" />
+                            </InfoBar.ActionButton>
+                        </InfoBar>
                     </StackPanel>
 
                     <!-- ===== Подключение ===== -->
