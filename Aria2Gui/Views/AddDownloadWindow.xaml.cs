@@ -52,8 +52,30 @@ public sealed partial class AddDownloadWindow : Window
         SetOwner(App.Window);
         AppWindow.SetPresenter(presenter);
 
+        CenterOnOwner();
+
         Closed += (_, _) => App.Window?.Activate();
         AppWindow.Show();
+    }
+
+    /// <summary>Centers this dialog over the main window (falling back to its display), so it
+    /// doesn't appear in the OS default top-left spot. Positions are physical pixels, as is Move.</summary>
+    private void CenterOnOwner()
+    {
+        AppWindow? owner = App.Window?.AppWindow;
+        if (owner is null)
+            return;
+
+        var size = AppWindow.Size;
+        int x = owner.Position.X + (owner.Size.Width - size.Width) / 2;
+        int y = owner.Position.Y + (owner.Size.Height - size.Height) / 2;
+
+        // Keep it on the owner's display even if the main window hugs a screen edge.
+        var work = DisplayArea.GetFromWindowId(owner.Id, DisplayAreaFallback.Nearest).WorkArea;
+        x = Math.Clamp(x, work.X, Math.Max(work.X, work.X + work.Width - size.Width));
+        y = Math.Clamp(y, work.Y, Math.Max(work.Y, work.Y + work.Height - size.Height));
+
+        AppWindow.Move(new Windows.Graphics.PointInt32(x, y));
     }
 
     /// <summary>Parents this window to the main one so the modal blocks the right owner.</summary>
