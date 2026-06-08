@@ -4,10 +4,17 @@ using Microsoft.Windows.ApplicationModel.Resources;
 namespace Aria2Gui.Helpers;
 
 /// <summary>
-/// Tiny localization helper for code-behind strings. Looks up a value from the app's
-/// .resw resources via the WinApp SDK <see cref="ResourceLoader"/>, which works for
-/// both packaged and unpackaged apps. XAML text is localized separately via x:Uid.
+/// Tiny localization helper for code-behind strings. Looks up a value from the app's .resw
+/// resources via the WinApp SDK <see cref="ResourceLoader"/>, which works for both packaged
+/// and unpackaged apps. XAML text is localized separately via x:Uid.
 /// </summary>
+/// <remarks>
+/// The resolved language follows the same source as x:Uid: a packaged build honors
+/// <c>ApplicationLanguages.PrimaryLanguageOverride</c> (set in <see cref="Program"/>); an
+/// unpackaged (portable) build always follows the OS UI language — the framework's default
+/// resource context cannot be redirected there, so the in-app language picker only changes
+/// the UI language for the packaged build.
+/// </remarks>
 internal static class L
 {
     // Lazily created so the resource map is touched only after the app is up.

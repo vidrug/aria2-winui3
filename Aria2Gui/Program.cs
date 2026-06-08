@@ -21,7 +21,7 @@ public static class Program
         // Apply the saved UI language before any XAML/resources load. Empty = follow the OS.
         string language = Services.SettingsService.Load().Language;
         if (!string.IsNullOrEmpty(language))
-            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
+            ApplyLanguageOverride(language);
 
         var mainInstance = AppInstance.FindOrRegisterForKey(GetInstanceKey());
         if (!mainInstance.IsCurrent)
@@ -38,6 +38,34 @@ public static class Program
             _ = new App();
         });
         return 0;
+    }
+
+    /// <summary>
+    /// Applies the saved UI language. A packaged build uses the OS language-override API,
+    /// which drives WinUI's resource resolver; the portable (no package identity) throws on
+    /// it and is skipped, so the portable always follows the OS UI language. The CLR culture
+    /// is set regardless so numbers and dates format for the chosen language.
+    /// </summary>
+    private static void ApplyLanguageOverride(string language)
+    {
+        try
+        {
+            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
+        }
+        catch
+        {
+            // No package identity (portable exe) — PrimaryLanguageOverride is unavailable.
+        }
+        try
+        {
+            var culture = System.Globalization.CultureInfo.GetCultureInfo(language);
+            System.Globalization.CultureInfo.DefaultThreadCurrentCulture = culture;
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = culture;
+        }
+        catch
+        {
+            // Unknown/invalid culture name — leave the OS default in place.
+        }
     }
 
     /// <summary>
