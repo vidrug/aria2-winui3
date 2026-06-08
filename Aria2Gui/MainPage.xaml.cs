@@ -106,6 +106,29 @@ public sealed partial class MainPage : Page
             ViewModel.Columns.SetVisible(key, item.IsChecked);
     }
 
+    // Width the sidebar returns to when expanded again (remembers user resizing).
+    private double _expandedSidebarWidth = 220;
+
+    /// <summary>Hamburger: collapse the sidebar to icons-only (narrow column, labels hidden)
+    /// or restore it to its previous width.</summary>
+    private void OnToggleSidebar(object sender, RoutedEventArgs e)
+    {
+        bool collapse = !ViewModel.SidebarCollapsed;
+        ViewModel.SidebarCollapsed = collapse;
+        if (collapse)
+        {
+            if (SidebarColumn.ActualWidth > 0)
+                _expandedSidebarWidth = SidebarColumn.ActualWidth;
+            SidebarColumn.MinWidth = 0;
+            SidebarColumn.Width = new GridLength(52);
+        }
+        else
+        {
+            SidebarColumn.MinWidth = 160;
+            SidebarColumn.Width = new GridLength(_expandedSidebarWidth);
+        }
+    }
+
     private void DownloadsList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
         ViewModel.SetSelection([.. DownloadsList.SelectedItems.OfType<DownloadItemViewModel>()]);
 

@@ -12,6 +12,10 @@ public sealed partial class FilterItemViewModel(string key, string title, string
 
     [ObservableProperty]
     public partial int Count { get; set; }
+
+    /// <summary>False collapses the sidebar to icons-only (hamburger toggle).</summary>
+    [ObservableProperty]
+    public partial bool LabelVisible { get; set; } = true;
 }
 
 /// <summary>

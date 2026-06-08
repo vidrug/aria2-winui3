@@ -248,4 +248,6 @@
   <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Віддано</value></data>
   <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Віддано»</value></data>
   <data name="LimitUnlimited" xml:space="preserve"><value>Без обмеження</value></data>
+  <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Згорнути/розгорнути панель</value></data>
+  <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Згорнути/розгорнути панель</value></data>
 </root>

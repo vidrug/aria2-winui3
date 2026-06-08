@@ -248,4 +248,6 @@ uno por línea</value></data>
   <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Subido</value></data>
   <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cambiar el ancho de la columna «Subido»</value></data>
   <data name="LimitUnlimited" xml:space="preserve"><value>Sin límite</value></data>
+  <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mostrar/ocultar barra lateral</value></data>
+  <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mostrar/ocultar barra lateral</value></data>
 </root>

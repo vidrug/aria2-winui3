@@ -248,4 +248,6 @@
   <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>アップロード済み</value></data>
   <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>「アップロード済み」列の幅を変更</value></data>
   <data name="LimitUnlimited" xml:space="preserve"><value>無制限</value></data>
+  <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>サイドバーの切り替え</value></data>
+  <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>サイドバーの切り替え</value></data>
 </root>

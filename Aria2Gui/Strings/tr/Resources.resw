@@ -248,4 +248,6 @@ her satıra bir tane</value></data>
   <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Gönderildi</value></data>
   <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Gönderildi» sütununun genişliğini değiştir</value></data>
   <data name="LimitUnlimited" xml:space="preserve"><value>Sınırsız</value></data>
+  <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kenar çubuğunu aç/kapat</value></data>
+  <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kenar çubuğunu aç/kapat</value></data>
 </root>

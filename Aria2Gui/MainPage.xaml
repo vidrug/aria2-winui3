@@ -168,16 +168,33 @@
         <!-- Sidebar | main area (hidden while the settings page is shown) -->
         <Grid Grid.Row="1" Visibility="{x:Bind local:MainPage.CollapsedIf(ViewModel.SettingsOpen), Mode=OneWay}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="220" MinWidth="160" MaxWidth="400" />
+                <ColumnDefinition x:Name="SidebarColumn" Width="220" MinWidth="160" MaxWidth="400" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" MinWidth="400" />
             </Grid.ColumnDefinitions>
 
-            <!-- Status filters -->
+            <!-- Status filters; the hamburger collapses the labels to icons-only -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button
+                    x:Name="SidebarToggle"
+                    loc:Localize.Uid="SidebarToggleButton"
+                    AutomationProperties.AutomationId="SidebarToggle"
+                    Click="OnToggleSidebar"
+                    Margin="4,8,4,0"
+                    Padding="10,6"
+                    HorizontalAlignment="Left"
+                    Background="Transparent"
+                    BorderThickness="0">
+                    <FontIcon Glyph="&#xE700;" FontSize="14" />
+                </Button>
             <ListView
                 x:Name="FiltersList"
                 AutomationProperties.AutomationId="FiltersList"
-                Grid.Column="0"
+                Grid.Row="1"
                 Padding="4,8,4,8"
                 SelectionMode="Single"
                 ItemsSource="{x:Bind ViewModel.Filters, Mode=OneWay}"
@@ -204,17 +221,20 @@
                                 Grid.Column="1"
                                 Text="{x:Bind Title}"
                                 VerticalAlignment="Center"
-                                TextTrimming="CharacterEllipsis" />
+                                TextTrimming="CharacterEllipsis"
+                                Visibility="{x:Bind local:MainPage.VisIf(LabelVisible), Mode=OneWay}" />
                             <TextBlock
                                 Grid.Column="2"
                                 Text="{x:Bind Count, Mode=OneWay}"
                                 Style="{StaticResource CaptionTextBlockStyle}"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                VerticalAlignment="Center" />
+                                VerticalAlignment="Center"
+                                Visibility="{x:Bind local:MainPage.VisIf(LabelVisible), Mode=OneWay}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            </Grid>
 
             <toolkit:GridSplitter
                 Grid.Column="1"
