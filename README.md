@@ -65,7 +65,3 @@ UI strings live in `Aria2Gui/Strings/<lang>/Resources.resw` (12 languages). XAML
 
 - **[aria2](https://aria2.github.io/)** — the download engine, bundled as `aria2c.exe`. aria2 is licensed under the **GNU GPL v2 (or later)**; this repository redistributes the unmodified official binary.
 - **[Windows App SDK / WinUI 3](https://github.com/microsoft/WindowsAppSDK)** and the **[.NET Community Toolkit](https://github.com/CommunityToolkit)** (MIT).
-
-## License
-
-No license has been chosen for the application source yet — add one (e.g. [MIT](https://choosealicense.com/licenses/mit/)) before redistribution if you want others to reuse the code. Note that the bundled aria2 engine remains under its own **GPL v2+** license.
