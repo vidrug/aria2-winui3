@@ -190,6 +190,7 @@ public sealed partial class MainPage : Page
         {
             if (e.DataView.Contains(StandardDataFormats.StorageItems))
             {
+                string? dropDir = ResolveAddDirectory();
                 var items = await e.DataView.GetStorageItemsAsync();
                 foreach (var item in items)
                 {
@@ -197,7 +198,7 @@ public sealed partial class MainPage : Page
                         continue;
                     try
                     {
-                        await DownloadAdder.AddTorrentFileAsync(file);
+                        await DownloadAdder.AddTorrentFileAsync(file, dropDir);
                     }
                     catch (Exception)
                     {
@@ -208,16 +209,27 @@ public sealed partial class MainPage : Page
             else if (e.DataView.Contains(StandardDataFormats.WebLink))
             {
                 var uri = await e.DataView.GetWebLinkAsync();
-                await DownloadAdder.AddUrisAsync(uri.AbsoluteUri);
+                await DownloadAdder.AddUrisAsync(uri.AbsoluteUri, ResolveAddDirectory());
             }
             else if (e.DataView.Contains(StandardDataFormats.Text))
             {
-                await DownloadAdder.AddUrisAsync(await e.DataView.GetTextAsync());
+                await DownloadAdder.AddUrisAsync(await e.DataView.GetTextAsync(), ResolveAddDirectory());
             }
         }
         catch (Exception)
         {
             // Drop is best-effort; bad payloads are ignored.
         }
+    }
+
+    /// <summary>Folder that drag-and-drop adds drop into: the one the user last added to
+    /// (so the location is remembered, matching the Add dialog), falling back to the
+    /// configured download folder. Without this, drops always went to aria2's default.</summary>
+    private static string? ResolveAddDirectory()
+    {
+        var settings = Aria2Gui.Services.Aria2.Aria2Service.Instance.Settings;
+        if (!string.IsNullOrWhiteSpace(settings.LastAddDirectory) && System.IO.Directory.Exists(settings.LastAddDirectory))
+            return settings.LastAddDirectory;
+        return string.IsNullOrWhiteSpace(settings.DownloadDirectory) ? null : settings.DownloadDirectory;
     }
 }
