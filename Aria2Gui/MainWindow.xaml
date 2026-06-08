@@ -18,15 +18,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TitleBar x:Name="AppTitleBar" Title="Aria2Gui">
-            <!-- Plain ImageIconSource like the WinUI 3 Gallery (no DecodePixelWidth, the
-                 framework picks the frame per DPI), but pointed at a small-frames-only .ico
-                 (16-48px) so it can never pick the 256px frame and downscale it to mush —
-                 it always renders from a sharp small frame, crisp at every display scale. -->
-            <TitleBar.IconSource>
-                <ImageIconSource ImageSource="ms-appx:///Assets/AppIconSmall.ico" />
-            </TitleBar.IconSource>
-        </TitleBar>
+        <!-- No title-bar icon (the window/taskbar icon still comes from AppWindow.SetIcon). -->
+        <TitleBar x:Name="AppTitleBar" Title="Aria2Gui" />
 
         <!--
             The Frame hosts pages for your application content. Add your UI to
