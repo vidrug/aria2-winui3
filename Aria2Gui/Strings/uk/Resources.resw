@@ -243,4 +243,5 @@
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Усічення (trunc)</value></data>
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Перезапустіть, щоб змінити мову</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Перезапустити</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>Про програму</value></data>
 </root>

@@ -243,4 +243,5 @@ her satıra bir tane</value></data>
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Kırp (trunc)</value></data>
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Yeni dili uygulamak için yeniden başlatın</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Şimdi yeniden başlat</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>Hakkında</value></data>
 </root>

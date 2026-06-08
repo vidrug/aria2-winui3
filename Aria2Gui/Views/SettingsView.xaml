@@ -94,6 +94,11 @@
                         <FontIcon Glyph="&#xE712;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem loc:Localize.Uid="NavAbout" Tag="about" AutomationProperties.AutomationId="NavAbout">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <ScrollViewer
@@ -372,6 +377,22 @@
                             <TextBox x:Name="ExtraOptionsBox" AutomationProperties.AutomationId="ExtraOptionsBox" PlaceholderText="bt-request-peer-speed-limit=100K&#x0a;bt-stop-timeout=0" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="160" FontFamily="Consolas" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                         </tk:SettingsCard>
                         <InfoBar loc:Localize.Uid="AdvancedInfoBar" Severity="Informational" IsOpen="True" IsClosable="False" Margin="0,8,0,0" />
+                    </StackPanel>
+
+                    <!-- ===== About ===== -->
+                    <StackPanel x:Name="AboutPanel" Spacing="4" Visibility="Collapsed">
+                        <tk:SettingsCard x:Name="AppInfoCard" Header="Aria2Gui">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE946;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <HyperlinkButton Content="github.com/vidrug/aria2-winui3" NavigateUri="https://github.com/vidrug/aria2-winui3" />
+                        </tk:SettingsCard>
+                        <tk:SettingsCard x:Name="AriaInfoCard" Header="aria2">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE896;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <HyperlinkButton Content="github.com/aria2/aria2" NavigateUri="https://github.com/aria2/aria2" />
+                        </tk:SettingsCard>
                     </StackPanel>
 
                     <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" IsClosable="False" Margin="0,8,0,16" />

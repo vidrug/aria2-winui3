@@ -243,4 +243,5 @@ jeden w wierszu</value></data>
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Obetnij (trunc)</value></data>
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Uruchom ponownie, aby zastosować nowy język</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Uruchom ponownie</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>O programie</value></data>
 </root>

@@ -243,4 +243,5 @@
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>切り詰め (trunc)</value></data>
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>新しい言語を適用するには再起動してください</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>今すぐ再起動</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>情報</value></data>
 </root>

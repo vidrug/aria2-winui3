@@ -243,4 +243,5 @@ un par ligne</value></data>
   <data name="FileAllocTruncItem.Content" xml:space="preserve"><value>Tronquer (trunc)</value></data>
   <data name="LanguageRestartBar.Title" xml:space="preserve"><value>Redémarrez pour appliquer la nouvelle langue</value></data>
   <data name="LanguageRestartButton.Content" xml:space="preserve"><value>Redémarrer</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>À propos</value></data>
 </root>

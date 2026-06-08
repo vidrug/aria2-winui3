@@ -3,6 +3,8 @@ using Aria2Gui.Services;
 using Aria2Gui.Services.Aria2;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Storage.Pickers;
 
 namespace Aria2Gui.Views;
@@ -203,7 +205,8 @@ public sealed partial class SettingsView : UserControl
         Microsoft.Windows.AppLifecycle.AppInstance.Restart("");
     }
 
-    /// <summary>Shows only the selected section's panel (WinUI NavigationView style).</summary>
+    /// <summary>Shows only the selected section's panel (WinUI NavigationView style),
+    /// with a small fade/slide-in so switching sections feels animated.</summary>
     private void OnSectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         if (args.SelectedItem is not NavigationViewItem { Tag: string tag })
@@ -213,6 +216,66 @@ public sealed partial class SettingsView : UserControl
         FilesPanel.Visibility = tag == "files" ? Visibility.Visible : Visibility.Collapsed;
         BtPanel.Visibility = tag == "bt" ? Visibility.Visible : Visibility.Collapsed;
         AdvancedPanel.Visibility = tag == "advanced" ? Visibility.Visible : Visibility.Collapsed;
+        AboutPanel.Visibility = tag == "about" ? Visibility.Visible : Visibility.Collapsed;
+
+        AnimateSectionIn(tag switch
+        {
+            "connection" => ConnectionPanel,
+            "files" => FilesPanel,
+            "bt" => BtPanel,
+            "advanced" => AdvancedPanel,
+            "about" => AboutPanel,
+            _ => GeneralPanel,
+        });
+
+        if (tag == "about")
+            LoadAboutInfo();
+    }
+
+    /// <summary>Fade + slide-up entrance for the panel that just became visible.</summary>
+    private static void AnimateSectionIn(FrameworkElement panel)
+    {
+        var translate = new TranslateTransform { Y = 16 };
+        panel.RenderTransform = translate;
+        panel.Opacity = 0;
+
+        var fade = new DoubleAnimation { To = 1, Duration = TimeSpan.FromMilliseconds(180), EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+        Storyboard.SetTarget(fade, panel);
+        Storyboard.SetTargetProperty(fade, "Opacity");
+
+        var slide = new DoubleAnimation { To = 0, Duration = TimeSpan.FromMilliseconds(260), EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+        Storyboard.SetTarget(slide, translate);
+        Storyboard.SetTargetProperty(slide, "Y");
+
+        var storyboard = new Storyboard();
+        storyboard.Children.Add(fade);
+        storyboard.Children.Add(slide);
+        storyboard.Begin();
+    }
+
+    private bool _aboutLoaded;
+
+    /// <summary>Fills the About cards with the app and aria2 versions (once).</summary>
+    private async void LoadAboutInfo()
+    {
+        if (_aboutLoaded)
+            return;
+        _aboutLoaded = true;
+        try
+        {
+            AppInfoCard.Description = typeof(App).Assembly.GetName().Version?.ToString(3) ?? "";
+        }
+        catch
+        {
+        }
+        try
+        {
+            if (Aria2Service.Instance.Rpc.IsConnected)
+                AriaInfoCard.Description = (await Aria2Service.Instance.Rpc.GetVersionAsync()).Version;
+        }
+        catch
+        {
+        }
     }
 
     /// <summary>The encryption-level choice only matters when crypto is required.</summary>
