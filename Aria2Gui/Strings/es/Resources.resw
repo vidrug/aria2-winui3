@@ -251,4 +251,6 @@ uno por línea</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mostrar/ocultar barra lateral</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mostrar/ocultar barra lateral</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Ya está en la lista, se omitió.</value></data>
+  <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Volver a verificar</value></data>
+  <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Mostrar/ocultar barra lateral</value></data>
 </root>

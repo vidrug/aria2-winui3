@@ -251,4 +251,6 @@ her satıra bir tane</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kenar çubuğunu aç/kapat</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kenar çubuğunu aç/kapat</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Zaten listede - atlandı.</value></data>
+  <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Yeniden doğrula</value></data>
+  <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Kenar çubuğunu aç/kapat</value></data>
 </root>

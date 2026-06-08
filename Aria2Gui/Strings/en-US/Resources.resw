@@ -251,4 +251,6 @@ one per line</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Toggle sidebar</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Toggle sidebar</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Already in the list - skipped.</value></data>
+  <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Recheck</value></data>
+  <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Toggle sidebar</value></data>
 </root>

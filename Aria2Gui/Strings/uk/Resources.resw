@@ -251,4 +251,6 @@
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Згорнути/розгорнути панель</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Згорнути/розгорнути панель</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Уже у списку - пропущено.</value></data>
+  <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Перевірити знову</value></data>
+  <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Згорнути/розгорнути панель</value></data>
 </root>

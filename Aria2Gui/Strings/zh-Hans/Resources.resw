@@ -251,4 +251,6 @@
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>折叠/展开侧栏</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>折叠/展开侧栏</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>已在列表中，已跳过。</value></data>
+  <data name="RowMenuRecheck.Text" xml:space="preserve"><value>重新校验</value></data>
+  <data name="SidebarToggleButton.Label" xml:space="preserve"><value>折叠/展开侧栏</value></data>
 </root>

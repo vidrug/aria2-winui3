@@ -80,6 +80,9 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     [ObservableProperty]
     public partial bool IsError { get; set; }
 
+    [ObservableProperty]
+    public partial bool IsPaused { get; set; }
+
     /// <summary>aria2's error reason, shown as a row tooltip so failures are visible
     /// without opening the details pane. Null on non-errored rows (no tooltip).</summary>
     [ObservableProperty]
@@ -194,6 +197,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         UploadedText = d.UploadLength > 0 ? FormatUtils.FormatSize(d.UploadLength) : "—";
 
         bool paused = d.Status == Aria2Status.Paused;
+        IsPaused = paused;
         CanPauseResume = !_isStopped;
         PauseResumeText = paused ? L.Get("ActionResume") : L.Get("ActionPause");
         HasMagnet = !string.IsNullOrEmpty(d.InfoHash);
@@ -301,6 +305,28 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         catch (Exception)
         {
             // Clipboard is flaky when another app holds it — best effort.
+        }
+    }
+
+    /// <summary>
+    /// Re-hash and continue a torrent whose data exists on disk but whose aria2 state
+    /// was lost: remove the entry keeping files, then re-add via magnet. BuildOptions
+    /// sets check-integrity, so aria2 re-hashes the existing files and resumes seeding.
+    /// </summary>
+    [RelayCommand]
+    private async Task RecheckAsync()
+    {
+        if (string.IsNullOrEmpty(InfoHash))
+            return;
+        try
+        {
+            string magnet = $"magnet:?xt=urn:btih:{InfoHash}&dn={Uri.EscapeDataString(Name)}";
+            await RemoveAsync();
+            await DownloadAdder.AddUrisAsync(magnet, Directory);
+        }
+        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
+        {
+            // Engine reconnecting or the entry vanished under us — the list resyncs next tick.
         }
     }
 

@@ -251,4 +251,6 @@ einer pro Zeile</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Seitenleiste ein-/ausklappen</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Seitenleiste ein-/ausklappen</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Bereits in der Liste - übersprungen.</value></data>
+  <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Erneut prüfen</value></data>
+  <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Seitenleiste ein-/ausklappen</value></data>
 </root>

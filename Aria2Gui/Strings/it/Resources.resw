@@ -251,4 +251,6 @@ uno per riga</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Comprimi/espandi barra laterale</value></data>
   <data name="SidebarToggleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Comprimi/espandi barra laterale</value></data>
   <data name="AddNoticeAlreadyAdded" xml:space="preserve"><value>Già nell'elenco - ignorato.</value></data>
+  <data name="RowMenuRecheck.Text" xml:space="preserve"><value>Riverifica</value></data>
+  <data name="SidebarToggleButton.Label" xml:space="preserve"><value>Comprimi/espandi barra laterale</value></data>
 </root>

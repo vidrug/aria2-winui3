@@ -65,6 +65,16 @@
             HorizontalAlignment="Left"
             Visibility="{x:Bind local:MainPage.CollapsedIf(ViewModel.SettingsOpen), Mode=OneWay}">
             <AppBarButton
+                loc:Localize.Uid="SidebarToggleButton"
+                Click="OnToggleSidebar"
+                LabelPosition="Collapsed"
+                AutomationProperties.AutomationId="SidebarToggle">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE700;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarSeparator />
+            <AppBarButton
                 loc:Localize.Uid="ToolbarAddButton"
                 Command="{x:Bind ViewModel.AddDownloadCommand}"
                 AutomationProperties.AutomationId="AddDownloadButton">
@@ -173,32 +183,11 @@
                 <ColumnDefinition Width="*" MinWidth="400" />
             </Grid.ColumnDefinitions>
 
-            <!-- Status filters; the hamburger collapses the labels to icons-only -->
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <!-- Pane-toggle, sized/aligned like NavigationView's hamburger: a 40x36
-                     transparent icon button whose glyph lines up with the filter icons. -->
-                <Button
-                    x:Name="SidebarToggle"
-                    loc:Localize.Uid="SidebarToggleButton"
-                    AutomationProperties.AutomationId="SidebarToggle"
-                    Click="OnToggleSidebar"
-                    Margin="4,4,4,2"
-                    Width="40"
-                    Height="36"
-                    Padding="0"
-                    HorizontalAlignment="Left"
-                    Background="Transparent"
-                    BorderThickness="0">
-                    <FontIcon Glyph="&#xE700;" FontSize="16" />
-                </Button>
+            <!-- Status filters; the toolbar hamburger collapses the labels to icons-only -->
             <ListView
                 x:Name="FiltersList"
                 AutomationProperties.AutomationId="FiltersList"
-                Grid.Row="1"
+                Grid.Column="0"
                 Padding="4,8,4,8"
                 SelectionMode="Single"
                 ItemsSource="{x:Bind ViewModel.Filters, Mode=OneWay}"
@@ -238,7 +227,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            </Grid>
 
             <toolkit:GridSplitter
                 Grid.Column="1"
@@ -373,6 +361,14 @@
                                                 <FontIcon Glyph="&#xE71B;" />
                                             </MenuFlyoutItem.Icon>
                                         </MenuFlyoutItem>
+                                        <MenuFlyoutItem
+                                            loc:Localize.Uid="RowMenuRecheck"
+                                            Command="{x:Bind RecheckCommand}"
+                                            Visibility="{x:Bind local:MainPage.VisIf(HasMagnet), Mode=OneWay}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE72C;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
                                         <MenuFlyoutSeparator />
                                         <MenuFlyoutItem loc:Localize.Uid="RowMenuRemove" Command="{x:Bind RemoveCommand}">
                                             <MenuFlyoutItem.Icon>
@@ -421,7 +417,9 @@
                                         Maximum="100"
                                         MinHeight="8"
                                         VerticalAlignment="Center"
-                                        IsIndeterminate="{x:Bind IsProgressIndeterminate, Mode=OneWay}" />
+                                        IsIndeterminate="{x:Bind IsProgressIndeterminate, Mode=OneWay}"
+                                        ShowError="{x:Bind IsError, Mode=OneWay}"
+                                        ShowPaused="{x:Bind IsPaused, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Column="1"
                                         Text="{x:Bind ProgressText, Mode=OneWay}"

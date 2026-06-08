@@ -118,22 +118,35 @@ public sealed partial class MainPage : Page
     // Width the sidebar returns to when expanded again (remembers user resizing).
     private double _expandedSidebarWidth = 220;
 
-    /// <summary>Hamburger: collapse the sidebar to icons-only (narrow column, labels hidden)
-    /// or restore it to its previous width.</summary>
+    // Icons-only collapsed width: 48px column with the ListView's 4px L/R padding
+    // leaves a 40px content area, so the 14px filter icon and the rounded selection
+    // pill are both fully visible (not clipped on the right edge).
+    private const double CollapsedSidebarWidth = 48;
+    private const double DefaultExpandedMinWidth = 160;
+
+    /// <summary>Toolbar hamburger: collapse the sidebar to icons-only (narrow column,
+    /// labels hidden) or restore it to its previous width.</summary>
     private void OnToggleSidebar(object sender, RoutedEventArgs e)
     {
         bool collapse = !ViewModel.SidebarCollapsed;
         ViewModel.SidebarCollapsed = collapse;
         if (collapse)
         {
-            if (SidebarColumn.ActualWidth > 0)
+            if (SidebarColumn.ActualWidth > CollapsedSidebarWidth)
                 _expandedSidebarWidth = SidebarColumn.ActualWidth;
+            // The toolkit GridSplitter clamps the column to its MinWidth and re-pins
+            // the measured width, so a bare Width assignment is overridden and the
+            // column stays wide. Pin MinWidth AND MaxWidth to the collapsed size so
+            // nothing can grow it back, then set the width to match.
             SidebarColumn.MinWidth = 0;
-            SidebarColumn.Width = new GridLength(52);
+            SidebarColumn.MaxWidth = CollapsedSidebarWidth;
+            SidebarColumn.Width = new GridLength(CollapsedSidebarWidth);
         }
         else
         {
-            SidebarColumn.MinWidth = 160;
+            // Restore the resize bounds first, then the remembered width.
+            SidebarColumn.MinWidth = DefaultExpandedMinWidth;
+            SidebarColumn.MaxWidth = 400;
             SidebarColumn.Width = new GridLength(_expandedSidebarWidth);
         }
     }

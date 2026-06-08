@@ -70,16 +70,21 @@ public static class DownloadAdder
         return ms.ToArray();
     }
 
-    private static Dictionary<string, string>? BuildOptions(string? directory, string? selectFile)
+    /// <summary>
+    /// Builds the per-download aria2 options. Always sets <c>check-integrity=true</c>
+    /// so that when the data file already exists on disk but its <c>.aria2</c> control
+    /// file is gone, aria2 re-hashes the existing file and resumes/seeds it instead of
+    /// failing with errorCode 13 ("file exists ... canceled to prevent truncation").
+    /// (allow-overwrite would re-download and destroy the file, so we never use it.)
+    /// </summary>
+    private static Dictionary<string, string> BuildOptions(string? directory, string? selectFile)
     {
-        if (directory is null && selectFile is null)
-            return null;
-        var options = new Dictionary<string, string>();
+        var options = new Dictionary<string, string> { ["check-integrity"] = "true" };
         if (!string.IsNullOrWhiteSpace(directory))
             options["dir"] = directory;
         if (!string.IsNullOrEmpty(selectFile))
             options["select-file"] = selectFile;
-        return options.Count > 0 ? options : null;
+        return options;
     }
 
     public static bool IsSupportedUri(string value) =>
