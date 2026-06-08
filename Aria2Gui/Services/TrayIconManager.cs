@@ -45,28 +45,37 @@ public sealed class TrayIconManager : IDisposable
         menu.Items.Add(new MenuFlyoutSeparator());
         menu.Items.Add(quit);
 
-        // Same icon file as the window so the tray matches it exactly. A BitmapImage
-        // from .ico decodes asynchronously and would otherwise leave the tray blank,
-        // so re-assign IconSource once it has loaded to refresh the tray bitmap.
-        var bitmap = new BitmapImage(new Uri("ms-appx:///Assets/AppIcon.ico"));
-        bitmap.ImageOpened += (_, _) =>
-        {
-            if (_icon is not null)
-                _icon.IconSource = bitmap;
-        };
-
         _icon = new TaskbarIcon
         {
             ToolTipText = "Aria2Gui",
             ContextFlyout = menu,
-            IconSource = bitmap,
             NoLeftClickDelay = true,
         };
+        // Load the .ico at the tray size directly: System.Drawing picks the closest frame
+        // from the multi-resolution icon, so the tray shows a crisp image instead of a
+        // downscaled 256px bitmap. Loading is synchronous, so unlike a BitmapImage it
+        // never flashes blank before decoding.
+        _icon.Icon = LoadTrayIcon();
         _icon.LeftClickCommand = new RelayCommandShim(ShowWindow);
         _icon.ForceCreate();
 
         // Hide-to-tray when the window is minimised.
         _appWindow.Changed += OnAppWindowChanged;
+    }
+
+    /// <summary>Loads the app icon at a tray-appropriate size, picking the closest frame
+    /// from the multi-resolution .ico so the system tray renders it crisply across DPIs.</summary>
+    private static System.Drawing.Icon? LoadTrayIcon()
+    {
+        try
+        {
+            string path = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.ico");
+            return new System.Drawing.Icon(path, 32, 32);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     /// <summary>Hooks the page ViewModel so the tooltip can show live speed.</summary>

@@ -20,7 +20,13 @@
 
         <TitleBar x:Name="AppTitleBar" Title="Aria2Gui">
             <TitleBar.IconSource>
-                <ImageIconSource ImageSource="Assets/AppIcon.ico" />
+                <!-- Decode at the small title-bar size so WIC picks the matching .ico frame
+                     instead of downscaling the 256px frame (which looks blurry). -->
+                <ImageIconSource>
+                    <ImageIconSource.ImageSource>
+                        <BitmapImage UriSource="ms-appx:///Assets/AppIcon.ico" DecodePixelType="Logical" DecodePixelWidth="20" DecodePixelHeight="20" />
+                    </ImageIconSource.ImageSource>
+                </ImageIconSource>
             </TitleBar.IconSource>
         </TitleBar>
 
