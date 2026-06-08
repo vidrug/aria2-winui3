@@ -247,4 +247,5 @@
   <data name="ColUploaded" xml:space="preserve"><value>アップロード済み</value></data>
   <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>アップロード済み</value></data>
   <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>「アップロード済み」列の幅を変更</value></data>
+  <data name="LimitUnlimited" xml:space="preserve"><value>無制限</value></data>
 </root>

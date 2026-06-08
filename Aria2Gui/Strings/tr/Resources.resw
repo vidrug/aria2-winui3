@@ -247,4 +247,5 @@ her satıra bir tane</value></data>
   <data name="ColUploaded" xml:space="preserve"><value>Gönderildi</value></data>
   <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Gönderildi</value></data>
   <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Gönderildi» sütununun genişliğini değiştir</value></data>
+  <data name="LimitUnlimited" xml:space="preserve"><value>Sınırsız</value></data>
 </root>

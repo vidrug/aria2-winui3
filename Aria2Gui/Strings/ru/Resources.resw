@@ -247,4 +247,5 @@
   <data name="ColUploaded" xml:space="preserve"><value>Отдано</value></data>
   <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Отдано</value></data>
   <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Изменить ширину столбца «Отдано»</value></data>
+  <data name="LimitUnlimited" xml:space="preserve"><value>Без ограничения</value></data>
 </root>

@@ -247,4 +247,5 @@ um por linha</value></data>
   <data name="ColUploaded" xml:space="preserve"><value>Enviado</value></data>
   <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Enviado</value></data>
   <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Redimensionar a coluna “Enviado”</value></data>
+  <data name="LimitUnlimited" xml:space="preserve"><value>Ilimitado</value></data>
 </root>

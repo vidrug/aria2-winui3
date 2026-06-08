@@ -128,13 +128,13 @@
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE896;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <NumberBox x:Name="DownLimitBox" AutomationProperties.AutomationId="DownLimitBox" Minimum="0" Maximum="10000" SmallChange="0.5" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                            <ComboBox x:Name="DownLimitBox" AutomationProperties.AutomationId="DownLimitBox" IsEditable="True" MinWidth="160" />
                         </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="UpLimitCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE898;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <NumberBox x:Name="UpLimitBox" AutomationProperties.AutomationId="UpLimitBox" Minimum="0" Maximum="10000" SmallChange="0.5" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                            <ComboBox x:Name="UpLimitBox" AutomationProperties.AutomationId="UpLimitBox" IsEditable="True" MinWidth="160" />
                         </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="ConcurrentCard">
                             <tk:SettingsCard.HeaderIcon>

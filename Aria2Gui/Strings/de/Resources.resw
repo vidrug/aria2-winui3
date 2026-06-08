@@ -247,4 +247,5 @@ einer pro Zeile</value></data>
   <data name="ColUploaded" xml:space="preserve"><value>Hochgeladen</value></data>
   <data name="ColumnMenuUploaded.Text" xml:space="preserve"><value>Hochgeladen</value></data>
   <data name="ResizeHandleUploaded.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Breite der Spalte „Hochgeladen“ ändern</value></data>
+  <data name="LimitUnlimited" xml:space="preserve"><value>Unbegrenzt</value></data>
 </root>
