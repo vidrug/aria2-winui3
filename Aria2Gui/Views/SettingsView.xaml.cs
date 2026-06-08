@@ -114,7 +114,7 @@ public sealed partial class SettingsView : UserControl
             LpdToggle.IsOn = s.EnableLpd;
             CryptoToggle.IsOn = s.RequireCrypto;
             CryptoLevelRadio.SelectedIndex = s.BtMinCryptoLevel == "arc4" ? 1 : 0;
-            CryptoLevelCard.Visibility = s.RequireCrypto ? Visibility.Visible : Visibility.Collapsed;
+            CryptoExpander.IsExpanded = s.RequireCrypto;
             TrackersBox.Text = s.ExtraTrackers;
             ExtraOptionsBox.Text = s.ExtraAria2Options;
             ErrorBar.IsOpen = false;
@@ -296,11 +296,11 @@ public sealed partial class SettingsView : UserControl
         }
     }
 
-    /// <summary>The encryption-level choice only matters when crypto is required.</summary>
+    /// <summary>The encryption-level choice only matters when crypto is required, so the
+    /// expander auto-opens to reveal it while encryption is on and collapses when off.</summary>
     private void OnCryptoToggled(object sender, RoutedEventArgs e)
     {
-        if (CryptoLevelCard is not null)
-            CryptoLevelCard.Visibility = CryptoToggle.IsOn ? Visibility.Visible : Visibility.Collapsed;
+        CryptoExpander.IsExpanded = CryptoToggle.IsOn;
         _ = ApplyChangeAsync();
     }
 

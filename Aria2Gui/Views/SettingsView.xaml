@@ -299,18 +299,20 @@
                             </tk:SettingsCard.HeaderIcon>
                             <ToggleSwitch x:Name="LpdToggle" loc:Localize.Uid="LpdToggle" AutomationProperties.AutomationId="LpdToggle" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard loc:Localize.Uid="CryptoCard">
-                            <tk:SettingsCard.HeaderIcon>
+                        <!-- Encryption as a SettingsExpander: the toggle sits in the header and
+                             the encryption-level choice (a parameter of this setting) expands
+                             out of it. Expanded automatically while encryption is required. -->
+                        <tk:SettingsExpander x:Name="CryptoExpander" loc:Localize.Uid="CryptoCard">
+                            <tk:SettingsExpander.HeaderIcon>
                                 <FontIcon Glyph="&#xE72E;" />
-                            </tk:SettingsCard.HeaderIcon>
+                            </tk:SettingsExpander.HeaderIcon>
                             <ToggleSwitch x:Name="CryptoToggle" loc:Localize.Uid="CryptoToggle" AutomationProperties.AutomationId="CryptoToggle" Toggled="OnCryptoToggled" />
-                        </tk:SettingsCard>
-                        <!-- Shown only when encryption is required: picks bt-min-crypto-level. -->
-                        <tk:SettingsCard x:Name="CryptoLevelCard" loc:Localize.Uid="CryptoLevelCard" ContentAlignment="Vertical" HorizontalContentAlignment="Stretch" Visibility="Collapsed">
-                            <tk:SettingsCard.HeaderIcon>
-                                <FontIcon Glyph="&#xE8D7;" />
-                            </tk:SettingsCard.HeaderIcon>
-                            <RadioButtons x:Name="CryptoLevelRadio" AutomationProperties.AutomationId="CryptoLevelRadio" HorizontalAlignment="Left">
+                            <tk:SettingsExpander.Items>
+                                <tk:SettingsCard loc:Localize.Uid="CryptoLevelCard" ContentAlignment="Vertical" HorizontalContentAlignment="Stretch">
+                                    <tk:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xE8D7;" />
+                                    </tk:SettingsCard.HeaderIcon>
+                                    <RadioButtons x:Name="CryptoLevelRadio" AutomationProperties.AutomationId="CryptoLevelRadio" HorizontalAlignment="Left">
                                 <RadioButton AutomationProperties.AutomationId="CryptoLevelPlain">
                                     <StackPanel Spacing="4">
                                         <TextBlock loc:Localize.Uid="CryptoLevelPlainTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
@@ -335,8 +337,10 @@
                                             HorizontalAlignment="Left" />
                                     </StackPanel>
                                 </RadioButton>
-                            </RadioButtons>
-                        </tk:SettingsCard>
+                                    </RadioButtons>
+                                </tk:SettingsCard>
+                            </tk:SettingsExpander.Items>
+                        </tk:SettingsExpander>
                         <tk:SettingsCard loc:Localize.Uid="MaxPeersCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE716;" />
