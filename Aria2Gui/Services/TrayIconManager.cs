@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Aria2Gui.Helpers;
 using Aria2Gui.ViewModels;
 using H.NotifyIcon;
 using Microsoft.UI.Windowing;
@@ -29,13 +30,13 @@ public sealed class TrayIconManager : IDisposable
 
     public void Initialize()
     {
-        var restore = new MenuFlyoutItem { Text = "Развернуть" };
+        var restore = new MenuFlyoutItem { Text = L.Get("TrayRestore") };
         restore.Click += (_, _) => ShowWindow();
 
-        var pauseAll = new MenuFlyoutItem { Text = "Остановить все загрузки" };
+        var pauseAll = new MenuFlyoutItem { Text = L.Get("TrayPauseAll") };
         pauseAll.Click += (_, _) => _ = Aria2.Aria2Service.Instance.Rpc.PauseAllAsync();
 
-        var quit = new MenuFlyoutItem { Text = "Закрыть" };
+        var quit = new MenuFlyoutItem { Text = L.Get("TrayQuit") };
         quit.Click += (_, _) => Quit();
 
         var menu = new MenuFlyout();

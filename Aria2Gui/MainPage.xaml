@@ -64,9 +64,8 @@
             HorizontalAlignment="Left"
             Visibility="{x:Bind local:MainPage.CollapsedIf(ViewModel.SettingsOpen), Mode=OneWay}">
             <AppBarButton
-                Label="Добавить"
+                x:Uid="ToolbarAddButton"
                 Command="{x:Bind ViewModel.AddDownloadCommand}"
-                AutomationProperties.Name="Добавить загрузку"
                 AutomationProperties.AutomationId="AddDownloadButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE710;" />
@@ -77,30 +76,27 @@
             </AppBarButton>
             <AppBarSeparator />
             <AppBarButton
-                Label="Возобновить"
+                x:Uid="ToolbarResumeButton"
                 Command="{x:Bind ViewModel.ResumeSelectedCommand}"
                 IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
-                AutomationProperties.Name="Возобновить выбранные"
                 AutomationProperties.AutomationId="ResumeSelectedButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE768;" />
                 </AppBarButton.Icon>
             </AppBarButton>
             <AppBarButton
-                Label="Пауза"
+                x:Uid="ToolbarPauseButton"
                 Command="{x:Bind ViewModel.PauseSelectedCommand}"
                 IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
-                AutomationProperties.Name="Приостановить выбранные"
                 AutomationProperties.AutomationId="PauseSelectedButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE769;" />
                 </AppBarButton.Icon>
             </AppBarButton>
             <AppBarButton
-                Label="Удалить"
+                x:Uid="ToolbarRemoveButton"
                 Command="{x:Bind ViewModel.RemoveSelectedCommand}"
                 IsEnabled="{x:Bind ViewModel.HasSelection, Mode=OneWay}"
-                AutomationProperties.Name="Удалить выбранные из списка"
                 AutomationProperties.AutomationId="RemoveSelectedButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE74D;" />
@@ -111,9 +107,8 @@
             </AppBarButton>
             <AppBarSeparator />
             <AppBarButton
-                Label="Настройки"
+                x:Uid="ToolbarSettingsButton"
                 Command="{x:Bind ViewModel.OpenSettingsCommand}"
-                AutomationProperties.Name="Настройки"
                 AutomationProperties.AutomationId="SettingsButton"
                 PointerEntered="AnimatedButton_PointerEntered"
                 PointerExited="AnimatedButton_PointerExited">
@@ -129,8 +124,7 @@
                 </AppBarButton.Icon>
             </AppBarButton>
             <AppBarButton
-                Label="Ещё"
-                AutomationProperties.Name="Ещё действия"
+                x:Uid="ToolbarMoreButton"
                 AutomationProperties.AutomationId="MoreButton">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE712;" />
@@ -138,7 +132,7 @@
                 <AppBarButton.Flyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
-                            Text="Возобновить все"
+                            x:Uid="MenuResumeAll"
                             Command="{x:Bind ViewModel.ResumeAllCommand}"
                             IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
                             AutomationProperties.AutomationId="ResumeAllButton">
@@ -147,7 +141,7 @@
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem
-                            Text="Пауза всем"
+                            x:Uid="MenuPauseAll"
                             Command="{x:Bind ViewModel.PauseAllCommand}"
                             IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
                             AutomationProperties.AutomationId="PauseAllButton">
@@ -157,7 +151,7 @@
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator />
                         <MenuFlyoutItem
-                            Text="Очистить завершённые"
+                            x:Uid="MenuClearStopped"
                             Command="{x:Bind ViewModel.ClearStoppedCommand}"
                             IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
                             AutomationProperties.AutomationId="ClearStoppedButton">
@@ -223,8 +217,8 @@
 
             <toolkit:GridSplitter
                 Grid.Column="1"
+                x:Uid="SidebarSplitter"
                 AutomationProperties.AutomationId="SidebarSplitter"
-                AutomationProperties.Name="Ширина боковой панели"
                 Width="8"
                 ResizeBehavior="BasedOnAlignment"
                 ResizeDirection="Auto" />
@@ -263,15 +257,15 @@
                     BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
                     <Grid.ContextFlyout>
                         <MenuFlyout>
-                            <ToggleMenuFlyoutItem Text="Размер" Tag="size" AutomationProperties.AutomationId="ColumnToggleSize" IsChecked="{x:Bind ViewModel.Columns.SizeVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Прогресс" Tag="progress" AutomationProperties.AutomationId="ColumnToggleProgress" IsChecked="{x:Bind ViewModel.Columns.ProgressVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Статус" Tag="status" AutomationProperties.AutomationId="ColumnToggleStatus" IsChecked="{x:Bind ViewModel.Columns.StatusVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Сиды" Tag="seeds" AutomationProperties.AutomationId="ColumnToggleSeeds" IsChecked="{x:Bind ViewModel.Columns.SeedsVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Пиры" Tag="peers" AutomationProperties.AutomationId="ColumnTogglePeers" IsChecked="{x:Bind ViewModel.Columns.PeersVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Загрузка" Tag="down" AutomationProperties.AutomationId="ColumnToggleDown" IsChecked="{x:Bind ViewModel.Columns.DownVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Отдача" Tag="up" AutomationProperties.AutomationId="ColumnToggleUp" IsChecked="{x:Bind ViewModel.Columns.UpVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Осталось" Tag="eta" AutomationProperties.AutomationId="ColumnToggleEta" IsChecked="{x:Bind ViewModel.Columns.EtaVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
-                            <ToggleMenuFlyoutItem Text="Рейтинг" Tag="ratio" AutomationProperties.AutomationId="ColumnToggleRatio" IsChecked="{x:Bind ViewModel.Columns.RatioVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem x:Uid="ColumnMenuSize" Tag="size" AutomationProperties.AutomationId="ColumnToggleSize" IsChecked="{x:Bind ViewModel.Columns.SizeVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem x:Uid="ColumnMenuProgress" Tag="progress" AutomationProperties.AutomationId="ColumnToggleProgress" IsChecked="{x:Bind ViewModel.Columns.ProgressVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem x:Uid="ColumnMenuStatus" Tag="status" AutomationProperties.AutomationId="ColumnToggleStatus" IsChecked="{x:Bind ViewModel.Columns.StatusVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem x:Uid="ColumnMenuSeeds" Tag="seeds" AutomationProperties.AutomationId="ColumnToggleSeeds" IsChecked="{x:Bind ViewModel.Columns.SeedsVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem x:Uid="ColumnMenuPeers" Tag="peers" AutomationProperties.AutomationId="ColumnTogglePeers" IsChecked="{x:Bind ViewModel.Columns.PeersVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem x:Uid="ColumnMenuDown" Tag="down" AutomationProperties.AutomationId="ColumnToggleDown" IsChecked="{x:Bind ViewModel.Columns.DownVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem x:Uid="ColumnMenuUp" Tag="up" AutomationProperties.AutomationId="ColumnToggleUp" IsChecked="{x:Bind ViewModel.Columns.UpVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem x:Uid="ColumnMenuEta" Tag="eta" AutomationProperties.AutomationId="ColumnToggleEta" IsChecked="{x:Bind ViewModel.Columns.EtaVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
+                            <ToggleMenuFlyoutItem x:Uid="ColumnMenuRatio" Tag="ratio" AutomationProperties.AutomationId="ColumnToggleRatio" IsChecked="{x:Bind ViewModel.Columns.RatioVisible, Mode=OneWay}" Click="ColumnToggle_Click" />
                         </MenuFlyout>
                     </Grid.ContextFlyout>
                     <Grid.ColumnDefinitions>
@@ -287,25 +281,25 @@
                         <ColumnDefinition Width="{x:Bind ViewModel.Columns.RatioWidth, Mode=OneWay}" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Tag="name" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Имя', 'name', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" />
-                    <helpers:ResizeHandle Grid.Column="0" Tag="name" AutomationProperties.AutomationId="ResizeHandleName" AutomationProperties.Name="Изменить ширину столбца «Имя»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
+                    <helpers:ResizeHandle Grid.Column="0" Tag="name" x:Uid="ResizeHandleName" AutomationProperties.AutomationId="ResizeHandleName" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" />
                     <TextBlock Grid.Column="1" Tag="size" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Размер', 'size', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SizeVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="1" Tag="size" AutomationProperties.AutomationId="ResizeHandleSize" AutomationProperties.Name="Изменить ширину столбца «Размер»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SizeVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="1" Tag="size" x:Uid="ResizeHandleSize" AutomationProperties.AutomationId="ResizeHandleSize" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SizeVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="2" Tag="progress" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Прогресс', 'progress', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.ProgressVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="2" Tag="progress" AutomationProperties.AutomationId="ResizeHandleProgress" AutomationProperties.Name="Изменить ширину столбца «Прогресс»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.ProgressVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="2" Tag="progress" x:Uid="ResizeHandleProgress" AutomationProperties.AutomationId="ResizeHandleProgress" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.ProgressVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="3" Tag="status" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Статус', 'status', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.StatusVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="3" Tag="status" AutomationProperties.AutomationId="ResizeHandleStatus" AutomationProperties.Name="Изменить ширину столбца «Статус»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.StatusVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="3" Tag="status" x:Uid="ResizeHandleStatus" AutomationProperties.AutomationId="ResizeHandleStatus" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.StatusVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="4" Tag="seeds" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Сиды', 'seeds', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SeedsVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="4" Tag="seeds" AutomationProperties.AutomationId="ResizeHandleSeeds" AutomationProperties.Name="Изменить ширину столбца «Сиды»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SeedsVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="4" Tag="seeds" x:Uid="ResizeHandleSeeds" AutomationProperties.AutomationId="ResizeHandleSeeds" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.SeedsVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="5" Tag="peers" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Пиры', 'peers', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.PeersVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="5" Tag="peers" AutomationProperties.AutomationId="ResizeHandlePeers" AutomationProperties.Name="Изменить ширину столбца «Пиры»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.PeersVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="5" Tag="peers" x:Uid="ResizeHandlePeers" AutomationProperties.AutomationId="ResizeHandlePeers" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.PeersVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="6" Tag="down" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Загрузка', 'down', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.DownVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="6" Tag="down" AutomationProperties.AutomationId="ResizeHandleDown" AutomationProperties.Name="Изменить ширину столбца «Загрузка»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.DownVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="6" Tag="down" x:Uid="ResizeHandleDown" AutomationProperties.AutomationId="ResizeHandleDown" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.DownVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="7" Tag="up" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Отдача', 'up', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UpVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="7" Tag="up" AutomationProperties.AutomationId="ResizeHandleUp" AutomationProperties.Name="Изменить ширину столбца «Отдача»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UpVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="7" Tag="up" x:Uid="ResizeHandleUp" AutomationProperties.AutomationId="ResizeHandleUp" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.UpVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="8" Tag="eta" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Осталось', 'eta', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.EtaVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="8" Tag="eta" AutomationProperties.AutomationId="ResizeHandleEta" AutomationProperties.Name="Изменить ширину столбца «Осталось»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.EtaVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="8" Tag="eta" x:Uid="ResizeHandleEta" AutomationProperties.AutomationId="ResizeHandleEta" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.EtaVisible), Mode=OneWay}" />
                     <TextBlock Grid.Column="9" Tag="ratio" Tapped="Header_Tapped" Text="{x:Bind local:MainPage.HeaderLabel('Рейтинг', 'ratio', ViewModel.SortKey, ViewModel.SortDescending), Mode=OneWay}" Style="{StaticResource ColumnHeaderTextStyle}" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
-                    <helpers:ResizeHandle Grid.Column="9" Tag="ratio" AutomationProperties.AutomationId="ResizeHandleRatio" AutomationProperties.Name="Изменить ширину столбца «Рейтинг»" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
+                    <helpers:ResizeHandle Grid.Column="9" Tag="ratio" x:Uid="ResizeHandleRatio" AutomationProperties.AutomationId="ResizeHandleRatio" Style="{StaticResource ColumnResizeHandleStyle}" Resize="HeaderHandle_Resize" Visibility="{x:Bind local:MainPage.VisIf(ViewModel.Columns.RatioVisible), Mode=OneWay}" />
                 </Grid>
 
                 <!-- Downloads table -->
@@ -337,13 +331,13 @@
                                                 <FontIcon Glyph="&#xE769;" />
                                             </MenuFlyoutItem.Icon>
                                         </MenuFlyoutItem>
-                                        <MenuFlyoutItem Text="Открыть папку" Command="{x:Bind OpenFolderCommand}">
+                                        <MenuFlyoutItem x:Uid="RowMenuOpenFolder" Command="{x:Bind OpenFolderCommand}">
                                             <MenuFlyoutItem.Icon>
                                                 <FontIcon Glyph="&#xE838;" />
                                             </MenuFlyoutItem.Icon>
                                         </MenuFlyoutItem>
                                         <MenuFlyoutItem
-                                            Text="Копировать magnet-ссылку"
+                                            x:Uid="RowMenuCopyMagnet"
                                             Command="{x:Bind CopyMagnetCommand}"
                                             Visibility="{x:Bind HasMagnet, Mode=OneWay}">
                                             <MenuFlyoutItem.Icon>
@@ -351,12 +345,12 @@
                                             </MenuFlyoutItem.Icon>
                                         </MenuFlyoutItem>
                                         <MenuFlyoutSeparator />
-                                        <MenuFlyoutItem Text="Удалить из списка" Command="{x:Bind RemoveCommand}">
+                                        <MenuFlyoutItem x:Uid="RowMenuRemove" Command="{x:Bind RemoveCommand}">
                                             <MenuFlyoutItem.Icon>
                                                 <FontIcon Glyph="&#xE74D;" />
                                             </MenuFlyoutItem.Icon>
                                         </MenuFlyoutItem>
-                                        <MenuFlyoutItem Text="Удалить с файлами…" Command="{x:Bind RemoveWithFilesCommand}">
+                                        <MenuFlyoutItem x:Uid="RowMenuRemoveWithFiles" Command="{x:Bind RemoveWithFilesCommand}">
                                             <MenuFlyoutItem.Icon>
                                                 <FontIcon Glyph="&#xE74E;" />
                                             </MenuFlyoutItem.Icon>
@@ -430,20 +424,20 @@
                         FontSize="44"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                     <TextBlock
-                        Text="Нет загрузок"
+                        x:Uid="EmptyStateTitle"
                         Style="{StaticResource SubtitleTextBlockStyle}"
                         HorizontalAlignment="Center"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <TextBlock
-                        Text="Нажмите «Добавить» (Ctrl+N) или перетащите сюда торрент-файл"
+                        x:Uid="EmptyStateHint"
                         HorizontalAlignment="Center"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
                 </StackPanel>
 
                 <toolkit:GridSplitter
                     Grid.Row="1"
+                    x:Uid="DetailsSplitter"
                     AutomationProperties.AutomationId="DetailsSplitter"
-                    AutomationProperties.Name="Высота панели сведений"
                     Height="8"
                     ResizeBehavior="BasedOnAlignment"
                     ResizeDirection="Auto" />
@@ -460,15 +454,15 @@
                     </Grid.RowDefinitions>
 
                     <SelectorBar x:Name="DetailsTabs" SelectionChanged="DetailsTabs_SelectionChanged">
-                        <SelectorBarItem Text="Общие" IsSelected="True" AutomationProperties.AutomationId="DetailsTabGeneral" />
-                        <SelectorBarItem Text="Файлы" AutomationProperties.AutomationId="DetailsTabFiles" />
-                        <SelectorBarItem Text="Пиры" AutomationProperties.AutomationId="DetailsTabPeers" />
+                        <SelectorBarItem x:Uid="DetailsTabGeneral" IsSelected="True" AutomationProperties.AutomationId="DetailsTabGeneral" />
+                        <SelectorBarItem x:Uid="DetailsTabFiles" AutomationProperties.AutomationId="DetailsTabFiles" />
+                        <SelectorBarItem x:Uid="DetailsTabPeers" AutomationProperties.AutomationId="DetailsTabPeers" />
                     </SelectorBar>
 
                     <!-- No selection placeholder -->
                     <TextBlock
                         Grid.Row="1"
-                        Text="Выберите загрузку, чтобы увидеть подробности"
+                        x:Uid="DetailsNoSelection"
                         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -494,21 +488,21 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <TextBlock Text="Сохранено в:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock x:Uid="DetailLabelSavePath" Style="{StaticResource DetailLabelStyle}" />
                             <TextBlock Grid.Column="1" Grid.ColumnSpan="5" Text="{x:Bind ViewModel.DetSavePath, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
-                            <TextBlock Grid.Row="1" Text="Размер:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="1" x:Uid="DetailLabelSize" Style="{StaticResource DetailLabelStyle}" />
                             <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind ViewModel.DetSize, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
-                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Статус:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="1" Grid.Column="2" x:Uid="DetailLabelStatus" Style="{StaticResource DetailLabelStyle}" />
                             <TextBlock Grid.Row="1" Grid.Column="3" Text="{x:Bind ViewModel.DetStatus, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
-                            <TextBlock Grid.Row="1" Grid.Column="4" Text="Скорость:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="1" Grid.Column="4" x:Uid="DetailLabelSpeed" Style="{StaticResource DetailLabelStyle}" />
                             <TextBlock Grid.Row="1" Grid.Column="5" Text="{x:Bind ViewModel.DetSpeed, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
-                            <TextBlock Grid.Row="2" Text="Хеш:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="2" x:Uid="DetailLabelHash" Style="{StaticResource DetailLabelStyle}" />
                             <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="5" Text="{x:Bind ViewModel.DetHash, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
-                            <TextBlock Grid.Row="3" Text="Рейтинг:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="3" x:Uid="DetailLabelRatio" Style="{StaticResource DetailLabelStyle}" />
                             <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.DetRatio, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
-                            <TextBlock Grid.Row="3" Grid.Column="2" Text="Отдано:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="3" Grid.Column="2" x:Uid="DetailLabelUploaded" Style="{StaticResource DetailLabelStyle}" />
                             <TextBlock Grid.Row="3" Grid.Column="3" Text="{x:Bind ViewModel.DetUploaded, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
-                            <TextBlock Grid.Row="3" Grid.Column="4" Text="Подключения:" Style="{StaticResource DetailLabelStyle}" />
+                            <TextBlock Grid.Row="3" Grid.Column="4" x:Uid="DetailLabelConnections" Style="{StaticResource DetailLabelStyle}" />
                             <TextBlock Grid.Row="3" Grid.Column="5" Text="{x:Bind ViewModel.DetConnections, Mode=OneWay}" Style="{StaticResource DetailValueStyle}" />
                         </Grid>
                     </ScrollViewer>
@@ -538,11 +532,11 @@
                                             <ColumnDefinition Width="44" />
                                         </Grid.ColumnDefinitions>
                                         <CheckBox
+                                            x:Uid="FileTreeDownloadCheckBox"
                                             MinWidth="0"
                                             VerticalAlignment="Center"
                                             IsThreeState="{x:Bind IsFolder}"
-                                            IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
-                                            ToolTipService.ToolTip="Качать" />
+                                            IsChecked="{x:Bind IsSelected, Mode=TwoWay}" />
                                         <FontIcon
                                             Grid.Column="1"
                                             FontSize="14"
@@ -605,10 +599,10 @@
         <!-- Engine failure surface -->
         <InfoBar
             Grid.Row="1"
+            x:Uid="EngineErrorInfoBar"
             VerticalAlignment="Bottom"
             Margin="12"
             Severity="Error"
-            Title="aria2 не запустился"
             Message="{x:Bind ViewModel.EngineErrorText, Mode=OneWay}"
             IsOpen="{x:Bind ViewModel.HasEngineError, Mode=OneWay}" />
 

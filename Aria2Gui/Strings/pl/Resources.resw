@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ToolbarAddButton.Label" xml:space="preserve"><value>Dodaj</value></data>
+  <data name="ToolbarAddButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Dodaj pobieranie</value></data>
+  <data name="ToolbarResumeButton.Label" xml:space="preserve"><value>Wznów</value></data>
+  <data name="ToolbarResumeButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Wznów zaznaczone</value></data>
+  <data name="ToolbarPauseButton.Label" xml:space="preserve"><value>Wstrzymaj</value></data>
+  <data name="ToolbarPauseButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Wstrzymaj zaznaczone</value></data>
+  <data name="ToolbarRemoveButton.Label" xml:space="preserve"><value>Usuń</value></data>
+  <data name="ToolbarRemoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Usuń zaznaczone z listy</value></data>
+  <data name="ToolbarSettingsButton.Label" xml:space="preserve"><value>Ustawienia</value></data>
+  <data name="ToolbarSettingsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ustawienia</value></data>
+  <data name="ToolbarMoreButton.Label" xml:space="preserve"><value>Więcej</value></data>
+  <data name="ToolbarMoreButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Więcej akcji</value></data>
+  <data name="MenuResumeAll.Text" xml:space="preserve"><value>Wznów wszystkie</value></data>
+  <data name="MenuPauseAll.Text" xml:space="preserve"><value>Wstrzymaj wszystkie</value></data>
+  <data name="MenuClearStopped.Text" xml:space="preserve"><value>Wyczyść ukończone</value></data>
+  <data name="SidebarSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Szerokość panelu bocznego</value></data>
+  <data name="ColumnMenuSize.Text" xml:space="preserve"><value>Rozmiar</value></data>
+  <data name="ColumnMenuProgress.Text" xml:space="preserve"><value>Postęp</value></data>
+  <data name="ColumnMenuStatus.Text" xml:space="preserve"><value>Stan</value></data>
+  <data name="ColumnMenuSeeds.Text" xml:space="preserve"><value>Seedy</value></data>
+  <data name="ColumnMenuPeers.Text" xml:space="preserve"><value>Peery</value></data>
+  <data name="ColumnMenuDown.Text" xml:space="preserve"><value>Pobieranie</value></data>
+  <data name="ColumnMenuUp.Text" xml:space="preserve"><value>Wysyłanie</value></data>
+  <data name="ColumnMenuEta.Text" xml:space="preserve"><value>Pozostało</value></data>
+  <data name="ColumnMenuRatio.Text" xml:space="preserve"><value>Ratio</value></data>
+  <data name="ResizeHandleName.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Nazwa”</value></data>
+  <data name="ResizeHandleSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Rozmiar”</value></data>
+  <data name="ResizeHandleProgress.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Postęp”</value></data>
+  <data name="ResizeHandleStatus.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Stan”</value></data>
+  <data name="ResizeHandleSeeds.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Seedy”</value></data>
+  <data name="ResizeHandlePeers.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Peery”</value></data>
+  <data name="ResizeHandleDown.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Pobieranie”</value></data>
+  <data name="ResizeHandleUp.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Wysyłanie”</value></data>
+  <data name="ResizeHandleEta.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Pozostało”</value></data>
+  <data name="ResizeHandleRatio.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zmień szerokość kolumny „Ratio”</value></data>
+  <data name="RowMenuOpenFolder.Text" xml:space="preserve"><value>Otwórz folder</value></data>
+  <data name="RowMenuCopyMagnet.Text" xml:space="preserve"><value>Kopiuj link magnet</value></data>
+  <data name="RowMenuRemove.Text" xml:space="preserve"><value>Usuń z listy</value></data>
+  <data name="RowMenuRemoveWithFiles.Text" xml:space="preserve"><value>Usuń z plikami…</value></data>
+  <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Pobierz</value></data>
+  <data name="EmptyStateTitle.Text" xml:space="preserve"><value>Brak pobrań</value></data>
+  <data name="EmptyStateHint.Text" xml:space="preserve"><value>Kliknij „Dodaj” (Ctrl+N) lub przeciągnij tutaj plik torrent</value></data>
+  <data name="DetailsSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Wysokość panelu szczegółów</value></data>
+  <data name="DetailsTabGeneral.Text" xml:space="preserve"><value>Ogólne</value></data>
+  <data name="DetailsTabFiles.Text" xml:space="preserve"><value>Pliki</value></data>
+  <data name="DetailsTabPeers.Text" xml:space="preserve"><value>Peery</value></data>
+  <data name="DetailsNoSelection.Text" xml:space="preserve"><value>Wybierz pobieranie, aby zobaczyć szczegóły</value></data>
+  <data name="DetailLabelSavePath.Text" xml:space="preserve"><value>Zapisano w:</value></data>
+  <data name="DetailLabelSize.Text" xml:space="preserve"><value>Rozmiar:</value></data>
+  <data name="DetailLabelStatus.Text" xml:space="preserve"><value>Stan:</value></data>
+  <data name="DetailLabelSpeed.Text" xml:space="preserve"><value>Prędkość:</value></data>
+  <data name="DetailLabelHash.Text" xml:space="preserve"><value>Hash:</value></data>
+  <data name="DetailLabelRatio.Text" xml:space="preserve"><value>Ratio:</value></data>
+  <data name="DetailLabelUploaded.Text" xml:space="preserve"><value>Wysłano:</value></data>
+  <data name="DetailLabelConnections.Text" xml:space="preserve"><value>Połączenia:</value></data>
+  <data name="EngineErrorInfoBar.Title" xml:space="preserve"><value>Nie udało się uruchomić aria2</value></data>
+  <data name="SettingsBackButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Wstecz</value></data>
+  <data name="SettingsBackButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Wstecz</value></data>
+  <data name="NavGeneral.Content" xml:space="preserve"><value>Ogólne</value></data>
+  <data name="NavConnection.Content" xml:space="preserve"><value>Połączenie</value></data>
+  <data name="NavFiles.Content" xml:space="preserve"><value>Pliki</value></data>
+  <data name="NavAdvanced.Content" xml:space="preserve"><value>Zaawansowane</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Ustawienia</value></data>
+  <data name="DownloadFolderCard.Header" xml:space="preserve"><value>Folder pobierania</value></data>
+  <data name="DownloadFolderCard.Description" xml:space="preserve"><value>Gdzie domyślnie zapisywać pliki</value></data>
+  <data name="BrowseFolderButton.Content" xml:space="preserve"><value>Przeglądaj…</value></data>
+  <data name="DownLimitCard.Header" xml:space="preserve"><value>Limit pobierania</value></data>
+  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — bez ograniczeń, MB/s</value></data>
+  <data name="UpLimitCard.Header" xml:space="preserve"><value>Limit wysyłania</value></data>
+  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — bez ograniczeń, MB/s</value></data>
+  <data name="ConcurrentCard.Header" xml:space="preserve"><value>Równoczesne pobierania</value></data>
+  <data name="ConcurrentCard.Description" xml:space="preserve"><value>Ile plików pobierać równolegle</value></data>
+  <data name="ConnectionsCard.Header" xml:space="preserve"><value>Połączenia na serwer</value></data>
+  <data name="ConnectionsCard.Description" xml:space="preserve"><value>Dla pobrań HTTP/FTP (maks. 16)</value></data>
+  <data name="ThemeCard.Header" xml:space="preserve"><value>Motyw</value></data>
+  <data name="ThemeCard.Description" xml:space="preserve"><value>Jasny, ciemny lub jak w systemie</value></data>
+  <data name="ThemeSystemItem.Content" xml:space="preserve"><value>Jak w systemie</value></data>
+  <data name="ThemeLightItem.Content" xml:space="preserve"><value>Jasny</value></data>
+  <data name="ThemeDarkItem.Content" xml:space="preserve"><value>Ciemny</value></data>
+  <data name="ProxyCard.Header" xml:space="preserve"><value>Proxy</value></data>
+  <data name="ProxyCard.Description" xml:space="preserve"><value>Np. http://host:8080 lub socks5://host:1080 (puste — bez proxy)</value></data>
+  <data name="ProxyBox.PlaceholderText" xml:space="preserve"><value>bez proxy</value></data>
+  <data name="CheckCertCard.Header" xml:space="preserve"><value>Sprawdzaj certyfikaty HTTPS</value></data>
+  <data name="CheckCertCard.Description" xml:space="preserve"><value>Wyłączaj tylko dla zaufanych serwerów z certyfikatem samopodpisanym</value></data>
+  <data name="CheckCertToggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
+  <data name="CheckCertToggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
+  <data name="TimeoutCard.Header" xml:space="preserve"><value>Limit czasu</value></data>
+  <data name="TimeoutCard.Description" xml:space="preserve"><value>Sekund do zerwania zawieszonego połączenia</value></data>
+  <data name="ConnectTimeoutCard.Header" xml:space="preserve"><value>Limit czasu połączenia</value></data>
+  <data name="ConnectTimeoutCard.Description" xml:space="preserve"><value>Sekund na nawiązanie połączenia</value></data>
+  <data name="MaxTriesCard.Header" xml:space="preserve"><value>Próby</value></data>
+  <data name="MaxTriesCard.Description" xml:space="preserve"><value>Ile razy powtarzać przy błędzie (0 — bez powtórzeń)</value></data>
+  <data name="RetryWaitCard.Header" xml:space="preserve"><value>Przerwa między próbami</value></data>
+  <data name="RetryWaitCard.Description" xml:space="preserve"><value>Sekund oczekiwania przed ponowieniem</value></data>
+  <data name="MinSplitSizeCard.Header" xml:space="preserve"><value>Min. rozmiar segmentu</value></data>
+  <data name="MinSplitSizeCard.Description" xml:space="preserve"><value>Od jakiego rozmiaru dzielić plik na strumienie (np. 1M, 20M)</value></data>
+  <data name="UserAgentCard.Header" xml:space="preserve"><value>User-Agent</value></data>
+  <data name="UserAgentCard.Description" xml:space="preserve"><value>Nagłówek HTTP User-Agent (puste — domyślny)</value></data>
+  <data name="UserAgentBox.PlaceholderText" xml:space="preserve"><value>domyślny aria2</value></data>
+  <data name="FileAllocCard.Header" xml:space="preserve"><value>Alokacja pliku na dysku</value></data>
+  <data name="FileAllocCard.Description" xml:space="preserve"><value>auto — falloc na NTFS, w przeciwnym razie prealloc</value></data>
+  <data name="FileAllocAutoItem.Content" xml:space="preserve"><value>Auto</value></data>
+  <data name="FileAllocNoneItem.Content" xml:space="preserve"><value>Bez alokacji</value></data>
+  <data name="FileAllocPreallocItem.Content" xml:space="preserve"><value>Prealokacja</value></data>
+  <data name="FileAllocFallocItem.Content" xml:space="preserve"><value>Szybka (falloc)</value></data>
+  <data name="AllowOverwriteCard.Header" xml:space="preserve"><value>Nadpisuj istniejące pliki</value></data>
+  <data name="AllowOverwriteCard.Description" xml:space="preserve"><value>W przeciwnym razie plik zostanie przemianowany</value></data>
+  <data name="AllowOverwriteToggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
+  <data name="AllowOverwriteToggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
+  <data name="AutoRenameCard.Header" xml:space="preserve"><value>Automatyczna zmiana nazwy</value></data>
+  <data name="AutoRenameCard.Description" xml:space="preserve"><value>Przy konflikcie nazwy dodawaj .1, .2 …</value></data>
+  <data name="AutoRenameToggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
+  <data name="AutoRenameToggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
+  <data name="ListenPortCard.Header" xml:space="preserve"><value>Port BT/DHT</value></data>
+  <data name="ListenPortCard.Description" xml:space="preserve"><value>0 — wybierz automatycznie</value></data>
+  <data name="DhtCard.Header" xml:space="preserve"><value>DHT</value></data>
+  <data name="DhtCard.Description" xml:space="preserve"><value>Zdecentralizowane wyszukiwanie peerów</value></data>
+  <data name="DhtToggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
+  <data name="DhtToggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
+  <data name="PexCard.Header" xml:space="preserve"><value>Wymiana peerów (PEX)</value></data>
+  <data name="PexCard.Description" xml:space="preserve"><value>Wymiana list peerów między klientami</value></data>
+  <data name="PexToggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
+  <data name="PexToggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
+  <data name="LpdCard.Header" xml:space="preserve"><value>Wykrywanie lokalne (LPD)</value></data>
+  <data name="LpdCard.Description" xml:space="preserve"><value>Wyszukiwanie peerów w sieci lokalnej</value></data>
+  <data name="LpdToggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
+  <data name="LpdToggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
+  <data name="CryptoCard.Header" xml:space="preserve"><value>Wymagaj szyfrowania</value></data>
+  <data name="CryptoCard.Description" xml:space="preserve"><value>Tylko szyfrowane połączenia z peerami (bt-require-crypto)</value></data>
+  <data name="CryptoToggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
+  <data name="CryptoToggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
+  <data name="CryptoLevelCard.Header" xml:space="preserve"><value>Poziom szyfrowania</value></data>
+  <data name="CryptoLevelCard.Description" xml:space="preserve"><value>Minimalna metoda szyfrowania połączenia (bt-min-crypto-level)</value></data>
+  <data name="CryptoLevelPlainTitle.Text" xml:space="preserve"><value>Tylko uzgadnianie — plain</value></data>
+  <data name="CryptoLevelPlainDesc.Text" xml:space="preserve"><value>Szyfrowane (zaciemniane) jest tylko uzgadnianie, same dane są przesyłane otwartym tekstem. Minimalne obciążenie procesora; zwykle wystarcza, aby ominąć ograniczanie BitTorrent przez dostawcę.</value></data>
+  <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>Pełne szyfrowanie RC4 — arc4</value></data>
+  <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>Szyfrowany jest cały strumień danych algorytmem ARC4 (RC4), a nie tylko uzgadnianie. Pewniej ukrywa zawartość ruchu, obciążenie procesora jest nieco wyższe.</value></data>
+  <data name="MaxPeersCard.Header" xml:space="preserve"><value>Maks. peerów na torrent</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Limit połączeń dla jednego torrenta</value></data>
+  <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>Maks. otwartych plików</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Limit jednocześnie otwartych plików dla wszystkich torrentów</value></data>
+  <data name="SeedRatioCard.Header" xml:space="preserve"><value>Seeduj do ratio</value></data>
+  <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — nie seeduj po pobraniu</value></data>
+  <data name="TrackersExpander.Header" xml:space="preserve"><value>Dodatkowe trackery</value></data>
+  <data name="TrackersExpander.Description" xml:space="preserve"><value>Dodawane do wszystkich torrentów</value></data>
+  <data name="TrackersBox.PlaceholderText" xml:space="preserve"><value>udp://tracker.example.org:1337/announce
+jeden w wierszu</value></data>
+  <data name="BtRestartInfoBar.Message" xml:space="preserve"><value>Zmiany BitTorrent powodują ponowne uruchomienie silnika aria2 (sesja jest zachowywana, pobierania będą kontynuowane).</value></data>
+  <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Niestandardowe opcje aria2</value></data>
+  <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value, jedna w wierszu — stosowane na końcu i nadpisują pozostałe</value></data>
+  <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>Pełna lista opcji znajduje się w dokumentacji aria2. Te zmiany powodują ponowne uruchomienie silnika.</value></data>
+  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Zapisz i zamknij</value></data>
+  <data name="UrlsBox.Header" xml:space="preserve"><value>Linki HTTP/FTP lub magnet — jeden w wierszu</value></data>
+  <data name="AddDirBox.Header" xml:space="preserve"><value>Folder zapisu</value></data>
+  <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Przeglądaj…</value></data>
+  <data name="PickTorrentButton.Content" xml:space="preserve"><value>Wybierz plik .torrent…</value></data>
+  <data name="TorrentFilesHeader.Text" xml:space="preserve"><value>Pliki torrenta</value></data>
+  <data name="SelectAllFilesButton.Content" xml:space="preserve"><value>Zaznacz wszystkie</value></data>
+  <data name="DeselectAllFilesButton.Content" xml:space="preserve"><value>Odznacz wszystkie</value></data>
+  <data name="ConfirmAddButton.Content" xml:space="preserve"><value>Dodaj</value></data>
+  <data name="CancelAddButton.Content" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="DragCaptionAddToDownloads" xml:space="preserve"><value>Dodaj do pobrań</value></data>
+  <data name="ErrorOpenFolderPicker" xml:space="preserve"><value>Nie udało się otworzyć wyboru folderu: {0}</value></data>
+  <data name="SettingsErrorSave" xml:space="preserve"><value>Nie udało się zapisać: {0}</value></data>
+  <data name="AddWindowTitle" xml:space="preserve"><value>Nowe pobieranie</value></data>
+  <data name="AddErrorReadTorrent" xml:space="preserve"><value>Nie udało się odczytać pliku torrent: {0}</value></data>
+  <data name="AddErrorNoSource" xml:space="preserve"><value>Podaj co najmniej jeden link lub wybierz plik .torrent.</value></data>
+  <data name="AddErrorNoFilesSelected" xml:space="preserve"><value>Wybierz co najmniej jeden plik z torrenta.</value></data>
+  <data name="AddErrorPartial" xml:space="preserve"><value>Dodano: {0}. Pozostałych nie dodano: {1}</value></data>
+  <data name="AddErrorSkipped" xml:space="preserve"><value>Pominięto wierszy: {0} — obsługiwane są tylko http, https, ftp i magnet.</value></data>
+  <data name="AddErrorAddFailed" xml:space="preserve"><value>Nie udało się dodać pobierania: {0}</value></data>
+  <data name="ActionPause" xml:space="preserve"><value>Wstrzymaj</value></data>
+  <data name="ActionResume" xml:space="preserve"><value>Wznów</value></data>
+  <data name="StatusMetadata" xml:space="preserve"><value>Metadane</value></data>
+  <data name="StatusSeeding" xml:space="preserve"><value>Seedowanie</value></data>
+  <data name="StatusDownloading" xml:space="preserve"><value>Pobieranie</value></data>
+  <data name="StatusQueued" xml:space="preserve"><value>W kolejce</value></data>
+  <data name="StatusPaused" xml:space="preserve"><value>Wstrzymano</value></data>
+  <data name="StatusCompleted" xml:space="preserve"><value>Ukończono</value></data>
+  <data name="StatusError" xml:space="preserve"><value>Błąd</value></data>
+  <data name="StatusRemoved" xml:space="preserve"><value>Usunięto</value></data>
+  <data name="RemoveWithFilesTitle" xml:space="preserve"><value>Usunąć z plikami?</value></data>
+  <data name="RemoveWithFilesMessage" xml:space="preserve"><value>„{0}” zostanie usunięte z listy, a jego pliki — z dysku.</value></data>
+  <data name="RemoveWithFilesConfirm" xml:space="preserve"><value>Usuń</value></data>
+  <data name="TrayRestore" xml:space="preserve"><value>Przywróć</value></data>
+  <data name="TrayPauseAll" xml:space="preserve"><value>Wstrzymaj wszystkie pobierania</value></data>
+  <data name="TrayQuit" xml:space="preserve"><value>Zakończ</value></data>
+  <data name="LanguageCard.Header" xml:space="preserve"><value>Język interfejsu</value></data>
+  <data name="LanguageCard.Description" xml:space="preserve"><value>Zastosowane po ponownym uruchomieniu aplikacji</value></data>
+  <data name="LanguageSystemItem.Content" xml:space="preserve"><value>Domyślny systemu</value></data>
+</root>

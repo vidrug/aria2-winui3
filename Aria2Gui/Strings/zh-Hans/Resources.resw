@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ToolbarAddButton.Label" xml:space="preserve"><value>添加</value></data>
+  <data name="ToolbarAddButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>添加下载</value></data>
+  <data name="ToolbarResumeButton.Label" xml:space="preserve"><value>继续</value></data>
+  <data name="ToolbarResumeButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>继续所选</value></data>
+  <data name="ToolbarPauseButton.Label" xml:space="preserve"><value>暂停</value></data>
+  <data name="ToolbarPauseButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>暂停所选</value></data>
+  <data name="ToolbarRemoveButton.Label" xml:space="preserve"><value>删除</value></data>
+  <data name="ToolbarRemoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>从列表中删除所选</value></data>
+  <data name="ToolbarSettingsButton.Label" xml:space="preserve"><value>设置</value></data>
+  <data name="ToolbarSettingsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>设置</value></data>
+  <data name="ToolbarMoreButton.Label" xml:space="preserve"><value>更多</value></data>
+  <data name="ToolbarMoreButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>更多操作</value></data>
+  <data name="MenuResumeAll.Text" xml:space="preserve"><value>全部继续</value></data>
+  <data name="MenuPauseAll.Text" xml:space="preserve"><value>全部暂停</value></data>
+  <data name="MenuClearStopped.Text" xml:space="preserve"><value>清除已完成</value></data>
+  <data name="SidebarSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>侧栏宽度</value></data>
+  <data name="ColumnMenuSize.Text" xml:space="preserve"><value>大小</value></data>
+  <data name="ColumnMenuProgress.Text" xml:space="preserve"><value>进度</value></data>
+  <data name="ColumnMenuStatus.Text" xml:space="preserve"><value>状态</value></data>
+  <data name="ColumnMenuSeeds.Text" xml:space="preserve"><value>做种</value></data>
+  <data name="ColumnMenuPeers.Text" xml:space="preserve"><value>节点</value></data>
+  <data name="ColumnMenuDown.Text" xml:space="preserve"><value>下载</value></data>
+  <data name="ColumnMenuUp.Text" xml:space="preserve"><value>上传</value></data>
+  <data name="ColumnMenuEta.Text" xml:space="preserve"><value>剩余时间</value></data>
+  <data name="ColumnMenuRatio.Text" xml:space="preserve"><value>分享率</value></data>
+  <data name="ResizeHandleName.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“名称”列宽</value></data>
+  <data name="ResizeHandleSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“大小”列宽</value></data>
+  <data name="ResizeHandleProgress.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“进度”列宽</value></data>
+  <data name="ResizeHandleStatus.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“状态”列宽</value></data>
+  <data name="ResizeHandleSeeds.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“做种”列宽</value></data>
+  <data name="ResizeHandlePeers.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“节点”列宽</value></data>
+  <data name="ResizeHandleDown.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“下载”列宽</value></data>
+  <data name="ResizeHandleUp.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“上传”列宽</value></data>
+  <data name="ResizeHandleEta.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“剩余时间”列宽</value></data>
+  <data name="ResizeHandleRatio.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>调整“分享率”列宽</value></data>
+  <data name="RowMenuOpenFolder.Text" xml:space="preserve"><value>打开文件夹</value></data>
+  <data name="RowMenuCopyMagnet.Text" xml:space="preserve"><value>复制 magnet 链接</value></data>
+  <data name="RowMenuRemove.Text" xml:space="preserve"><value>从列表中删除</value></data>
+  <data name="RowMenuRemoveWithFiles.Text" xml:space="preserve"><value>连同文件删除…</value></data>
+  <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>下载</value></data>
+  <data name="EmptyStateTitle.Text" xml:space="preserve"><value>暂无下载</value></data>
+  <data name="EmptyStateHint.Text" xml:space="preserve"><value>点击“添加”(Ctrl+N) 或将种子文件拖到此处</value></data>
+  <data name="DetailsSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>详情面板高度</value></data>
+  <data name="DetailsTabGeneral.Text" xml:space="preserve"><value>常规</value></data>
+  <data name="DetailsTabFiles.Text" xml:space="preserve"><value>文件</value></data>
+  <data name="DetailsTabPeers.Text" xml:space="preserve"><value>节点</value></data>
+  <data name="DetailsNoSelection.Text" xml:space="preserve"><value>选择一个下载任务以查看详情</value></data>
+  <data name="DetailLabelSavePath.Text" xml:space="preserve"><value>保存至：</value></data>
+  <data name="DetailLabelSize.Text" xml:space="preserve"><value>大小：</value></data>
+  <data name="DetailLabelStatus.Text" xml:space="preserve"><value>状态：</value></data>
+  <data name="DetailLabelSpeed.Text" xml:space="preserve"><value>速度：</value></data>
+  <data name="DetailLabelHash.Text" xml:space="preserve"><value>哈希：</value></data>
+  <data name="DetailLabelRatio.Text" xml:space="preserve"><value>分享率：</value></data>
+  <data name="DetailLabelUploaded.Text" xml:space="preserve"><value>已上传：</value></data>
+  <data name="DetailLabelConnections.Text" xml:space="preserve"><value>连接数：</value></data>
+  <data name="EngineErrorInfoBar.Title" xml:space="preserve"><value>aria2 启动失败</value></data>
+  <data name="SettingsBackButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>返回</value></data>
+  <data name="SettingsBackButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>返回</value></data>
+  <data name="NavGeneral.Content" xml:space="preserve"><value>基本</value></data>
+  <data name="NavConnection.Content" xml:space="preserve"><value>连接</value></data>
+  <data name="NavFiles.Content" xml:space="preserve"><value>文件</value></data>
+  <data name="NavAdvanced.Content" xml:space="preserve"><value>高级</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>设置</value></data>
+  <data name="DownloadFolderCard.Header" xml:space="preserve"><value>下载文件夹</value></data>
+  <data name="DownloadFolderCard.Description" xml:space="preserve"><value>默认的文件保存位置</value></data>
+  <data name="BrowseFolderButton.Content" xml:space="preserve"><value>浏览…</value></data>
+  <data name="DownLimitCard.Header" xml:space="preserve"><value>下载限速</value></data>
+  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — 不限速，MB/s</value></data>
+  <data name="UpLimitCard.Header" xml:space="preserve"><value>上传限速</value></data>
+  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — 不限速，MB/s</value></data>
+  <data name="ConcurrentCard.Header" xml:space="preserve"><value>同时下载数</value></data>
+  <data name="ConcurrentCard.Description" xml:space="preserve"><value>同时并行下载的文件数量</value></data>
+  <data name="ConnectionsCard.Header" xml:space="preserve"><value>每服务器连接数</value></data>
+  <data name="ConnectionsCard.Description" xml:space="preserve"><value>用于 HTTP/FTP 下载（最多 16）</value></data>
+  <data name="ThemeCard.Header" xml:space="preserve"><value>主题</value></data>
+  <data name="ThemeCard.Description" xml:space="preserve"><value>浅色、深色或跟随系统</value></data>
+  <data name="ThemeSystemItem.Content" xml:space="preserve"><value>跟随系统</value></data>
+  <data name="ThemeLightItem.Content" xml:space="preserve"><value>浅色</value></data>
+  <data name="ThemeDarkItem.Content" xml:space="preserve"><value>深色</value></data>
+  <data name="ProxyCard.Header" xml:space="preserve"><value>代理</value></data>
+  <data name="ProxyCard.Description" xml:space="preserve"><value>例如 http://host:8080 或 socks5://host:1080（留空 — 不使用代理）</value></data>
+  <data name="ProxyBox.PlaceholderText" xml:space="preserve"><value>不使用代理</value></data>
+  <data name="CheckCertCard.Header" xml:space="preserve"><value>验证 HTTPS 证书</value></data>
+  <data name="CheckCertCard.Description" xml:space="preserve"><value>仅在使用自签名证书的可信服务器时关闭</value></data>
+  <data name="CheckCertToggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="CheckCertToggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="TimeoutCard.Header" xml:space="preserve"><value>超时</value></data>
+  <data name="TimeoutCard.Description" xml:space="preserve"><value>断开停滞连接前等待的秒数</value></data>
+  <data name="ConnectTimeoutCard.Header" xml:space="preserve"><value>连接超时</value></data>
+  <data name="ConnectTimeoutCard.Description" xml:space="preserve"><value>建立连接的超时秒数</value></data>
+  <data name="MaxTriesCard.Header" xml:space="preserve"><value>重试次数</value></data>
+  <data name="MaxTriesCard.Description" xml:space="preserve"><value>出错时的重试次数（0 — 不重试）</value></data>
+  <data name="RetryWaitCard.Header" xml:space="preserve"><value>重试间隔</value></data>
+  <data name="RetryWaitCard.Description" xml:space="preserve"><value>重试前等待的秒数</value></data>
+  <data name="MinSplitSizeCard.Header" xml:space="preserve"><value>最小分段大小</value></data>
+  <data name="MinSplitSizeCard.Description" xml:space="preserve"><value>从多大开始将文件拆分为多个连接（例如 1M、20M）</value></data>
+  <data name="UserAgentCard.Header" xml:space="preserve"><value>User-Agent</value></data>
+  <data name="UserAgentCard.Description" xml:space="preserve"><value>User-Agent HTTP 头（留空 — 使用默认值）</value></data>
+  <data name="UserAgentBox.PlaceholderText" xml:space="preserve"><value>aria2 默认值</value></data>
+  <data name="FileAllocCard.Header" xml:space="preserve"><value>磁盘文件分配方式</value></data>
+  <data name="FileAllocCard.Description" xml:space="preserve"><value>auto — NTFS 上使用 falloc，否则使用 prealloc</value></data>
+  <data name="FileAllocAutoItem.Content" xml:space="preserve"><value>自动</value></data>
+  <data name="FileAllocNoneItem.Content" xml:space="preserve"><value>不分配</value></data>
+  <data name="FileAllocPreallocItem.Content" xml:space="preserve"><value>预分配</value></data>
+  <data name="FileAllocFallocItem.Content" xml:space="preserve"><value>快速 (falloc)</value></data>
+  <data name="AllowOverwriteCard.Header" xml:space="preserve"><value>覆盖已存在的文件</value></data>
+  <data name="AllowOverwriteCard.Description" xml:space="preserve"><value>否则将重命名文件</value></data>
+  <data name="AllowOverwriteToggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="AllowOverwriteToggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="AutoRenameCard.Header" xml:space="preserve"><value>自动重命名</value></data>
+  <data name="AutoRenameCard.Description" xml:space="preserve"><value>名称冲突时追加 .1、.2 …</value></data>
+  <data name="AutoRenameToggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="AutoRenameToggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="ListenPortCard.Header" xml:space="preserve"><value>BT/DHT 端口</value></data>
+  <data name="ListenPortCard.Description" xml:space="preserve"><value>0 — 自动选择</value></data>
+  <data name="DhtCard.Header" xml:space="preserve"><value>DHT</value></data>
+  <data name="DhtCard.Description" xml:space="preserve"><value>去中心化的节点发现</value></data>
+  <data name="DhtToggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="DhtToggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="PexCard.Header" xml:space="preserve"><value>节点交换 (PEX)</value></data>
+  <data name="PexCard.Description" xml:space="preserve"><value>在客户端之间交换节点列表</value></data>
+  <data name="PexToggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="PexToggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="LpdCard.Header" xml:space="preserve"><value>本地节点发现 (LPD)</value></data>
+  <data name="LpdCard.Description" xml:space="preserve"><value>在局域网中查找节点</value></data>
+  <data name="LpdToggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="LpdToggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="CryptoCard.Header" xml:space="preserve"><value>要求加密</value></data>
+  <data name="CryptoCard.Description" xml:space="preserve"><value>仅与节点建立加密连接 (bt-require-crypto)</value></data>
+  <data name="CryptoToggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="CryptoToggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="CryptoLevelCard.Header" xml:space="preserve"><value>加密级别</value></data>
+  <data name="CryptoLevelCard.Description" xml:space="preserve"><value>连接的最低加密方式 (bt-min-crypto-level)</value></data>
+  <data name="CryptoLevelPlainTitle.Text" xml:space="preserve"><value>仅握手 — plain</value></data>
+  <data name="CryptoLevelPlainDesc.Text" xml:space="preserve"><value>仅对握手进行加密（混淆），数据本身以明文传输。CPU 占用最低；通常足以绕过运营商对 BitTorrent 的限速。</value></data>
+  <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>完整 RC4 加密 — arc4</value></data>
+  <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>使用 ARC4 (RC4) 算法加密整个数据流，而不仅是握手。能更可靠地隐藏流量内容，CPU 占用略高。</value></data>
+  <data name="MaxPeersCard.Header" xml:space="preserve"><value>每个种子的最大节点数</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>单个种子的连接数上限</value></data>
+  <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>最大打开文件数</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>所有种子同时打开文件数的上限</value></data>
+  <data name="SeedRatioCard.Header" xml:space="preserve"><value>做种到分享率</value></data>
+  <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — 下载完成后不做种</value></data>
+  <data name="TrackersExpander.Header" xml:space="preserve"><value>附加 Tracker</value></data>
+  <data name="TrackersExpander.Description" xml:space="preserve"><value>添加到所有种子</value></data>
+  <data name="TrackersBox.PlaceholderText" xml:space="preserve"><value>udp://tracker.example.org:1337/announce
+每行一个</value></data>
+  <data name="BtRestartInfoBar.Message" xml:space="preserve"><value>更改 BitTorrent 设置会重启 aria2 引擎（会话将保留，下载继续）。</value></data>
+  <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>自定义 aria2 选项</value></data>
+  <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value，每行一个 — 最后应用并覆盖其他设置</value></data>
+  <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>完整的选项列表见 aria2 文档。这些更改会重启引擎。</value></data>
+  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>保存并关闭</value></data>
+  <data name="UrlsBox.Header" xml:space="preserve"><value>HTTP/FTP 或 magnet 链接 — 每行一个</value></data>
+  <data name="AddDirBox.Header" xml:space="preserve"><value>保存文件夹</value></data>
+  <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>浏览…</value></data>
+  <data name="PickTorrentButton.Content" xml:space="preserve"><value>选择 .torrent 文件…</value></data>
+  <data name="TorrentFilesHeader.Text" xml:space="preserve"><value>种子文件</value></data>
+  <data name="SelectAllFilesButton.Content" xml:space="preserve"><value>全选</value></data>
+  <data name="DeselectAllFilesButton.Content" xml:space="preserve"><value>取消全选</value></data>
+  <data name="ConfirmAddButton.Content" xml:space="preserve"><value>添加</value></data>
+  <data name="CancelAddButton.Content" xml:space="preserve"><value>取消</value></data>
+  <data name="DragCaptionAddToDownloads" xml:space="preserve"><value>添加到下载</value></data>
+  <data name="ErrorOpenFolderPicker" xml:space="preserve"><value>无法打开文件夹选择器：{0}</value></data>
+  <data name="SettingsErrorSave" xml:space="preserve"><value>无法保存：{0}</value></data>
+  <data name="AddWindowTitle" xml:space="preserve"><value>新建下载</value></data>
+  <data name="AddErrorReadTorrent" xml:space="preserve"><value>无法读取种子文件：{0}</value></data>
+  <data name="AddErrorNoSource" xml:space="preserve"><value>请至少输入一个链接或选择一个 .torrent 文件。</value></data>
+  <data name="AddErrorNoFilesSelected" xml:space="preserve"><value>请至少从种子中选择一个文件。</value></data>
+  <data name="AddErrorPartial" xml:space="preserve"><value>已添加：{0}。其余未添加：{1}</value></data>
+  <data name="AddErrorSkipped" xml:space="preserve"><value>已跳过的行：{0} — 仅支持 http、https、ftp 和 magnet。</value></data>
+  <data name="AddErrorAddFailed" xml:space="preserve"><value>无法添加下载：{0}</value></data>
+  <data name="ActionPause" xml:space="preserve"><value>暂停</value></data>
+  <data name="ActionResume" xml:space="preserve"><value>继续</value></data>
+  <data name="StatusMetadata" xml:space="preserve"><value>元数据</value></data>
+  <data name="StatusSeeding" xml:space="preserve"><value>做种中</value></data>
+  <data name="StatusDownloading" xml:space="preserve"><value>下载中</value></data>
+  <data name="StatusQueued" xml:space="preserve"><value>排队中</value></data>
+  <data name="StatusPaused" xml:space="preserve"><value>已暂停</value></data>
+  <data name="StatusCompleted" xml:space="preserve"><value>已完成</value></data>
+  <data name="StatusError" xml:space="preserve"><value>错误</value></data>
+  <data name="StatusRemoved" xml:space="preserve"><value>已删除</value></data>
+  <data name="RemoveWithFilesTitle" xml:space="preserve"><value>连同文件一起删除？</value></data>
+  <data name="RemoveWithFilesMessage" xml:space="preserve"><value>“{0}”将从列表中移除，其文件也将从磁盘删除。</value></data>
+  <data name="RemoveWithFilesConfirm" xml:space="preserve"><value>删除</value></data>
+  <data name="TrayRestore" xml:space="preserve"><value>还原</value></data>
+  <data name="TrayPauseAll" xml:space="preserve"><value>暂停所有下载</value></data>
+  <data name="TrayQuit" xml:space="preserve"><value>退出</value></data>
+  <data name="LanguageCard.Header" xml:space="preserve"><value>界面语言</value></data>
+  <data name="LanguageCard.Description" xml:space="preserve"><value>重启应用后生效</value></data>
+  <data name="LanguageSystemItem.Content" xml:space="preserve"><value>跟随系统</value></data>
+</root>

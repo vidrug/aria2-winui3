@@ -30,6 +30,9 @@ public sealed class AppSettings
     /// <summary>"Default" (follow system), "Light" or "Dark".</summary>
     public string Theme { get; set; } = "Default";
 
+    /// <summary>UI language as a BCP-47 tag (e.g. "en-US", "ru"); empty = follow the OS.</summary>
+    public string Language { get; set; } = "";
+
     /// <summary>Folder chosen in the add dialog last time; falls back to
     /// <see cref="DownloadDirectory"/> when it no longer exists (e.g. removable drive).</summary>
     public string LastAddDirectory { get; set; } = "";
@@ -105,6 +108,10 @@ public sealed class AppSettings
 
 public static class SettingsService
 {
+    /// <summary>BCP-47 tags shipped as .resw; "" means follow the OS language.</summary>
+    public static readonly string[] SupportedLanguages =
+        ["", "en-US", "ru", "es", "de", "fr", "pt-BR", "it", "zh-Hans", "ja", "uk", "pl", "tr"];
+
     public static AppSettings Load()
     {
         AppSettings settings;
@@ -141,6 +148,8 @@ public static class SettingsService
             settings.FileAllocation = "auto";
         if (settings.BtMinCryptoLevel is not ("plain" or "arc4"))
             settings.BtMinCryptoLevel = "plain";
+        if (!SupportedLanguages.Contains(settings.Language))
+            settings.Language = "";
         return settings;
     }
 

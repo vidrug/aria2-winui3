@@ -7,8 +7,7 @@
     xmlns:vm="using:Aria2Gui.ViewModels"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Title="Новая загрузка">
+    mc:Ignorable="d">
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
@@ -27,8 +26,8 @@
             <StackPanel Spacing="12">
                 <TextBox
                     x:Name="UrlsBox"
+                    x:Uid="UrlsBox"
                     AutomationProperties.AutomationId="UrlsBox"
-                    Header="Ссылки HTTP/FTP или magnet — по одной в строке"
                     PlaceholderText="magnet:?xt=urn:btih:…"
                     AcceptsReturn="True"
                     TextWrapping="Wrap"
@@ -43,21 +42,21 @@
                     </Grid.ColumnDefinitions>
                     <TextBox
                         x:Name="DirBox"
+                        x:Uid="AddDirBox"
                         AutomationProperties.AutomationId="AddDirBox"
-                        Header="Папка сохранения"
                         IsReadOnly="True" />
                     <Button
+                        x:Uid="AddBrowseFolderButton"
                         AutomationProperties.AutomationId="AddBrowseFolderButton"
                         Grid.Column="1"
-                        Content="Обзор…"
                         VerticalAlignment="Bottom"
                         Click="OnBrowseFolderClick" />
                 </Grid>
 
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Button
+                        x:Uid="PickTorrentButton"
                         AutomationProperties.AutomationId="PickTorrentButton"
-                        Content="Выбрать .torrent-файл…"
                         Click="OnPickTorrentClick" />
                     <TextBlock
                         x:Name="TorrentFileName"
@@ -77,18 +76,18 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
-                            Text="Файлы торрента"
+                            x:Uid="TorrentFilesHeader"
                             Style="{StaticResource BodyStrongTextBlockStyle}"
                             VerticalAlignment="Center" />
                         <Button
+                            x:Uid="SelectAllFilesButton"
                             AutomationProperties.AutomationId="SelectAllFilesButton"
                             Grid.Column="1"
-                            Content="Выбрать все"
                             Click="OnSelectAllClick" />
                         <Button
+                            x:Uid="DeselectAllFilesButton"
                             AutomationProperties.AutomationId="DeselectAllFilesButton"
                             Grid.Column="2"
-                            Content="Снять выбор"
                             Click="OnDeselectAllClick" />
                     </Grid>
                     <Border
@@ -131,14 +130,14 @@
             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                 <Button
                     x:Name="AddButton"
+                    x:Uid="ConfirmAddButton"
                     AutomationProperties.AutomationId="ConfirmAddButton"
-                    Content="Добавить"
                     Style="{StaticResource AccentButtonStyle}"
                     MinWidth="104"
                     Click="OnAddClick" />
                 <Button
+                    x:Uid="CancelAddButton"
                     AutomationProperties.AutomationId="CancelAddButton"
-                    Content="Отмена"
                     MinWidth="104"
                     Click="OnCancelClick">
                     <Button.KeyboardAccelerators>

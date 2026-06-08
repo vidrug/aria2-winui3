@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ToolbarAddButton.Label" xml:space="preserve"><value>Ekle</value></data>
+  <data name="ToolbarAddButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>İndirme ekle</value></data>
+  <data name="ToolbarResumeButton.Label" xml:space="preserve"><value>Devam et</value></data>
+  <data name="ToolbarResumeButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Seçilenleri devam ettir</value></data>
+  <data name="ToolbarPauseButton.Label" xml:space="preserve"><value>Duraklat</value></data>
+  <data name="ToolbarPauseButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Seçilenleri duraklat</value></data>
+  <data name="ToolbarRemoveButton.Label" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="ToolbarRemoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Seçilenleri listeden kaldır</value></data>
+  <data name="ToolbarSettingsButton.Label" xml:space="preserve"><value>Ayarlar</value></data>
+  <data name="ToolbarSettingsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ayarlar</value></data>
+  <data name="ToolbarMoreButton.Label" xml:space="preserve"><value>Daha fazla</value></data>
+  <data name="ToolbarMoreButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Daha fazla eylem</value></data>
+  <data name="MenuResumeAll.Text" xml:space="preserve"><value>Tümünü devam ettir</value></data>
+  <data name="MenuPauseAll.Text" xml:space="preserve"><value>Tümünü duraklat</value></data>
+  <data name="MenuClearStopped.Text" xml:space="preserve"><value>Tamamlananları temizle</value></data>
+  <data name="SidebarSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kenar çubuğu genişliği</value></data>
+  <data name="ColumnMenuSize.Text" xml:space="preserve"><value>Boyut</value></data>
+  <data name="ColumnMenuProgress.Text" xml:space="preserve"><value>İlerleme</value></data>
+  <data name="ColumnMenuStatus.Text" xml:space="preserve"><value>Durum</value></data>
+  <data name="ColumnMenuSeeds.Text" xml:space="preserve"><value>Tohumlar</value></data>
+  <data name="ColumnMenuPeers.Text" xml:space="preserve"><value>Eşler</value></data>
+  <data name="ColumnMenuDown.Text" xml:space="preserve"><value>İndirme</value></data>
+  <data name="ColumnMenuUp.Text" xml:space="preserve"><value>Gönderme</value></data>
+  <data name="ColumnMenuEta.Text" xml:space="preserve"><value>Kalan süre</value></data>
+  <data name="ColumnMenuRatio.Text" xml:space="preserve"><value>Oran</value></data>
+  <data name="ResizeHandleName.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Ad» sütununun genişliğini değiştir</value></data>
+  <data name="ResizeHandleSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Boyut» sütununun genişliğini değiştir</value></data>
+  <data name="ResizeHandleProgress.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«İlerleme» sütununun genişliğini değiştir</value></data>
+  <data name="ResizeHandleStatus.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Durum» sütununun genişliğini değiştir</value></data>
+  <data name="ResizeHandleSeeds.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Tohumlar» sütununun genişliğini değiştir</value></data>
+  <data name="ResizeHandlePeers.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Eşler» sütununun genişliğini değiştir</value></data>
+  <data name="ResizeHandleDown.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«İndirme» sütununun genişliğini değiştir</value></data>
+  <data name="ResizeHandleUp.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Gönderme» sütununun genişliğini değiştir</value></data>
+  <data name="ResizeHandleEta.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Kalan süre» sütununun genişliğini değiştir</value></data>
+  <data name="ResizeHandleRatio.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>«Oran» sütununun genişliğini değiştir</value></data>
+  <data name="RowMenuOpenFolder.Text" xml:space="preserve"><value>Klasörü aç</value></data>
+  <data name="RowMenuCopyMagnet.Text" xml:space="preserve"><value>Magnet bağlantısını kopyala</value></data>
+  <data name="RowMenuRemove.Text" xml:space="preserve"><value>Listeden kaldır</value></data>
+  <data name="RowMenuRemoveWithFiles.Text" xml:space="preserve"><value>Dosyalarla birlikte kaldır…</value></data>
+  <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>İndir</value></data>
+  <data name="EmptyStateTitle.Text" xml:space="preserve"><value>İndirme yok</value></data>
+  <data name="EmptyStateHint.Text" xml:space="preserve"><value>«Ekle» düğmesine tıklayın (Ctrl+N) veya bir torrent dosyasını buraya sürükleyin</value></data>
+  <data name="DetailsSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ayrıntılar bölmesinin yüksekliği</value></data>
+  <data name="DetailsTabGeneral.Text" xml:space="preserve"><value>Genel</value></data>
+  <data name="DetailsTabFiles.Text" xml:space="preserve"><value>Dosyalar</value></data>
+  <data name="DetailsTabPeers.Text" xml:space="preserve"><value>Eşler</value></data>
+  <data name="DetailsNoSelection.Text" xml:space="preserve"><value>Ayrıntıları görmek için bir indirme seçin</value></data>
+  <data name="DetailLabelSavePath.Text" xml:space="preserve"><value>Kayıt yeri:</value></data>
+  <data name="DetailLabelSize.Text" xml:space="preserve"><value>Boyut:</value></data>
+  <data name="DetailLabelStatus.Text" xml:space="preserve"><value>Durum:</value></data>
+  <data name="DetailLabelSpeed.Text" xml:space="preserve"><value>Hız:</value></data>
+  <data name="DetailLabelHash.Text" xml:space="preserve"><value>Hash:</value></data>
+  <data name="DetailLabelRatio.Text" xml:space="preserve"><value>Oran:</value></data>
+  <data name="DetailLabelUploaded.Text" xml:space="preserve"><value>Gönderilen:</value></data>
+  <data name="DetailLabelConnections.Text" xml:space="preserve"><value>Bağlantılar:</value></data>
+  <data name="EngineErrorInfoBar.Title" xml:space="preserve"><value>aria2 başlatılamadı</value></data>
+  <data name="SettingsBackButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Geri</value></data>
+  <data name="SettingsBackButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Geri</value></data>
+  <data name="NavGeneral.Content" xml:space="preserve"><value>Genel</value></data>
+  <data name="NavConnection.Content" xml:space="preserve"><value>Bağlantı</value></data>
+  <data name="NavFiles.Content" xml:space="preserve"><value>Dosyalar</value></data>
+  <data name="NavAdvanced.Content" xml:space="preserve"><value>Gelişmiş</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Ayarlar</value></data>
+  <data name="DownloadFolderCard.Header" xml:space="preserve"><value>İndirme klasörü</value></data>
+  <data name="DownloadFolderCard.Description" xml:space="preserve"><value>Dosyaların varsayılan kaydedileceği yer</value></data>
+  <data name="BrowseFolderButton.Content" xml:space="preserve"><value>Gözat…</value></data>
+  <data name="DownLimitCard.Header" xml:space="preserve"><value>İndirme limiti</value></data>
+  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — sınırsız, MB/s</value></data>
+  <data name="UpLimitCard.Header" xml:space="preserve"><value>Gönderme limiti</value></data>
+  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — sınırsız, MB/s</value></data>
+  <data name="ConcurrentCard.Header" xml:space="preserve"><value>Eşzamanlı indirmeler</value></data>
+  <data name="ConcurrentCard.Description" xml:space="preserve"><value>Paralel olarak kaç dosya indirileceği</value></data>
+  <data name="ConnectionsCard.Header" xml:space="preserve"><value>Sunucu başına bağlantı</value></data>
+  <data name="ConnectionsCard.Description" xml:space="preserve"><value>HTTP/FTP indirmeleri için (en fazla 16)</value></data>
+  <data name="ThemeCard.Header" xml:space="preserve"><value>Tema</value></data>
+  <data name="ThemeCard.Description" xml:space="preserve"><value>Açık, koyu veya sistem varsayılanı</value></data>
+  <data name="ThemeSystemItem.Content" xml:space="preserve"><value>Sistem varsayılanı</value></data>
+  <data name="ThemeLightItem.Content" xml:space="preserve"><value>Açık</value></data>
+  <data name="ThemeDarkItem.Content" xml:space="preserve"><value>Koyu</value></data>
+  <data name="ProxyCard.Header" xml:space="preserve"><value>Proxy</value></data>
+  <data name="ProxyCard.Description" xml:space="preserve"><value>Örn. http://host:8080 veya socks5://host:1080 (boş — proxy yok)</value></data>
+  <data name="ProxyBox.PlaceholderText" xml:space="preserve"><value>proxy yok</value></data>
+  <data name="CheckCertCard.Header" xml:space="preserve"><value>HTTPS sertifikalarını doğrula</value></data>
+  <data name="CheckCertCard.Description" xml:space="preserve"><value>Yalnızca kendinden imzalı sertifikası olan güvenilir sunucular için devre dışı bırakın</value></data>
+  <data name="CheckCertToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="CheckCertToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="TimeoutCard.Header" xml:space="preserve"><value>Zaman aşımı</value></data>
+  <data name="TimeoutCard.Description" xml:space="preserve"><value>Takılan bir bağlantı kesilmeden önceki saniye</value></data>
+  <data name="ConnectTimeoutCard.Header" xml:space="preserve"><value>Bağlantı zaman aşımı</value></data>
+  <data name="ConnectTimeoutCard.Description" xml:space="preserve"><value>Bağlantı kurmak için saniye</value></data>
+  <data name="MaxTriesCard.Header" xml:space="preserve"><value>Deneme sayısı</value></data>
+  <data name="MaxTriesCard.Description" xml:space="preserve"><value>Hata durumunda kaç kez yeniden deneneceği (0 — yeniden deneme yok)</value></data>
+  <data name="RetryWaitCard.Header" xml:space="preserve"><value>Denemeler arası bekleme</value></data>
+  <data name="RetryWaitCard.Description" xml:space="preserve"><value>Yeniden denemeden önce beklenecek saniye</value></data>
+  <data name="MinSplitSizeCard.Header" xml:space="preserve"><value>Min. segment boyutu</value></data>
+  <data name="MinSplitSizeCard.Description" xml:space="preserve"><value>Dosyanın akışlara bölüneceği boyut (örn. 1M, 20M)</value></data>
+  <data name="UserAgentCard.Header" xml:space="preserve"><value>User-Agent</value></data>
+  <data name="UserAgentCard.Description" xml:space="preserve"><value>User-Agent HTTP başlığı (boş — varsayılan)</value></data>
+  <data name="UserAgentBox.PlaceholderText" xml:space="preserve"><value>aria2 varsayılanı</value></data>
+  <data name="FileAllocCard.Header" xml:space="preserve"><value>Diskte dosya ayırma</value></data>
+  <data name="FileAllocCard.Description" xml:space="preserve"><value>auto — NTFS'te falloc, aksi halde prealloc</value></data>
+  <data name="FileAllocAutoItem.Content" xml:space="preserve"><value>Otomatik</value></data>
+  <data name="FileAllocNoneItem.Content" xml:space="preserve"><value>Yok</value></data>
+  <data name="FileAllocPreallocItem.Content" xml:space="preserve"><value>Önceden ayırma</value></data>
+  <data name="FileAllocFallocItem.Content" xml:space="preserve"><value>Hızlı (falloc)</value></data>
+  <data name="AllowOverwriteCard.Header" xml:space="preserve"><value>Mevcut dosyaların üzerine yaz</value></data>
+  <data name="AllowOverwriteCard.Description" xml:space="preserve"><value>Aksi halde dosya yeniden adlandırılır</value></data>
+  <data name="AllowOverwriteToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="AllowOverwriteToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="AutoRenameCard.Header" xml:space="preserve"><value>Otomatik yeniden adlandırma</value></data>
+  <data name="AutoRenameCard.Description" xml:space="preserve"><value>Ad çakışmasında .1, .2 … ekle</value></data>
+  <data name="AutoRenameToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="AutoRenameToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="ListenPortCard.Header" xml:space="preserve"><value>BT/DHT bağlantı noktası</value></data>
+  <data name="ListenPortCard.Description" xml:space="preserve"><value>0 — otomatik seç</value></data>
+  <data name="DhtCard.Header" xml:space="preserve"><value>DHT</value></data>
+  <data name="DhtCard.Description" xml:space="preserve"><value>Merkeziyetsiz eş keşfi</value></data>
+  <data name="DhtToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="DhtToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="PexCard.Header" xml:space="preserve"><value>Eş değişimi (PEX)</value></data>
+  <data name="PexCard.Description" xml:space="preserve"><value>İstemciler arasında eş listesi değişimi</value></data>
+  <data name="PexToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="PexToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="LpdCard.Header" xml:space="preserve"><value>Yerel keşif (LPD)</value></data>
+  <data name="LpdCard.Description" xml:space="preserve"><value>Yerel ağda eş bulma</value></data>
+  <data name="LpdToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="LpdToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="CryptoCard.Header" xml:space="preserve"><value>Şifreleme gerektir</value></data>
+  <data name="CryptoCard.Description" xml:space="preserve"><value>Eşlerle yalnızca şifreli bağlantılar (bt-require-crypto)</value></data>
+  <data name="CryptoToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="CryptoToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="CryptoLevelCard.Header" xml:space="preserve"><value>Şifreleme düzeyi</value></data>
+  <data name="CryptoLevelCard.Description" xml:space="preserve"><value>Minimum bağlantı şifreleme yöntemi (bt-min-crypto-level)</value></data>
+  <data name="CryptoLevelPlainTitle.Text" xml:space="preserve"><value>Yalnızca el sıkışma — plain</value></data>
+  <data name="CryptoLevelPlainDesc.Text" xml:space="preserve"><value>Yalnızca el sıkışma şifrelenir (gizlenir); verinin kendisi düz metin olarak gönderilir. Minimum işlemci yükü; genellikle bir İSS'nin BitTorrent kısıtlamasını aşmak için yeterlidir.</value></data>
+  <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>Tam RC4 şifrelemesi — arc4</value></data>
+  <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>Yalnızca el sıkışma değil, tüm veri akışı ARC4 (RC4) algoritmasıyla şifrelenir. Trafik içeriğini daha güvenilir şekilde gizler, işlemci yükü biraz daha yüksektir.</value></data>
+  <data name="MaxPeersCard.Header" xml:space="preserve"><value>Torrent başına maks. eş</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Tek bir torrent için bağlantı sınırı</value></data>
+  <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>Maks. açık dosya</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Tüm torrentler için aynı anda açık dosya sınırı</value></data>
+  <data name="SeedRatioCard.Header" xml:space="preserve"><value>Şu orana kadar tohumla</value></data>
+  <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — indirdikten sonra tohumlama</value></data>
+  <data name="TrackersExpander.Header" xml:space="preserve"><value>Ek izleyiciler</value></data>
+  <data name="TrackersExpander.Description" xml:space="preserve"><value>Tüm torrentlere eklenir</value></data>
+  <data name="TrackersBox.PlaceholderText" xml:space="preserve"><value>udp://tracker.example.org:1337/announce
+her satıra bir tane</value></data>
+  <data name="BtRestartInfoBar.Message" xml:space="preserve"><value>BitTorrent değişiklikleri aria2 motorunu yeniden başlatır (oturum korunur, indirmeler devam eder).</value></data>
+  <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Özel aria2 seçenekleri</value></data>
+  <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value, her satıra bir tane — en son uygulanır ve diğerlerini geçersiz kılar</value></data>
+  <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>Seçeneklerin tam listesi aria2 belgelerindedir. Bu değişiklikler motoru yeniden başlatır.</value></data>
+  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Kaydet ve kapat</value></data>
+  <data name="UrlsBox.Header" xml:space="preserve"><value>HTTP/FTP veya magnet bağlantıları — her satıra bir tane</value></data>
+  <data name="AddDirBox.Header" xml:space="preserve"><value>Kayıt klasörü</value></data>
+  <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Gözat…</value></data>
+  <data name="PickTorrentButton.Content" xml:space="preserve"><value>.torrent dosyası seç…</value></data>
+  <data name="TorrentFilesHeader.Text" xml:space="preserve"><value>Torrent dosyaları</value></data>
+  <data name="SelectAllFilesButton.Content" xml:space="preserve"><value>Tümünü seç</value></data>
+  <data name="DeselectAllFilesButton.Content" xml:space="preserve"><value>Seçimi kaldır</value></data>
+  <data name="ConfirmAddButton.Content" xml:space="preserve"><value>Ekle</value></data>
+  <data name="CancelAddButton.Content" xml:space="preserve"><value>İptal</value></data>
+  <data name="DragCaptionAddToDownloads" xml:space="preserve"><value>İndirmelere ekle</value></data>
+  <data name="ErrorOpenFolderPicker" xml:space="preserve"><value>Klasör seçici açılamadı: {0}</value></data>
+  <data name="SettingsErrorSave" xml:space="preserve"><value>Kaydedilemedi: {0}</value></data>
+  <data name="AddWindowTitle" xml:space="preserve"><value>Yeni indirme</value></data>
+  <data name="AddErrorReadTorrent" xml:space="preserve"><value>Torrent dosyası okunamadı: {0}</value></data>
+  <data name="AddErrorNoSource" xml:space="preserve"><value>En az bir bağlantı girin veya bir .torrent dosyası seçin.</value></data>
+  <data name="AddErrorNoFilesSelected" xml:space="preserve"><value>Torrentten en az bir dosya seçin.</value></data>
+  <data name="AddErrorPartial" xml:space="preserve"><value>Eklendi: {0}. Kalanlar eklenmedi: {1}</value></data>
+  <data name="AddErrorSkipped" xml:space="preserve"><value>Atlanan satır: {0} — yalnızca http, https, ftp ve magnet desteklenir.</value></data>
+  <data name="AddErrorAddFailed" xml:space="preserve"><value>İndirme eklenemedi: {0}</value></data>
+  <data name="ActionPause" xml:space="preserve"><value>Duraklat</value></data>
+  <data name="ActionResume" xml:space="preserve"><value>Devam et</value></data>
+  <data name="StatusMetadata" xml:space="preserve"><value>Üst veri</value></data>
+  <data name="StatusSeeding" xml:space="preserve"><value>Tohumlanıyor</value></data>
+  <data name="StatusDownloading" xml:space="preserve"><value>İndiriliyor</value></data>
+  <data name="StatusQueued" xml:space="preserve"><value>Sırada</value></data>
+  <data name="StatusPaused" xml:space="preserve"><value>Duraklatıldı</value></data>
+  <data name="StatusCompleted" xml:space="preserve"><value>Tamamlandı</value></data>
+  <data name="StatusError" xml:space="preserve"><value>Hata</value></data>
+  <data name="StatusRemoved" xml:space="preserve"><value>Kaldırıldı</value></data>
+  <data name="RemoveWithFilesTitle" xml:space="preserve"><value>Dosyalarla birlikte kaldırılsın mı?</value></data>
+  <data name="RemoveWithFilesMessage" xml:space="preserve"><value>«{0}» listeden kaldırılacak ve dosyaları diskten silinecek.</value></data>
+  <data name="RemoveWithFilesConfirm" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="TrayRestore" xml:space="preserve"><value>Geri yükle</value></data>
+  <data name="TrayPauseAll" xml:space="preserve"><value>Tüm indirmeleri duraklat</value></data>
+  <data name="TrayQuit" xml:space="preserve"><value>Çıkış</value></data>
+  <data name="LanguageCard.Header" xml:space="preserve"><value>Arayüz dili</value></data>
+  <data name="LanguageCard.Description" xml:space="preserve"><value>Uygulama yeniden başlatıldıktan sonra uygulanır</value></data>
+  <data name="LanguageSystemItem.Content" xml:space="preserve"><value>Sistem varsayılanı</value></data>
+</root>

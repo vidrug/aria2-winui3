@@ -29,6 +29,7 @@ public sealed partial class AddDownloadWindow : Window
     public AddDownloadWindow()
     {
         InitializeComponent();
+        Title = L.Get("AddWindowTitle");
         _hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
 
         var settings = Aria2Service.Instance.Settings;
@@ -91,7 +92,7 @@ public sealed partial class AddDownloadWindow : Window
         }
         catch (Exception ex)
         {
-            ShowError($"Не удалось открыть выбор папки: {ex.Message}");
+            ShowError(L.Get("ErrorOpenFolderPicker", ex.Message));
         }
     }
 
@@ -122,7 +123,7 @@ public sealed partial class AddDownloadWindow : Window
             _torrentContent = null;
             TorrentFileName.Text = "";
             TorrentFilesPanel.Visibility = Visibility.Collapsed;
-            ShowError($"Не удалось прочитать torrent-файл: {ex.Message}");
+            ShowError(L.Get("AddErrorReadTorrent", ex.Message));
         }
     }
 
@@ -256,7 +257,7 @@ public sealed partial class AddDownloadWindow : Window
             bool hasUris = !string.IsNullOrWhiteSpace(text);
             if (!hasUris && _torrentBytes is null)
             {
-                ShowError("Укажите хотя бы одну ссылку или выберите .torrent-файл.");
+                ShowError(L.Get("AddErrorNoSource"));
                 return;
             }
 
@@ -269,7 +270,7 @@ public sealed partial class AddDownloadWindow : Window
                 string? selectFile = BuildSelectFileOption();
                 if (selectFile is "")
                 {
-                    ShowError("Выберите хотя бы один файл торрента.");
+                    ShowError(L.Get("AddErrorNoFilesSelected"));
                     return;
                 }
                 try
@@ -295,12 +296,12 @@ public sealed partial class AddDownloadWindow : Window
 
                 if (result.Error is not null)
                 {
-                    ShowError($"Добавлено: {result.Added}. Остальные не добавились: {result.Error.Message}");
+                    ShowError(L.Get("AddErrorPartial", result.Added, result.Error.Message));
                     return;
                 }
                 if (result.Skipped > 0)
                 {
-                    ShowError($"Строк пропущено: {result.Skipped} — поддерживаются только http, https, ftp и magnet.");
+                    ShowError(L.Get("AddErrorSkipped", result.Skipped));
                     return;
                 }
             }
@@ -311,7 +312,7 @@ public sealed partial class AddDownloadWindow : Window
         }
         catch (Exception ex)
         {
-            ShowError($"Не удалось добавить загрузку: {ex.Message}");
+            ShowError(L.Get("AddErrorAddFailed", ex.Message));
         }
         finally
         {

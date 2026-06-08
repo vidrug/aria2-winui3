@@ -32,6 +32,8 @@ public sealed partial class SettingsView : UserControl
         ConcurrentBox.Value = s.MaxConcurrentDownloads;
         ConnectionsBox.Value = s.MaxConnectionsPerServer;
         ThemeBox.SelectedIndex = s.Theme switch { "Light" => 1, "Dark" => 2, _ => 0 };
+        LanguageBox.SelectedItem = LanguageBox.Items.OfType<ComboBoxItem>()
+            .FirstOrDefault(i => (i.Tag as string ?? "") == s.Language) ?? LanguageBox.Items[0];
 
         ProxyBox.Text = s.AllProxy;
         CheckCertToggle.IsOn = s.CheckCertificate;
@@ -95,7 +97,7 @@ public sealed partial class SettingsView : UserControl
         }
         catch (Exception ex)
         {
-            ShowError($"Не удалось открыть выбор папки: {ex.Message}");
+            ShowError(Helpers.L.Get("ErrorOpenFolderPicker", ex.Message));
         }
     }
 
@@ -112,6 +114,7 @@ public sealed partial class SettingsView : UserControl
                 MaxConcurrentDownloads = (int)SafeValue(ConcurrentBox.Value, 5),
                 MaxConnectionsPerServer = (int)SafeValue(ConnectionsBox.Value, 8),
                 Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
+                Language = (LanguageBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "",
                 LastAddDirectory = old.LastAddDirectory,
 
                 AllProxy = ProxyBox.Text,
@@ -140,15 +143,23 @@ public sealed partial class SettingsView : UserControl
             };
 
             bool needsRestart = NeedsEngineRestart(old, s);
+            bool languageChanged = old.Language != s.Language;
             await Aria2Service.Instance.ApplySettingsAsync(s);
             Helpers.ThemeHelper.Apply(s.Theme);
+            if (languageChanged)
+            {
+                // Resource language is resolved at element-load time, so relaunch the app
+                // (Program.Main re-reads the saved language and applies it before any UI).
+                Microsoft.Windows.AppLifecycle.AppInstance.Restart("");
+                return;
+            }
             if (needsRestart)
                 await Aria2Service.Instance.RestartEngineAsync();
             Closed?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            ShowError($"Не удалось сохранить: {ex.Message}");
+            ShowError(Helpers.L.Get("SettingsErrorSave", ex.Message));
         }
     }
 

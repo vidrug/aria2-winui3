@@ -13,6 +13,8 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Localization: default/fallback language for the .resw resources under Strings\. -->
+    <DefaultLanguage>en-US</DefaultLanguage>
     <!-- Embed the app icon into the .exe so the taskbar/Explorer/title bar show it. -->
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <!-- Custom Program.Main enforces single-instancing via AppInstance redirection. -->

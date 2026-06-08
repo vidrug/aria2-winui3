@@ -154,7 +154,7 @@ public sealed partial class MainPage : Page
             || e.DataView.Contains(StandardDataFormats.WebLink)
                 ? DataPackageOperation.Copy
                 : DataPackageOperation.None;
-        e.DragUIOverride.Caption = "Добавить в загрузки";
+        e.DragUIOverride.Caption = Helpers.L.Get("DragCaptionAddToDownloads");
     }
 
     private async void RootGrid_Drop(object sender, DragEventArgs e)

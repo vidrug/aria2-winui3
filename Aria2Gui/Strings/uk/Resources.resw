@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ToolbarAddButton.Label" xml:space="preserve"><value>Додати</value></data>
+  <data name="ToolbarAddButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Додати завантаження</value></data>
+  <data name="ToolbarResumeButton.Label" xml:space="preserve"><value>Відновити</value></data>
+  <data name="ToolbarResumeButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Відновити вибрані</value></data>
+  <data name="ToolbarPauseButton.Label" xml:space="preserve"><value>Пауза</value></data>
+  <data name="ToolbarPauseButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Призупинити вибрані</value></data>
+  <data name="ToolbarRemoveButton.Label" xml:space="preserve"><value>Видалити</value></data>
+  <data name="ToolbarRemoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Видалити вибрані зі списку</value></data>
+  <data name="ToolbarSettingsButton.Label" xml:space="preserve"><value>Налаштування</value></data>
+  <data name="ToolbarSettingsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Налаштування</value></data>
+  <data name="ToolbarMoreButton.Label" xml:space="preserve"><value>Ще</value></data>
+  <data name="ToolbarMoreButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Інші дії</value></data>
+  <data name="MenuResumeAll.Text" xml:space="preserve"><value>Відновити всі</value></data>
+  <data name="MenuPauseAll.Text" xml:space="preserve"><value>Призупинити всі</value></data>
+  <data name="MenuClearStopped.Text" xml:space="preserve"><value>Очистити завершені</value></data>
+  <data name="SidebarSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ширина бічної панелі</value></data>
+  <data name="ColumnMenuSize.Text" xml:space="preserve"><value>Розмір</value></data>
+  <data name="ColumnMenuProgress.Text" xml:space="preserve"><value>Прогрес</value></data>
+  <data name="ColumnMenuStatus.Text" xml:space="preserve"><value>Статус</value></data>
+  <data name="ColumnMenuSeeds.Text" xml:space="preserve"><value>Сіди</value></data>
+  <data name="ColumnMenuPeers.Text" xml:space="preserve"><value>Піри</value></data>
+  <data name="ColumnMenuDown.Text" xml:space="preserve"><value>Завантаження</value></data>
+  <data name="ColumnMenuUp.Text" xml:space="preserve"><value>Віддача</value></data>
+  <data name="ColumnMenuEta.Text" xml:space="preserve"><value>Залишилось</value></data>
+  <data name="ColumnMenuRatio.Text" xml:space="preserve"><value>Рейтинг</value></data>
+  <data name="ResizeHandleName.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Ім'я»</value></data>
+  <data name="ResizeHandleSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Розмір»</value></data>
+  <data name="ResizeHandleProgress.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Прогрес»</value></data>
+  <data name="ResizeHandleStatus.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Статус»</value></data>
+  <data name="ResizeHandleSeeds.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Сіди»</value></data>
+  <data name="ResizeHandlePeers.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Піри»</value></data>
+  <data name="ResizeHandleDown.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Завантаження»</value></data>
+  <data name="ResizeHandleUp.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Віддача»</value></data>
+  <data name="ResizeHandleEta.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Залишилось»</value></data>
+  <data name="ResizeHandleRatio.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Змінити ширину стовпця «Рейтинг»</value></data>
+  <data name="RowMenuOpenFolder.Text" xml:space="preserve"><value>Відкрити папку</value></data>
+  <data name="RowMenuCopyMagnet.Text" xml:space="preserve"><value>Копіювати magnet-посилання</value></data>
+  <data name="RowMenuRemove.Text" xml:space="preserve"><value>Видалити зі списку</value></data>
+  <data name="RowMenuRemoveWithFiles.Text" xml:space="preserve"><value>Видалити з файлами…</value></data>
+  <data name="FileTreeDownloadCheckBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Завантажувати</value></data>
+  <data name="EmptyStateTitle.Text" xml:space="preserve"><value>Немає завантажень</value></data>
+  <data name="EmptyStateHint.Text" xml:space="preserve"><value>Натисніть «Додати» (Ctrl+N) або перетягніть сюди торрент-файл</value></data>
+  <data name="DetailsSplitter.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Висота панелі відомостей</value></data>
+  <data name="DetailsTabGeneral.Text" xml:space="preserve"><value>Загальні</value></data>
+  <data name="DetailsTabFiles.Text" xml:space="preserve"><value>Файли</value></data>
+  <data name="DetailsTabPeers.Text" xml:space="preserve"><value>Піри</value></data>
+  <data name="DetailsNoSelection.Text" xml:space="preserve"><value>Виберіть завантаження, щоб побачити подробиці</value></data>
+  <data name="DetailLabelSavePath.Text" xml:space="preserve"><value>Збережено в:</value></data>
+  <data name="DetailLabelSize.Text" xml:space="preserve"><value>Розмір:</value></data>
+  <data name="DetailLabelStatus.Text" xml:space="preserve"><value>Статус:</value></data>
+  <data name="DetailLabelSpeed.Text" xml:space="preserve"><value>Швидкість:</value></data>
+  <data name="DetailLabelHash.Text" xml:space="preserve"><value>Хеш:</value></data>
+  <data name="DetailLabelRatio.Text" xml:space="preserve"><value>Рейтинг:</value></data>
+  <data name="DetailLabelUploaded.Text" xml:space="preserve"><value>Віддано:</value></data>
+  <data name="DetailLabelConnections.Text" xml:space="preserve"><value>Підключення:</value></data>
+  <data name="EngineErrorInfoBar.Title" xml:space="preserve"><value>aria2 не запустився</value></data>
+  <data name="SettingsBackButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Назад</value></data>
+  <data name="SettingsBackButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Назад</value></data>
+  <data name="NavGeneral.Content" xml:space="preserve"><value>Основні</value></data>
+  <data name="NavConnection.Content" xml:space="preserve"><value>Підключення</value></data>
+  <data name="NavFiles.Content" xml:space="preserve"><value>Файли</value></data>
+  <data name="NavAdvanced.Content" xml:space="preserve"><value>Додатково</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Налаштування</value></data>
+  <data name="DownloadFolderCard.Header" xml:space="preserve"><value>Папка завантажень</value></data>
+  <data name="DownloadFolderCard.Description" xml:space="preserve"><value>Куди зберігати файли за замовчуванням</value></data>
+  <data name="BrowseFolderButton.Content" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="DownLimitCard.Header" xml:space="preserve"><value>Ліміт завантаження</value></data>
+  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — без обмеження, МБ/с</value></data>
+  <data name="UpLimitCard.Header" xml:space="preserve"><value>Ліміт віддачі</value></data>
+  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — без обмеження, МБ/с</value></data>
+  <data name="ConcurrentCard.Header" xml:space="preserve"><value>Одночасних завантажень</value></data>
+  <data name="ConcurrentCard.Description" xml:space="preserve"><value>Скільки файлів завантажувати паралельно</value></data>
+  <data name="ConnectionsCard.Header" xml:space="preserve"><value>З'єднань на сервер</value></data>
+  <data name="ConnectionsCard.Description" xml:space="preserve"><value>Для HTTP/FTP-завантажень (макс. 16)</value></data>
+  <data name="ThemeCard.Header" xml:space="preserve"><value>Тема оформлення</value></data>
+  <data name="ThemeCard.Description" xml:space="preserve"><value>Світла, темна або як у системі</value></data>
+  <data name="ThemeSystemItem.Content" xml:space="preserve"><value>Як у системі</value></data>
+  <data name="ThemeLightItem.Content" xml:space="preserve"><value>Світла</value></data>
+  <data name="ThemeDarkItem.Content" xml:space="preserve"><value>Темна</value></data>
+  <data name="ProxyCard.Header" xml:space="preserve"><value>Проксі</value></data>
+  <data name="ProxyCard.Description" xml:space="preserve"><value>Напр. http://host:8080 або socks5://host:1080 (порожньо — без проксі)</value></data>
+  <data name="ProxyBox.PlaceholderText" xml:space="preserve"><value>без проксі</value></data>
+  <data name="CheckCertCard.Header" xml:space="preserve"><value>Перевіряти сертифікати HTTPS</value></data>
+  <data name="CheckCertCard.Description" xml:space="preserve"><value>Вимикайте лише для довірених серверів із самопідписаним сертифікатом</value></data>
+  <data name="CheckCertToggle.OnContent" xml:space="preserve"><value>Увімк</value></data>
+  <data name="CheckCertToggle.OffContent" xml:space="preserve"><value>Вимк</value></data>
+  <data name="TimeoutCard.Header" xml:space="preserve"><value>Таймаут</value></data>
+  <data name="TimeoutCard.Description" xml:space="preserve"><value>Секунд до розриву завислого з'єднання</value></data>
+  <data name="ConnectTimeoutCard.Header" xml:space="preserve"><value>Таймаут підключення</value></data>
+  <data name="ConnectTimeoutCard.Description" xml:space="preserve"><value>Секунд на встановлення з'єднання</value></data>
+  <data name="MaxTriesCard.Header" xml:space="preserve"><value>Спроб</value></data>
+  <data name="MaxTriesCard.Description" xml:space="preserve"><value>Скільки разів повторювати при помилці (0 — без повторів)</value></data>
+  <data name="RetryWaitCard.Header" xml:space="preserve"><value>Пауза між спробами</value></data>
+  <data name="RetryWaitCard.Description" xml:space="preserve"><value>Секунд очікування перед повтором</value></data>
+  <data name="MinSplitSizeCard.Header" xml:space="preserve"><value>Мін. розмір сегмента</value></data>
+  <data name="MinSplitSizeCard.Description" xml:space="preserve"><value>З якого розміру дробити файл на потоки (напр. 1M, 20M)</value></data>
+  <data name="UserAgentCard.Header" xml:space="preserve"><value>User-Agent</value></data>
+  <data name="UserAgentCard.Description" xml:space="preserve"><value>HTTP-заголовок User-Agent (порожньо — за замовчуванням)</value></data>
+  <data name="UserAgentBox.PlaceholderText" xml:space="preserve"><value>aria2 за замовчуванням</value></data>
+  <data name="FileAllocCard.Header" xml:space="preserve"><value>Розміщення файлу на диску</value></data>
+  <data name="FileAllocCard.Description" xml:space="preserve"><value>auto — falloc на NTFS, інакше prealloc</value></data>
+  <data name="FileAllocAutoItem.Content" xml:space="preserve"><value>Авто</value></data>
+  <data name="FileAllocNoneItem.Content" xml:space="preserve"><value>Без виділення</value></data>
+  <data name="FileAllocPreallocItem.Content" xml:space="preserve"><value>Передвиділення</value></data>
+  <data name="FileAllocFallocItem.Content" xml:space="preserve"><value>Швидке (falloc)</value></data>
+  <data name="AllowOverwriteCard.Header" xml:space="preserve"><value>Перезаписувати наявні файли</value></data>
+  <data name="AllowOverwriteCard.Description" xml:space="preserve"><value>Інакше файл буде перейменовано</value></data>
+  <data name="AllowOverwriteToggle.OnContent" xml:space="preserve"><value>Увімк</value></data>
+  <data name="AllowOverwriteToggle.OffContent" xml:space="preserve"><value>Вимк</value></data>
+  <data name="AutoRenameCard.Header" xml:space="preserve"><value>Авто-перейменування</value></data>
+  <data name="AutoRenameCard.Description" xml:space="preserve"><value>При збігу імені додавати .1, .2 …</value></data>
+  <data name="AutoRenameToggle.OnContent" xml:space="preserve"><value>Увімк</value></data>
+  <data name="AutoRenameToggle.OffContent" xml:space="preserve"><value>Вимк</value></data>
+  <data name="ListenPortCard.Header" xml:space="preserve"><value>Порт BT/DHT</value></data>
+  <data name="ListenPortCard.Description" xml:space="preserve"><value>0 — вибрати автоматично</value></data>
+  <data name="DhtCard.Header" xml:space="preserve"><value>DHT</value></data>
+  <data name="DhtCard.Description" xml:space="preserve"><value>Децентралізований пошук пірів</value></data>
+  <data name="DhtToggle.OnContent" xml:space="preserve"><value>Увімк</value></data>
+  <data name="DhtToggle.OffContent" xml:space="preserve"><value>Вимк</value></data>
+  <data name="PexCard.Header" xml:space="preserve"><value>Обмін пірами (PEX)</value></data>
+  <data name="PexCard.Description" xml:space="preserve"><value>Обмін списками пірів між клієнтами</value></data>
+  <data name="PexToggle.OnContent" xml:space="preserve"><value>Увімк</value></data>
+  <data name="PexToggle.OffContent" xml:space="preserve"><value>Вимк</value></data>
+  <data name="LpdCard.Header" xml:space="preserve"><value>Локальне виявлення (LPD)</value></data>
+  <data name="LpdCard.Description" xml:space="preserve"><value>Пошук пірів у локальній мережі</value></data>
+  <data name="LpdToggle.OnContent" xml:space="preserve"><value>Увімк</value></data>
+  <data name="LpdToggle.OffContent" xml:space="preserve"><value>Вимк</value></data>
+  <data name="CryptoCard.Header" xml:space="preserve"><value>Вимагати шифрування</value></data>
+  <data name="CryptoCard.Description" xml:space="preserve"><value>Лише зашифровані з'єднання з пірами (bt-require-crypto)</value></data>
+  <data name="CryptoToggle.OnContent" xml:space="preserve"><value>Увімк</value></data>
+  <data name="CryptoToggle.OffContent" xml:space="preserve"><value>Вимк</value></data>
+  <data name="CryptoLevelCard.Header" xml:space="preserve"><value>Рівень шифрування</value></data>
+  <data name="CryptoLevelCard.Description" xml:space="preserve"><value>Мінімальний метод шифрування з'єднання (bt-min-crypto-level)</value></data>
+  <data name="CryptoLevelPlainTitle.Text" xml:space="preserve"><value>Лише рукостискання — plain</value></data>
+  <data name="CryptoLevelPlainDesc.Text" xml:space="preserve"><value>Шифрується (обфускується) лише рукостискання, самі дані передаються відкритим текстом. Мінімальне навантаження на процесор; зазвичай достатньо, щоб обійти обмеження BitTorrent у провайдера.</value></data>
+  <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>Повне шифрування RC4 — arc4</value></data>
+  <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>Шифрується весь потік даних алгоритмом ARC4 (RC4), а не лише рукостискання. Надійніше приховує вміст трафіку, навантаження на процесор трохи вище.</value></data>
+  <data name="MaxPeersCard.Header" xml:space="preserve"><value>Макс. пірів на торрент</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Межа підключень для одного торрента</value></data>
+  <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>Макс. відкритих файлів</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Межа одночасно відкритих файлів для всіх торрентів</value></data>
+  <data name="SeedRatioCard.Header" xml:space="preserve"><value>Роздавати до рейтингу</value></data>
+  <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — не роздавати після завантаження</value></data>
+  <data name="TrackersExpander.Header" xml:space="preserve"><value>Додаткові трекери</value></data>
+  <data name="TrackersExpander.Description" xml:space="preserve"><value>Додаються до всіх торрентів</value></data>
+  <data name="TrackersBox.PlaceholderText" xml:space="preserve"><value>udp://tracker.example.org:1337/announce
+по одному в рядку</value></data>
+  <data name="BtRestartInfoBar.Message" xml:space="preserve"><value>Зміни BitTorrent перезапускають рушій aria2 (сесія зберігається, завантаження продовжаться).</value></data>
+  <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Довільні опції aria2</value></data>
+  <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value по одній у рядку — застосовуються останніми та перевизначають інші</value></data>
+  <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>Повний список опцій — у документації aria2. Ці зміни перезапускають рушій.</value></data>
+  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Зберегти та закрити</value></data>
+  <data name="UrlsBox.Header" xml:space="preserve"><value>Посилання HTTP/FTP або magnet — по одному в рядку</value></data>
+  <data name="AddDirBox.Header" xml:space="preserve"><value>Папка збереження</value></data>
+  <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="PickTorrentButton.Content" xml:space="preserve"><value>Вибрати .torrent-файл…</value></data>
+  <data name="TorrentFilesHeader.Text" xml:space="preserve"><value>Файли торрента</value></data>
+  <data name="SelectAllFilesButton.Content" xml:space="preserve"><value>Вибрати всі</value></data>
+  <data name="DeselectAllFilesButton.Content" xml:space="preserve"><value>Зняти вибір</value></data>
+  <data name="ConfirmAddButton.Content" xml:space="preserve"><value>Додати</value></data>
+  <data name="CancelAddButton.Content" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="DragCaptionAddToDownloads" xml:space="preserve"><value>Додати в завантаження</value></data>
+  <data name="ErrorOpenFolderPicker" xml:space="preserve"><value>Не вдалося відкрити вибір папки: {0}</value></data>
+  <data name="SettingsErrorSave" xml:space="preserve"><value>Не вдалося зберегти: {0}</value></data>
+  <data name="AddWindowTitle" xml:space="preserve"><value>Нове завантаження</value></data>
+  <data name="AddErrorReadTorrent" xml:space="preserve"><value>Не вдалося прочитати torrent-файл: {0}</value></data>
+  <data name="AddErrorNoSource" xml:space="preserve"><value>Вкажіть хоча б одне посилання або виберіть .torrent-файл.</value></data>
+  <data name="AddErrorNoFilesSelected" xml:space="preserve"><value>Виберіть хоча б один файл торрента.</value></data>
+  <data name="AddErrorPartial" xml:space="preserve"><value>Додано: {0}. Решту не додано: {1}</value></data>
+  <data name="AddErrorSkipped" xml:space="preserve"><value>Рядків пропущено: {0} — підтримуються лише http, https, ftp і magnet.</value></data>
+  <data name="AddErrorAddFailed" xml:space="preserve"><value>Не вдалося додати завантаження: {0}</value></data>
+  <data name="ActionPause" xml:space="preserve"><value>Пауза</value></data>
+  <data name="ActionResume" xml:space="preserve"><value>Відновити</value></data>
+  <data name="StatusMetadata" xml:space="preserve"><value>Метадані</value></data>
+  <data name="StatusSeeding" xml:space="preserve"><value>Роздавання</value></data>
+  <data name="StatusDownloading" xml:space="preserve"><value>Завантаження</value></data>
+  <data name="StatusQueued" xml:space="preserve"><value>У черзі</value></data>
+  <data name="StatusPaused" xml:space="preserve"><value>Пауза</value></data>
+  <data name="StatusCompleted" xml:space="preserve"><value>Завершено</value></data>
+  <data name="StatusError" xml:space="preserve"><value>Помилка</value></data>
+  <data name="StatusRemoved" xml:space="preserve"><value>Видалено</value></data>
+  <data name="RemoveWithFilesTitle" xml:space="preserve"><value>Видалити з файлами?</value></data>
+  <data name="RemoveWithFilesMessage" xml:space="preserve"><value>«{0}» буде прибрано зі списку, а її файли — видалено з диска.</value></data>
+  <data name="RemoveWithFilesConfirm" xml:space="preserve"><value>Видалити</value></data>
+  <data name="TrayRestore" xml:space="preserve"><value>Розгорнути</value></data>
+  <data name="TrayPauseAll" xml:space="preserve"><value>Зупинити всі завантаження</value></data>
+  <data name="TrayQuit" xml:space="preserve"><value>Закрити</value></data>
+  <data name="LanguageCard.Header" xml:space="preserve"><value>Мова інтерфейсу</value></data>
+  <data name="LanguageCard.Description" xml:space="preserve"><value>Застосовується після перезапуску застосунку</value></data>
+  <data name="LanguageSystemItem.Content" xml:space="preserve"><value>Як у системі</value></data>
+</root>

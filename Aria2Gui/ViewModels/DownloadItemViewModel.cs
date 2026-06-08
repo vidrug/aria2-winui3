@@ -78,7 +78,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     public partial bool IsError { get; set; }
 
     [ObservableProperty]
-    public partial string PauseResumeText { get; set; } = "Пауза";
+    public partial string PauseResumeText { get; set; } = L.Get("ActionPause");
 
     [ObservableProperty]
     public partial bool CanPauseResume { get; set; }
@@ -157,14 +157,14 @@ public sealed partial class DownloadItemViewModel : ObservableObject
 
         (StatusText, StatusGlyph, Category) = (d.Status, isMetadata, d.Seeder) switch
         {
-            (Aria2Status.Active, true, _) => ("Метаданные", "", DownloadCategory.Downloading),
-            (Aria2Status.Active, _, true) => ("Раздача", "", DownloadCategory.Seeding),
-            (Aria2Status.Active, _, _) => ("Загрузка", "", DownloadCategory.Downloading),
-            (Aria2Status.Waiting, _, _) => ("В очереди", "", DownloadCategory.Queued),
-            (Aria2Status.Paused, _, _) => ("Пауза", "", DownloadCategory.Paused),
-            (Aria2Status.Complete, _, _) => ("Завершено", "", DownloadCategory.Completed),
-            (Aria2Status.Error, _, _) => ("Ошибка", "", DownloadCategory.Error),
-            (Aria2Status.Removed, _, _) => ("Удалено", "", DownloadCategory.Completed),
+            (Aria2Status.Active, true, _) => (L.Get("StatusMetadata"), "", DownloadCategory.Downloading),
+            (Aria2Status.Active, _, true) => (L.Get("StatusSeeding"), "", DownloadCategory.Seeding),
+            (Aria2Status.Active, _, _) => (L.Get("StatusDownloading"), "", DownloadCategory.Downloading),
+            (Aria2Status.Waiting, _, _) => (L.Get("StatusQueued"), "", DownloadCategory.Queued),
+            (Aria2Status.Paused, _, _) => (L.Get("StatusPaused"), "", DownloadCategory.Paused),
+            (Aria2Status.Complete, _, _) => (L.Get("StatusCompleted"), "", DownloadCategory.Completed),
+            (Aria2Status.Error, _, _) => (L.Get("StatusError"), "", DownloadCategory.Error),
+            (Aria2Status.Removed, _, _) => (L.Get("StatusRemoved"), "", DownloadCategory.Completed),
             _ => (d.Status, "", DownloadCategory.Completed),
         };
         IsError = d.Status == Aria2Status.Error;
@@ -185,7 +185,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
 
         bool paused = d.Status == Aria2Status.Paused;
         CanPauseResume = !_isStopped;
-        PauseResumeText = paused ? "Возобновить" : "Пауза";
+        PauseResumeText = paused ? L.Get("ActionResume") : L.Get("ActionPause");
         HasMagnet = !string.IsNullOrEmpty(d.InfoHash);
     }
 
@@ -248,9 +248,9 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     private async Task RemoveWithFilesAsync()
     {
         bool confirmed = await DialogService.ConfirmAsync(
-            "Удалить с файлами?",
-            $"«{Name}» будет убрана из списка, а её файлы — удалены с диска.",
-            "Удалить");
+            L.Get("RemoveWithFilesTitle"),
+            L.Get("RemoveWithFilesMessage", Name),
+            L.Get("RemoveWithFilesConfirm"));
         if (!confirmed)
             return;
 

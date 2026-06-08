@@ -18,6 +18,11 @@ public static class Program
     {
         WinRT.ComWrappersSupport.InitializeComWrappers();
 
+        // Apply the saved UI language before any XAML/resources load. Empty = follow the OS.
+        string language = Services.SettingsService.Load().Language;
+        if (!string.IsNullOrEmpty(language))
+            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
+
         var mainInstance = AppInstance.FindOrRegisterForKey(GetInstanceKey());
         if (!mainInstance.IsCurrent)
         {
