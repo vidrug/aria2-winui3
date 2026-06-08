@@ -127,18 +127,20 @@ public sealed partial class SettingsView : UserControl
     {
         if (_loading)
             return;
+        var s = BuildSettings();
         try
         {
-            var s = BuildSettings();
             await Aria2Service.Instance.ApplySettingsAsync(s);
-            Helpers.ThemeHelper.Apply(s.Theme);
             ErrorBar.IsOpen = false;
-            UpdateLanguageRestartHint();
         }
         catch (Exception ex)
         {
             ShowError(Helpers.L.Get("SettingsErrorSave", ex.Message));
         }
+        // Theme and the language-restart hint don't depend on the engine RPC, so update them
+        // even if the live push failed (the setting is already persisted by ApplySettingsAsync).
+        Helpers.ThemeHelper.Apply(s.Theme);
+        UpdateLanguageRestartHint();
     }
 
     /// <summary>Back press: commit any still-focused field, then relaunch the app (language
@@ -188,7 +190,15 @@ public sealed partial class SettingsView : UserControl
     {
         // Guarantee the picked language is on disk, then relaunch. AppInstance.Restart
         // force-terminates without raising Window.Closed, so run the graceful teardown first.
-        SettingsService.Save(BuildSettings());
+        try
+        {
+            SettingsService.Save(BuildSettings());
+        }
+        catch (Exception ex)
+        {
+            ShowError(Helpers.L.Get("SettingsErrorSave", ex.Message));
+            return;
+        }
         App.RunExitCleanup();
         Microsoft.Windows.AppLifecycle.AppInstance.Restart("");
     }

@@ -155,7 +155,6 @@
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Довільні опції aria2</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value по одній у рядку — застосовуються останніми та перевизначають інші</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>Повний список опцій — у документації aria2. Ці зміни перезапускають рушій.</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Зберегти та закрити</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>Посилання HTTP/FTP або magnet — по одному в рядку</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>Папка збереження</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Огляд…</value></data>

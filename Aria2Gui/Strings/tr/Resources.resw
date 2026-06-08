@@ -155,7 +155,6 @@ her satıra bir tane</value></data>
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Özel aria2 seçenekleri</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value, her satıra bir tane — en son uygulanır ve diğerlerini geçersiz kılar</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>Seçeneklerin tam listesi aria2 belgelerindedir. Bu değişiklikler motoru yeniden başlatır.</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Kaydet ve kapat</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>HTTP/FTP veya magnet bağlantıları — her satıra bir tane</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>Kayıt klasörü</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Gözat…</value></data>

@@ -155,7 +155,6 @@
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>aria2 のカスタムオプション</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value を 1 行に 1 つ。最後に適用され、他の設定を上書きします</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>オプションの一覧は aria2 のドキュメントを参照してください。これらの変更はエンジンを再起動します。</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>保存して閉じる</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>HTTP/FTP または magnet リンク — 1 行に 1 つ</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>保存フォルダー</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>参照…</value></data>

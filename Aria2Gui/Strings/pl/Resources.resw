@@ -155,7 +155,6 @@ jeden w wierszu</value></data>
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Niestandardowe opcje aria2</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value, jedna w wierszu — stosowane na końcu i nadpisują pozostałe</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>Pełna lista opcji znajduje się w dokumentacji aria2. Te zmiany powodują ponowne uruchomienie silnika.</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Zapisz i zamknij</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>Linki HTTP/FTP lub magnet — jeden w wierszu</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>Folder zapisu</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Przeglądaj…</value></data>

@@ -73,15 +73,17 @@ public sealed class Aria2Service
         }
     }
 
-    /// <summary>Applies the runtime-changeable subset to aria2 live, then persists.
-    /// Apply-first means a rejected value (or RPC failure) leaves the settings file
-    /// untouched — the UI error message stays truthful.</summary>
+    /// <summary>Persists the settings, then pushes the runtime-changeable subset to aria2 live.
+    /// Persist-first so a transient RPC failure (or one unrelated to the field the user just
+    /// changed, e.g. the UI language) can never drop the choice; out-of-range runtime values are
+    /// clamped by <see cref="SettingsService.Load"/> on the next read. The RPC error still
+    /// propagates so the caller can surface it.</summary>
     public async Task ApplySettingsAsync(AppSettings settings, CancellationToken ct = default)
     {
-        if (_rpc.IsConnected)
-            await _rpc.ChangeGlobalOptionAsync(BuildRuntimeOptions(settings), ct).ConfigureAwait(false);
         Settings = settings;
         SettingsService.Save(settings);
+        if (_rpc.IsConnected)
+            await _rpc.ChangeGlobalOptionAsync(BuildRuntimeOptions(settings), ct).ConfigureAwait(false);
     }
 
     /// <summary>

@@ -155,7 +155,6 @@
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Произвольные опции aria2</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value по одной в строке — применяются последними и переопределяют остальные</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>Полный список опций — в документации aria2. Эти изменения перезапускают движок.</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Сохранить и закрыть</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>Ссылки HTTP/FTP или magnet — по одной в строке</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>Папка сохранения</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Обзор…</value></data>

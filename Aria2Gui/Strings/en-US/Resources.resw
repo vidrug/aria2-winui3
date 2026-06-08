@@ -155,7 +155,6 @@ one per line</value></data>
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Custom aria2 options</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value, one per line — applied last and override the rest</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>The full list of options is in the aria2 documentation. These changes restart the engine.</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Save and close</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>HTTP/FTP or magnet links — one per line</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>Save folder</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Browse…</value></data>

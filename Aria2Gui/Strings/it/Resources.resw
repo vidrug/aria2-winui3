@@ -155,7 +155,6 @@ uno per riga</value></data>
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Opzioni aria2 personalizzate</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value, una per riga — applicate per ultime e prevalgono sulle altre</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>L'elenco completo delle opzioni è nella documentazione di aria2. Queste modifiche riavviano il motore.</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Salva e chiudi</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>Link HTTP/FTP o magnet — uno per riga</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>Cartella di salvataggio</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Sfoglia…</value></data>

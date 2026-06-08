@@ -155,7 +155,6 @@
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>自定义 aria2 选项</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value，每行一个 — 最后应用并覆盖其他设置</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>完整的选项列表见 aria2 文档。这些更改会重启引擎。</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>保存并关闭</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>HTTP/FTP 或 magnet 链接 — 每行一个</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>保存文件夹</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>浏览…</value></data>

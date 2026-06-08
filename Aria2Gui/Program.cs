@@ -18,11 +18,11 @@ public static class Program
     {
         WinRT.ComWrappersSupport.InitializeComWrappers();
 
-        // Apply the saved UI language before any XAML/resources load. Empty = follow the OS.
+        // Apply the saved UI language before any XAML/resources load. Empty = follow the OS
+        // (and clears any override a previous session left behind).
         string language = Services.SettingsService.Load().Language;
         App.ActiveLanguage = language;
-        if (!string.IsNullOrEmpty(language))
-            ApplyLanguageOverride(language);
+        ApplyLanguageOverride(language);
 
         var mainInstance = AppInstance.FindOrRegisterForKey(GetInstanceKey());
         if (!mainInstance.IsCurrent)
@@ -49,6 +49,8 @@ public static class Program
     /// </summary>
     private static void ApplyLanguageOverride(string language)
     {
+        // Setting "" is the documented way to CLEAR the override and follow the OS again, so
+        // call this unconditionally — otherwise a stale override from a prior session lingers.
         try
         {
             Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
@@ -57,6 +59,11 @@ public static class Program
         {
             // No package identity (portable exe) — PrimaryLanguageOverride is unavailable.
         }
+
+        // CLR culture for number/date formatting. Only for an explicit language: GetCultureInfo("")
+        // is the invariant culture, which would wrongly override the OS formatting in the follow-OS case.
+        if (string.IsNullOrEmpty(language))
+            return;
         try
         {
             var culture = System.Globalization.CultureInfo.GetCultureInfo(language);

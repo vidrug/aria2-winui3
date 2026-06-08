@@ -155,7 +155,6 @@ un par ligne</value></data>
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Options aria2 personnalisées</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value, une par ligne — appliquées en dernier et prioritaires sur le reste</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>La liste complète des options figure dans la documentation d'aria2. Ces modifications redémarrent le moteur.</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Enregistrer et fermer</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>Liens HTTP/FTP ou magnet — un par ligne</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>Dossier d'enregistrement</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Parcourir…</value></data>

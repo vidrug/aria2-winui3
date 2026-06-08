@@ -155,7 +155,6 @@ einer pro Zeile</value></data>
   <data name="ExtraOptionsCard.Header" xml:space="preserve"><value>Eigene aria2-Optionen</value></data>
   <data name="ExtraOptionsCard.Description" xml:space="preserve"><value>key=value, eine pro Zeile — werden zuletzt angewendet und überschreiben die übrigen</value></data>
   <data name="AdvancedInfoBar.Message" xml:space="preserve"><value>Die vollständige Optionsliste finden Sie in der aria2-Dokumentation. Diese Änderungen starten die Engine neu.</value></data>
-  <data name="SaveSettingsButton.Content" xml:space="preserve"><value>Speichern und schließen</value></data>
   <data name="UrlsBox.Header" xml:space="preserve"><value>HTTP/FTP- oder Magnet-Links — einer pro Zeile</value></data>
   <data name="AddDirBox.Header" xml:space="preserve"><value>Speicherordner</value></data>
   <data name="AddBrowseFolderButton.Content" xml:space="preserve"><value>Durchsuchen…</value></data>
