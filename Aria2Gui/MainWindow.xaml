@@ -19,17 +19,12 @@
         </Grid.RowDefinitions>
 
         <TitleBar x:Name="AppTitleBar" Title="Aria2Gui">
+            <!-- Exactly how the WinUI 3 Gallery sets its title-bar icon: hand the .ico
+                 straight to ImageIconSource with NO DecodePixelWidth. The framework then
+                 picks the right .ico frame for the current DPI itself, which is crisp at
+                 every scale — a fixed DecodePixelWidth instead pins one size and blurs. -->
             <TitleBar.IconSource>
-                <!-- Decode the crisp 64px .ico frame in PHYSICAL pixels. The title-bar icon
-                     slot is far smaller than 64px at every DPI (≈16px at 100% … ≈48px at
-                     300%), so the bitmap is ALWAYS downscaled from a sharp source — never
-                     upscaled and never a fractional-DPI frame mismatch — so it stays crisp
-                     at all display scales. -->
-                <ImageIconSource>
-                    <ImageIconSource.ImageSource>
-                        <BitmapImage UriSource="ms-appx:///Assets/AppIcon.ico" DecodePixelType="Physical" DecodePixelWidth="64" DecodePixelHeight="64" />
-                    </ImageIconSource.ImageSource>
-                </ImageIconSource>
+                <ImageIconSource ImageSource="ms-appx:///Assets/AppIcon.ico" />
             </TitleBar.IconSource>
         </TitleBar>
 
