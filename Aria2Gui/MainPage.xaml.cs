@@ -59,16 +59,20 @@ public sealed partial class MainPage : Page
     /// <summary>Opens the per-download speed-limit flyout for the right-clicked row, pre-filled
     /// with its current limits and anchored to its row. The shared flyout's DataContext is set to
     /// the clicked download so its slider / number-box pairs bind to that row's limits.</summary>
-    private async void SpeedLimit_Click(object sender, RoutedEventArgs e)
+    private void SpeedLimit_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: DownloadItemViewModel vm }
             || Resources["SpeedLimitFlyout"] is not Flyout flyout)
             return;
+        // B23: bind + anchor + show synchronously (no await in between) so a fast right-click on
+        // another row can't interleave and cross-wire the shared flyout's DataContext/anchor.
         if (flyout.Content is FrameworkElement content)
             content.DataContext = vm;
-        await vm.LoadSpeedLimitsAsync();
         var anchor = DownloadsList.ContainerFromItem(vm) as FrameworkElement ?? DownloadsList;
         flyout.ShowAt(anchor, new FlyoutShowOptions { Placement = FlyoutPlacementMode.Right });
+        // Then fill in the current limits; LoadSpeedLimitsAsync seeds vm's OWN fields under its
+        // suppress guard, so loading the previous row's values can't bleed into this flyout.
+        _ = vm.LoadSpeedLimitsAsync();
     }
 
     /// <summary>
@@ -301,12 +305,15 @@ public sealed partial class MainPage : Page
             {
                 string? dropDir = ResolveAddDirectory();
                 var items = await e.DataView.GetStorageItemsAsync();
-                int added = 0, duplicates = 0;
+                int added = 0, duplicates = 0, skipped = 0;
                 var errors = new List<string>();
                 foreach (var item in items)
                 {
                     if (item is not StorageFile file || !file.FileType.Equals(".torrent", StringComparison.OrdinalIgnoreCase))
+                    {
+                        skipped++; // a folder / non-.torrent file — count it so the drop isn't silent (B7)
                         continue;
+                    }
                     try
                     {
                         await DownloadAdder.AddTorrentFileAsync(file, dropDir);
@@ -326,6 +333,8 @@ public sealed partial class MainPage : Page
                     ShowAddNotice(Helpers.L.Get("AddErrorAddFailed", string.Join("; ", errors)), InfoBarSeverity.Error);
                 else if (added == 0 && duplicates > 0)
                     ShowAddNotice(Helpers.L.Get("AddNoticeAlreadyAdded"), InfoBarSeverity.Informational);
+                else if (added == 0 && skipped > 0)
+                    ShowAddNotice(Helpers.L.Get("AddNoticeNotTorrent"), InfoBarSeverity.Warning);
             }
             else if (e.DataView.Contains(StandardDataFormats.WebLink))
             {

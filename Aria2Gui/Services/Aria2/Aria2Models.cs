@@ -78,7 +78,7 @@ public sealed class Aria2Download
 
     /// <summary>True for torrent downloads (including magnet metadata fetches).</summary>
     [JsonIgnore]
-    public bool IsTorrent => BitTorrent is not null || InfoHash is not null;
+    public bool IsTorrent => BitTorrent is not null || InfoHash is { Length: > 0 };
 
     /// <summary>Human-readable name: torrent name → first file name → first URI → gid.</summary>
     public string GetDisplayName()

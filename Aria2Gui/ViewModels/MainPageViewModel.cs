@@ -176,8 +176,8 @@ public sealed partial class MainPageViewModel : ObservableObject
 
     partial void OnDetailsTabIndexChanged(int value)
     {
-        if (value == 2)
-            _ = RefreshPeersAsync();
+        // Repopulate the newly-shown tab immediately (its per-tick refresh is gated on visibility).
+        UpdateDetails();
     }
 
     private void ApplyEngineState(Aria2ServiceState state)
@@ -263,9 +263,13 @@ public sealed partial class MainPageViewModel : ObservableObject
     /// error on reload (errorCode 13) is re-checked once, never in a loop.</summary>
     private readonly HashSet<string> _autoRecovered = new(StringComparer.OrdinalIgnoreCase);
 
+    // O4: reused across poll ticks (Clear keeps capacity) instead of allocating each tick.
+    private readonly HashSet<string> _seenGids = new(StringComparer.Ordinal);
+    private readonly List<DownloadItemViewModel> _sortBuffer = [];
+
     private void ApplySnapshot(Aria2Snapshot snapshot)
     {
-        var seen = new HashSet<string>(snapshot.Downloads.Count);
+        _seenGids.Clear();
         foreach (var download in snapshot.Downloads)
         {
             // Hide intermediate entries (magnet metadata / .torrent-file fetches)
@@ -273,7 +277,7 @@ public sealed partial class MainPageViewModel : ObservableObject
             if (download.FollowedBy is { Count: > 0 })
                 continue;
 
-            seen.Add(download.Gid);
+            _seenGids.Add(download.Gid);
             if (_byGid.TryGetValue(download.Gid, out var item))
             {
                 item.UpdateFrom(download);
@@ -316,7 +320,7 @@ public sealed partial class MainPageViewModel : ObservableObject
             for (int i = _all.Count - 1; i >= 0; i--)
             {
                 var item = _all[i];
-                if (seen.Contains(item.Gid))
+                if (_seenGids.Contains(item.Gid))
                     continue;
                 _byGid.Remove(item.Gid);
                 _all.RemoveAt(i);
@@ -419,7 +423,10 @@ public sealed partial class MainPageViewModel : ObservableObject
     {
         if (SortKey is null || Downloads.Count < 2)
             return;
-        var ordered = Downloads.ToList();
+        // O4: reuse a buffer instead of allocating a list every poll tick.
+        _sortBuffer.Clear();
+        _sortBuffer.AddRange(Downloads);
+        var ordered = _sortBuffer;
         ordered.Sort(CompareItems);
         for (int i = 0; i < ordered.Count; i++)
         {
@@ -498,24 +505,34 @@ public sealed partial class MainPageViewModel : ObservableObject
             return;
         }
 
-        DetSavePath = item.Directory ?? "";
-        DetSize = item.TotalLength > 0
-            ? L.Get("DetailSizeOf", FormatUtils.FormatSize(item.CompletedLength), FormatUtils.FormatSize(item.TotalLength))
-            : FormatUtils.FormatSize(item.CompletedLength);
-        DetStatus = item.StatusText;
-        DetHash = item.InfoHash ?? "—";
-        DetRatio = item.RatioText;
-        DetUploaded = FormatUtils.FormatSize(item.UploadLength);
-        DetSpeed = $"↓ {FormatUtils.FormatSpeed(item.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(item.UploadSpeed)}";
-        DetConnections = item.IsTorrent
-            ? L.Get("DetailSeedsPeers", item.NumSeeders, item.Connections)
-            : L.Get("DetailConnections", item.Connections);
-        DetError = item.ErrorMessage ?? "";
-        DetHasError = !string.IsNullOrEmpty(item.ErrorMessage);
-
-        UpdateFileTree(item);
-        if (DetailsTabIndex == 2)
-            _ = RefreshPeersAsync();
+        // O2: only refresh what the visible tab shows — the General strings (tab 0), the file
+        // tree (tab 1) and the peer list (tab 2) each cost per-tick formatting/allocation, and
+        // OnDetailsTabIndexChanged re-runs this so a tab switch repopulates immediately.
+        switch (DetailsTabIndex)
+        {
+            case 0:
+                DetSavePath = item.Directory ?? "";
+                DetSize = item.TotalLength > 0
+                    ? L.Get("DetailSizeOf", FormatUtils.FormatSize(item.CompletedLength), FormatUtils.FormatSize(item.TotalLength))
+                    : FormatUtils.FormatSize(item.CompletedLength);
+                DetStatus = item.StatusText;
+                DetHash = item.InfoHash ?? "—";
+                DetRatio = item.RatioText;
+                DetUploaded = FormatUtils.FormatSize(item.UploadLength);
+                DetSpeed = $"↓ {FormatUtils.FormatSpeed(item.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(item.UploadSpeed)}";
+                DetConnections = item.IsTorrent
+                    ? L.Get("DetailSeedsPeers", item.NumSeeders, item.Connections)
+                    : L.Get("DetailConnections", item.Connections);
+                DetError = item.ErrorMessage ?? "";
+                DetHasError = !string.IsNullOrEmpty(item.ErrorMessage);
+                break;
+            case 1:
+                UpdateFileTree(item);
+                break;
+            case 2:
+                _ = RefreshPeersAsync();
+                break;
+        }
     }
 
     /// <summary>
@@ -749,7 +766,12 @@ public sealed partial class MainPageViewModel : ObservableObject
         {
             var peers = await _service.Rpc.GetPeersAsync(item.Gid);
             if (!ReferenceEquals(SelectedDownload, item))
-                return; // selection moved while we were fetching
+            {
+                // Selection moved while we were fetching — drop the now-stale rows so the new
+                // selection doesn't briefly show the previous torrent's peers (B13).
+                Peers.Clear();
+                return;
+            }
             for (int i = 0; i < peers.Count; i++)
             {
                 PeerRowViewModel row;
