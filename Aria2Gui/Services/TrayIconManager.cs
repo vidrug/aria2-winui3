@@ -31,17 +31,28 @@ public sealed class TrayIconManager : IDisposable
 
     public void Initialize()
     {
-        // One toggle item that follows the window: "Hide to tray" while it's showing,
-        // "Restore" while it's hidden. (A fixed "Restore" did nothing when the window was
-        // already visible.)
-        _toggleItem = new MenuFlyoutItem { Text = L.Get("TrayRestore") };
-        _toggleItem.Click += (_, _) => ToggleWindow();
+        // H.NotifyIcon's default tray menu is a Win32 PopupMenu, where MenuFlyoutItem.Click
+        // never fires — only the Command is invoked (that's why the icon's left-click, which
+        // uses a Command, worked while the menu items did nothing). So every item drives a
+        // Command, not a Click handler.
+        // The toggle follows the window: "Hide to tray" while shown, "Restore" while hidden.
+        _toggleItem = new MenuFlyoutItem
+        {
+            Text = L.Get("TrayRestore"),
+            Command = new RelayCommandShim(ToggleWindow),
+        };
 
-        var pauseAll = new MenuFlyoutItem { Text = L.Get("TrayPauseAll") };
-        pauseAll.Click += (_, _) => _ = Aria2.Aria2Service.Instance.Rpc.PauseAllAsync();
+        var pauseAll = new MenuFlyoutItem
+        {
+            Text = L.Get("TrayPauseAll"),
+            Command = new RelayCommandShim(() => _ = Aria2.Aria2Service.Instance.Rpc.PauseAllAsync()),
+        };
 
-        var quit = new MenuFlyoutItem { Text = L.Get("TrayQuit") };
-        quit.Click += (_, _) => Quit();
+        var quit = new MenuFlyoutItem
+        {
+            Text = L.Get("TrayQuit"),
+            Command = new RelayCommandShim(Quit),
+        };
 
         var menu = new MenuFlyout();
         menu.Items.Add(_toggleItem);
