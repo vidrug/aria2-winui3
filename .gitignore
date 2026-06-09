@@ -8,3 +8,6 @@ publish/
 session_test/
 screenshots/
 test-results.json
+
+# Development certificate
+devcert.pfx
