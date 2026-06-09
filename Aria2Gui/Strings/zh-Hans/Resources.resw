@@ -309,4 +309,11 @@
   <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Kb</value></data>
   <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>MB</value></data>
   <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Mb</value></data>
+  <data name="PrivacyModeCard.Header" xml:space="preserve"><value>隐私模式</value></data>
+  <data name="PrivacyModeCard.Description" xml:space="preserve"><value>强制加密并关闭 DHT、PEX 和 LPD，让其他节点和你的 ISP 无法得知你在传输什么。如需完全匿名，还应通过 VPN 或 SOCKS5 代理转发流量。</value></data>
+  <data name="PrivacyModeButton.Content" xml:space="preserve"><value>启用隐私模式</value></data>
+  <data name="ForceEncryptionCard.Header" xml:space="preserve"><value>强制加密</value></data>
+  <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>拒绝未加密的节点连接 (bt-force-encryption)</value></data>
+  <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>关</value></data>
 </root>

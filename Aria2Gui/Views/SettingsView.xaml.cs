@@ -63,7 +63,7 @@ public sealed partial class SettingsView : UserControl
         CryptoLevelRadio.SelectionChanged += OnSelectionChanged;
 
         // CryptoToggle keeps its own handler (OnCryptoToggled) which also applies.
-        foreach (var ts in new[] { CheckCertToggle, AllowOverwriteToggle, AutoRenameToggle, DhtToggle, PexToggle, LpdToggle, DisableIpv6Toggle, BtDetachSeedToggle })
+        foreach (var ts in new[] { CheckCertToggle, AllowOverwriteToggle, AutoRenameToggle, DhtToggle, PexToggle, LpdToggle, DisableIpv6Toggle, BtDetachSeedToggle, ForceEncryptionToggle })
             ts.Toggled += OnToggled;
 
         foreach (var tb in new[]
@@ -127,6 +127,7 @@ public sealed partial class SettingsView : UserControl
             LpdToggle.IsOn = s.EnableLpd;
             CryptoToggle.IsOn = s.RequireCrypto;
             CryptoLevelRadio.SelectedIndex = s.BtMinCryptoLevel == "arc4" ? 1 : 0;
+            ForceEncryptionToggle.IsOn = s.BtForceEncryption;
             CryptoExpander.IsExpanded = s.RequireCrypto;
             TrackersBox.Text = s.ExtraTrackers;
             ExtraOptionsBox.Text = s.ExtraAria2Options;
@@ -310,6 +311,30 @@ public sealed partial class SettingsView : UserControl
         _ = ApplyChangeAsync();
     }
 
+    /// <summary>One-click privacy preset: force full encryption (require + arc4 + force-encryption)
+    /// and turn off the public peer-discovery mechanisms (DHT, PEX, LPD). Flips the individual
+    /// toggles so the change is visible; like every BT flag it takes effect on the engine restart
+    /// performed when leaving the page (the BtRestartInfoBar says so).</summary>
+    private async void OnPrivacyMode(object sender, RoutedEventArgs e)
+    {
+        _loading = true; // flip several controls without firing one apply per change
+        try
+        {
+            CryptoToggle.IsOn = true;
+            CryptoLevelRadio.SelectedIndex = 1; // arc4
+            ForceEncryptionToggle.IsOn = true;
+            CryptoExpander.IsExpanded = true;
+            DhtToggle.IsOn = false;
+            PexToggle.IsOn = false;
+            LpdToggle.IsOn = false;
+        }
+        finally
+        {
+            _loading = false;
+        }
+        await ApplyChangeAsync();
+    }
+
     /// <summary>The seeding value (ratio vs minutes) is a parameter of the mode, so its card
     /// reshapes — label, units, range — to the picked mode and collapses for "off", mirroring the
     /// encryption expander.</summary>
@@ -419,6 +444,7 @@ public sealed partial class SettingsView : UserControl
             EnableLpd = LpdToggle.IsOn,
             RequireCrypto = CryptoToggle.IsOn,
             BtMinCryptoLevel = CryptoLevelRadio.SelectedIndex == 1 ? "arc4" : "plain",
+            BtForceEncryption = ForceEncryptionToggle.IsOn,
             ExtraTrackers = TrackersBox.Text,
             ExtraAria2Options = ExtraOptionsBox.Text,
         };
@@ -438,6 +464,7 @@ public sealed partial class SettingsView : UserControl
         || old.EnableLpd != updated.EnableLpd
         || old.RequireCrypto != updated.RequireCrypto
         || old.BtMinCryptoLevel != updated.BtMinCryptoLevel
+        || old.BtForceEncryption != updated.BtForceEncryption
         || old.DiskCache != updated.DiskCache
         || old.MinTlsVersion != updated.MinTlsVersion
         || old.DisableIpv6 != updated.DisableIpv6

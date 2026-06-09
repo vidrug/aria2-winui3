@@ -340,6 +340,15 @@
 
                     <!-- ===== BitTorrent ===== -->
                     <StackPanel x:Name="BtPanel" Spacing="4" Visibility="Collapsed">
+                        <!-- One-click privacy preset: force encryption + turn off the public peer-
+                             discovery mechanisms (DHT/PEX/LPD). Flips the individual toggles below so
+                             the change is visible; the engine restart applies it on leaving the page. -->
+                        <tk:SettingsCard loc:Localize.Uid="PrivacyModeCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE72E;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <Button loc:Localize.Uid="PrivacyModeButton" AutomationProperties.AutomationId="PrivacyModeButton" Style="{StaticResource AccentButtonStyle}" Click="OnPrivacyMode" />
+                        </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="ListenPortCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE945;" />
@@ -403,6 +412,12 @@
                                     </StackPanel>
                                 </RadioButton>
                                     </RadioButtons>
+                                </tk:SettingsCard>
+                                <tk:SettingsCard loc:Localize.Uid="ForceEncryptionCard">
+                                    <tk:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xE785;" />
+                                    </tk:SettingsCard.HeaderIcon>
+                                    <ToggleSwitch x:Name="ForceEncryptionToggle" loc:Localize.Uid="ForceEncryptionToggle" AutomationProperties.AutomationId="ForceEncryptionToggle" />
                                 </tk:SettingsCard>
                             </tk:SettingsExpander.Items>
                         </tk:SettingsExpander>

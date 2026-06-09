@@ -281,6 +281,7 @@ public sealed class Aria2Service
             ["bt-enable-lpd"] = s.EnableLpd ? "true" : "false",
             ["bt-require-crypto"] = s.RequireCrypto ? "true" : "false",
             ["bt-min-crypto-level"] = s.BtMinCryptoLevel,
+            ["bt-force-encryption"] = s.BtForceEncryption ? "true" : "false",
         };
         if (s.ListenPort > 0)
         {

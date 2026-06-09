@@ -309,4 +309,11 @@
   <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Kb</value></data>
   <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>MB</value></data>
   <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Mb</value></data>
+  <data name="PrivacyModeCard.Header" xml:space="preserve"><value>プライバシーモード</value></data>
+  <data name="PrivacyModeCard.Description" xml:space="preserve"><value>暗号化を必須にし、DHT、PEX、LPD を無効にして、転送内容をピアやプロバイダーに知られないようにします。完全な匿名性を得るには、さらに VPN または SOCKS5 プロキシ経由で通信してください。</value></data>
+  <data name="PrivacyModeButton.Content" xml:space="preserve"><value>プライバシーモードを有効にする</value></data>
+  <data name="ForceEncryptionCard.Header" xml:space="preserve"><value>暗号化を強制する</value></data>
+  <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>暗号化されていないピア接続を拒否します (bt-force-encryption)</value></data>
+  <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>オフ</value></data>
 </root>

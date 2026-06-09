@@ -309,4 +309,11 @@ einer pro Zeile</value></data>
   <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Kb</value></data>
   <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>MB</value></data>
   <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Mb</value></data>
+  <data name="PrivacyModeCard.Header" xml:space="preserve"><value>Datenschutzmodus</value></data>
+  <data name="PrivacyModeCard.Description" xml:space="preserve"><value>Erzwingt Verschlüsselung und deaktiviert DHT, PEX und LPD, damit weder Peers noch Ihr Internetanbieter erkennen können, was Sie übertragen. Für vollständige Anonymität leiten Sie den Datenverkehr zusätzlich über ein VPN oder einen SOCKS5-Proxy.</value></data>
+  <data name="PrivacyModeButton.Content" xml:space="preserve"><value>Datenschutzmodus aktivieren</value></data>
+  <data name="ForceEncryptionCard.Header" xml:space="preserve"><value>Verschlüsselung erzwingen</value></data>
+  <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Unverschlüsselte Peer-Verbindungen ablehnen (bt-force-encryption)</value></data>
+  <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>An</value></data>
+  <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Aus</value></data>
 </root>

@@ -309,4 +309,11 @@ her satıra bir tane</value></data>
   <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Kb</value></data>
   <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>MB</value></data>
   <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Mb</value></data>
+  <data name="PrivacyModeCard.Header" xml:space="preserve"><value>Gizlilik modu</value></data>
+  <data name="PrivacyModeCard.Description" xml:space="preserve"><value>Şifrelemeyi zorunlu kılar ve DHT, PEX ile LPD'yi kapatır; böylece eşler ve İSS'niz ne aktardığınızı anlayamaz. Tam anonimlik için trafiği ayrıca bir VPN veya SOCKS5 proxy üzerinden yönlendirin.</value></data>
+  <data name="PrivacyModeButton.Content" xml:space="preserve"><value>Gizlilik modunu etkinleştir</value></data>
+  <data name="ForceEncryptionCard.Header" xml:space="preserve"><value>Şifrelemeyi zorunlu kıl</value></data>
+  <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Şifrelenmemiş eş bağlantılarını reddet (bt-force-encryption)</value></data>
+  <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
 </root>

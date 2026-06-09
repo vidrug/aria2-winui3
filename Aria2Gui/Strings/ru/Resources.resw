@@ -309,4 +309,11 @@
   <data name="SeedValueRatioDesc" xml:space="preserve"><value>Прекратить раздачу, когда рейтинг отдачи/загрузки достигнет этого значения</value></data>
   <data name="SeedValueTimeHeader" xml:space="preserve"><value>Время раздачи (минуты)</value></data>
   <data name="SeedValueTimeDesc" xml:space="preserve"><value>Прекратить раздачу через столько минут</value></data>
+  <data name="PrivacyModeCard.Header" xml:space="preserve"><value>Режим конфиденциальности</value></data>
+  <data name="PrivacyModeCard.Description" xml:space="preserve"><value>Принудительно включить шифрование и отключить DHT, PEX и LPD, чтобы пиры и ваш провайдер не могли определить, что вы передаёте. Для полной анонимности также пускайте трафик через VPN или SOCKS5-прокси.</value></data>
+  <data name="PrivacyModeButton.Content" xml:space="preserve"><value>Включить режим конфиденциальности</value></data>
+  <data name="ForceEncryptionCard.Header" xml:space="preserve"><value>Принудительное шифрование</value></data>
+  <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Отклонять незашифрованные соединения с пирами (bt-force-encryption)</value></data>
+  <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>Вкл</value></data>
+  <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Выкл</value></data>
 </root>

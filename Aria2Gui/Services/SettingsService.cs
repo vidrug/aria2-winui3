@@ -73,6 +73,10 @@ public sealed class AppSettings
     /// </summary>
     public string BtMinCryptoLevel { get; set; } = "plain";
 
+    /// <summary>Refuse unencrypted peer connections (bt-force-encryption); implies require-crypto
+    /// + arc4. Set by the one-click privacy preset.</summary>
+    public bool BtForceEncryption { get; set; }
+
     /// <summary>Extra trackers appended to every torrent (one URI per line).</summary>
     public string ExtraTrackers { get; set; } = "";
 

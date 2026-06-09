@@ -309,4 +309,11 @@ un par ligne</value></data>
   <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Kb</value></data>
   <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>MB</value></data>
   <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Mb</value></data>
+  <data name="PrivacyModeCard.Header" xml:space="preserve"><value>Mode confidentialité</value></data>
+  <data name="PrivacyModeCard.Description" xml:space="preserve"><value>Force le chiffrement et désactive DHT, PEX et LPD afin que les pairs et votre fournisseur d'accès ne puissent pas savoir ce que vous transférez. Pour un anonymat complet, faites également transiter le trafic par un VPN ou un proxy SOCKS5.</value></data>
+  <data name="PrivacyModeButton.Content" xml:space="preserve"><value>Activer le mode confidentialité</value></data>
+  <data name="ForceEncryptionCard.Header" xml:space="preserve"><value>Forcer le chiffrement</value></data>
+  <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Refuser les connexions de pairs non chiffrées (bt-force-encryption)</value></data>
+  <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>Activé</value></data>
+  <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Désactivé</value></data>
 </root>

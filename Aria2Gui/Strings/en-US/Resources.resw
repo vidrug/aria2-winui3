@@ -309,4 +309,11 @@ one per line</value></data>
   <data name="SeedValueRatioDesc" xml:space="preserve"><value>Stop seeding once the upload/download ratio reaches this</value></data>
   <data name="SeedValueTimeHeader" xml:space="preserve"><value>Seeding time (minutes)</value></data>
   <data name="SeedValueTimeDesc" xml:space="preserve"><value>Stop seeding after this many minutes</value></data>
+  <data name="PrivacyModeCard.Header" xml:space="preserve"><value>Privacy mode</value></data>
+  <data name="PrivacyModeCard.Description" xml:space="preserve"><value>Force encryption and turn off DHT, PEX and LPD so peers and your ISP can't tell what you're transferring. For full anonymity also route traffic through a VPN or SOCKS5 proxy.</value></data>
+  <data name="PrivacyModeButton.Content" xml:space="preserve"><value>Enable privacy mode</value></data>
+  <data name="ForceEncryptionCard.Header" xml:space="preserve"><value>Force encryption</value></data>
+  <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Refuse unencrypted peer connections (bt-force-encryption)</value></data>
+  <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Off</value></data>
 </root>

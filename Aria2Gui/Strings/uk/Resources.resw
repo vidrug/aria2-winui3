@@ -309,4 +309,11 @@
   <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Кб</value></data>
   <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>МБ</value></data>
   <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Мб</value></data>
+  <data name="PrivacyModeCard.Header" xml:space="preserve"><value>Режим приватності</value></data>
+  <data name="PrivacyModeCard.Description" xml:space="preserve"><value>Примусово вмикає шифрування та вимикає DHT, PEX і LPD, щоб піри й ваш провайдер не могли визначити, що ви передаєте. Для повної анонімності також спрямуйте трафік через VPN або проксі SOCKS5.</value></data>
+  <data name="PrivacyModeButton.Content" xml:space="preserve"><value>Увімкнути режим приватності</value></data>
+  <data name="ForceEncryptionCard.Header" xml:space="preserve"><value>Примусове шифрування</value></data>
+  <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Відхиляти незашифровані з'єднання з пірами (bt-force-encryption)</value></data>
+  <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>Увімк</value></data>
+  <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Вимк</value></data>
 </root>
