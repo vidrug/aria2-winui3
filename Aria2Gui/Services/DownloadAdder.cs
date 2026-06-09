@@ -14,11 +14,16 @@ public sealed record AddUrisResult(int Added, int Skipped, List<string> Remainin
 /// <summary>Shared add-download logic used by the add dialog and drag&amp;drop.</summary>
 public static class DownloadAdder
 {
-    /// <summary>Splits free-form text into URI lines and queues each as a download.</summary>
-    public static async Task<AddUrisResult> AddUrisAsync(string text, string? directory = null)
+    /// <summary>Splits free-form text into URI lines and queues each as a download.
+    /// <paramref name="extraOptions"/> overlays per-download options (e.g. a preserved
+    /// file selection / speed caps on recheck) on top of the defaults.</summary>
+    public static async Task<AddUrisResult> AddUrisAsync(string text, string? directory = null, IReadOnlyDictionary<string, string>? extraOptions = null)
     {
         string[] lines = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var options = BuildOptions(directory, null);
+        if (extraOptions is not null)
+            foreach (var kv in extraOptions)
+                options[kv.Key] = kv.Value;
         var remaining = new List<string>();
         int added = 0;
         int skipped = 0;

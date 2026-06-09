@@ -163,8 +163,19 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     public long NumSeeders { get; private set; }
     public IReadOnlyList<Aria2File>? Files { get; private set; }
 
+    /// <summary>Share ratio (bytes uploaded ÷ bytes downloaded). 0 until something has been
+    /// downloaded. The single source of truth for both the Ratio column and ratio sorting, so
+    /// the number shown always matches the sort order.</summary>
+    public double Ratio => CompletedLength > 0 ? UploadLength / (double)CompletedLength : 0;
+
     private bool _isStopped;
     private string? _firstFilePath;
+
+    // O5/O8: skip the per-tick string formatting when nothing that feeds a bindable column
+    // changed since the last snapshot, so a quiet row costs only the raw field stores below.
+    private (string, bool, bool, bool, long, long, long, long, long, long, long, string?) _lastFormatSig;
+    private string _lastName = "";
+    private bool _formatted;
 
     /// <summary>True while <see cref="LoadSpeedLimitsAsync"/> seeds the flyout fields, so the
     /// resulting property changes don't immediately push the same value back to aria2.</summary>
@@ -207,7 +218,18 @@ public sealed partial class DownloadItemViewModel : ObservableObject
             ? NormalizePath(firstFile.Path)
             : null;
 
-        Name = d.GetDisplayName();
+        // O5/O8: bail out of the formatting below when no formatting input changed since the
+        // last tick. Category/IsError/etc. all derive from these fields too, so skipping is safe.
+        var sig = (d.Status, d.Seeder, isMetadata, d.IsTorrent, d.TotalLength, d.CompletedLength,
+            d.UploadLength, d.DownloadSpeed, d.UploadSpeed, d.Connections, d.NumSeeders, d.ErrorMessage);
+        string name = d.GetDisplayName();
+        if (_formatted && _lastFormatSig == sig && _lastName == name)
+            return;
+        _formatted = true;
+        _lastFormatSig = sig;
+        _lastName = name;
+
+        Name = name;
         Progress = d.TotalLength > 0
             ? d.CompletedLength * 100.0 / d.TotalLength
             : d.Status == Aria2Status.Complete ? 100 : 0;
@@ -243,8 +265,8 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         EtaText = active && !d.Seeder
             ? FormatUtils.FormatEta(d.TotalLength, d.CompletedLength, d.DownloadSpeed)
             : "—";
-        RatioText = IsTorrent && d.TotalLength > 0 && d.UploadLength > 0
-            ? (d.UploadLength / (double)d.TotalLength).ToString("0.00", CultureInfo.CurrentCulture)
+        RatioText = IsTorrent && Ratio > 0
+            ? Ratio.ToString("0.00", CultureInfo.CurrentCulture)
             : "—";
         UploadedText = d.UploadLength > 0 ? FormatUtils.FormatSize(d.UploadLength) : "—";
 
@@ -327,11 +349,22 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     public async Task RemoveWithFilesNoConfirmAsync()
     {
         var files = Files;
+        string? root = Directory;
         await RemoveAsync();
 
-        // Best-effort disk cleanup: listed files + aria2 control files.
         if (files is null)
             return;
+        // B4: delete off the UI thread — a multi-file torrent or a slow/network disk would
+        // otherwise freeze the window while File.Delete runs synchronously per file.
+        await Task.Run(() => DeleteFilesAndEmptyDirs(files, root));
+    }
+
+    /// <summary>Best-effort disk cleanup: removes each listed file + its aria2 control file,
+    /// then the now-empty container folders this torrent created (e.g. dir/&lt;torrent name&gt;/…) —
+    /// walking up to, but never including, the shared download directory.</summary>
+    private static void DeleteFilesAndEmptyDirs(IReadOnlyList<Aria2File> files, string? root)
+    {
+        var dirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var file in files)
         {
             try
@@ -341,10 +374,37 @@ public sealed partial class DownloadItemViewModel : ObservableObject
                 string control = file.Path + ".aria2";
                 if (File.Exists(control))
                     File.Delete(control);
+                if (Path.IsPathRooted(file.Path) && Path.GetDirectoryName(file.Path) is { Length: > 0 } d)
+                    dirs.Add(d);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
             {
                 // Locked/protected file — leave it; the list entry is already gone.
+            }
+        }
+
+        // B16: prune empty folders. Without a known download root we have no safe boundary,
+        // so we never touch directories in that case.
+        string? stop = NormalizePath(root);
+        if (string.IsNullOrEmpty(stop))
+            return;
+        string boundary = stop + Path.DirectorySeparatorChar;
+        foreach (var start in dirs.OrderByDescending(d => d.Length))
+        {
+            string? dir = NormalizePath(start);
+            while (!string.IsNullOrEmpty(dir) && dir.StartsWith(boundary, StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    if (!System.IO.Directory.Exists(dir) || System.IO.Directory.EnumerateFileSystemEntries(dir).Any())
+                        break;
+                    System.IO.Directory.Delete(dir);
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+                {
+                    break;
+                }
+                dir = NormalizePath(Path.GetDirectoryName(dir));
             }
         }
     }
@@ -380,6 +440,20 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         try
         {
             string magnet = $"magnet:?xt=urn:btih:{hash}&dn={Uri.EscapeDataString(Name)}";
+
+            // B6: carry over the per-download options that a re-add would otherwise drop —
+            // the file selection and the speed caps. Read them BEFORE removing the entry.
+            // Auto-recovery routes through this same command, so it benefits too.
+            var preserve = new Dictionary<string, string>(StringComparer.Ordinal);
+            try
+            {
+                var opts = await _service.Rpc.GetOptionAsync(Gid);
+                foreach (var key in new[] { "select-file", "max-download-limit", "max-upload-limit" })
+                    if (opts.TryGetValue(key, out var v) && !string.IsNullOrEmpty(v) && v != "0")
+                        preserve[key] = v;
+            }
+            catch (Aria2RpcException) { /* options gone with the entry — re-add without them */ }
+
             // Force-stop, then keep purging the result until aria2's BitTorrent engine has fully
             // released this info hash. Re-adding the magnet before that makes aria2 spawn a second
             // entry that immediately errors with "already downloading" — the duplicate the user saw.
@@ -394,7 +468,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
                     break;
                 await Task.Delay(200);
             }
-            await DownloadAdder.AddUrisAsync(magnet, Directory);
+            await DownloadAdder.AddUrisAsync(magnet, Directory, preserve);
         }
         catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
         {

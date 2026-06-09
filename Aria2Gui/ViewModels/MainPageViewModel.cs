@@ -441,7 +441,7 @@ public sealed partial class MainPageViewModel : ObservableObject
             "down" => a.DownloadSpeed.CompareTo(b.DownloadSpeed),
             "up" => a.UploadSpeed.CompareTo(b.UploadSpeed),
             "eta" => EtaSeconds(a).CompareTo(EtaSeconds(b)),
-            "ratio" => Ratio(a).CompareTo(Ratio(b)),
+            "ratio" => a.Ratio.CompareTo(b.Ratio),
             "uploaded" => a.UploadLength.CompareTo(b.UploadLength),
             _ => 0,
         };
@@ -457,9 +457,6 @@ public sealed partial class MainPageViewModel : ObservableObject
         long remaining = d.TotalLength - d.CompletedLength;
         return d.DownloadSpeed > 0 && remaining > 0 ? remaining / d.DownloadSpeed : long.MaxValue;
     }
-
-    private static double Ratio(DownloadItemViewModel d) =>
-        d.CompletedLength > 0 ? d.UploadLength / (double)d.CompletedLength : 0;
 
     private void UpdateFilterCounts()
     {

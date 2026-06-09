@@ -141,6 +141,19 @@ public sealed class Aria2RpcClient : IAsyncDisposable
             WriteOptions(w, options);
         }, ct);
 
+    /// <summary>Reads all of one download's current options (aria2.getOption) as a string map.
+    /// Used to carry per-download options across a recheck re-add.</summary>
+    public async Task<Dictionary<string, string>> GetOptionAsync(string gid, CancellationToken ct = default)
+    {
+        var result = await InvokeAsync("aria2.getOption", w => w.WriteStringValue(gid), ct).ConfigureAwait(false);
+        var map = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (result.ValueKind == JsonValueKind.Object)
+            foreach (var prop in result.EnumerateObject())
+                if (prop.Value.ValueKind == JsonValueKind.String && prop.Value.GetString() is { } s)
+                    map[prop.Name] = s;
+        return map;
+    }
+
     /// <summary>Reads one download's current per-download speed limits as aria2 speed strings
     /// ("0" = no limit). Used to pre-fill the per-download speed-limit flyout.</summary>
     public async Task<(string down, string up)> GetSpeedLimitsAsync(string gid, CancellationToken ct = default)
