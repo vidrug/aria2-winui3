@@ -222,25 +222,6 @@
                         <AppBarButton.Flyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem
-                                    loc:Localize.Uid="MenuResumeAll"
-                                    Command="{x:Bind ViewModel.ResumeAllCommand}"
-                                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                                    AutomationProperties.AutomationId="ResumeAllButton">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon Glyph="&#xE768;" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                                <MenuFlyoutItem
-                                    loc:Localize.Uid="MenuPauseAll"
-                                    Command="{x:Bind ViewModel.PauseAllCommand}"
-                                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                                    AutomationProperties.AutomationId="PauseAllButton">
-                                    <MenuFlyoutItem.Icon>
-                                        <FontIcon Glyph="&#xE769;" />
-                                    </MenuFlyoutItem.Icon>
-                                </MenuFlyoutItem>
-                                <MenuFlyoutSeparator />
-                                <MenuFlyoutItem
                                     loc:Localize.Uid="MenuClearStopped"
                                     Command="{x:Bind ViewModel.ClearStoppedCommand}"
                                     IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
