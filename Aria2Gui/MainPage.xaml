@@ -103,11 +103,11 @@
              its DataContext to the clicked DownloadItemViewModel). The slider and the number box in
              each row both bind to the same VM property, so they stay linked; 0 = no limit. -->
         <Flyout x:Key="SpeedLimitFlyout">
-            <StackPanel Width="324" Spacing="14">
+            <StackPanel Width="324" Spacing="16">
                 <TextBlock loc:Localize.Uid="SpeedLimitTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                <StackPanel Spacing="2">
+                <StackPanel Spacing="4">
                     <TextBlock loc:Localize.Uid="SpeedLimitDownLabel" Style="{StaticResource DetailLabelStyle}" />
-                    <Grid ColumnSpacing="10">
+                    <Grid ColumnSpacing="8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -124,9 +124,9 @@
                         </ComboBox>
                     </Grid>
                 </StackPanel>
-                <StackPanel Spacing="2">
+                <StackPanel Spacing="4">
                     <TextBlock loc:Localize.Uid="SpeedLimitUpLabel" Style="{StaticResource DetailLabelStyle}" />
-                    <Grid ColumnSpacing="10">
+                    <Grid ColumnSpacing="8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />

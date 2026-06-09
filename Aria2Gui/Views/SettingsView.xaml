@@ -129,7 +129,7 @@
                                 <FontIcon Glyph="&#xE896;" />
                             </tk:SettingsCard.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                <NumberBox x:Name="DownLimitBox" AutomationProperties.AutomationId="DownLimitBox" Minimum="0" MinWidth="120" SmallChange="1" SpinButtonPlacementMode="Compact" />
+                                <NumberBox x:Name="DownLimitBox" AutomationProperties.AutomationId="DownLimitBox" Minimum="0" MinWidth="120" SmallChange="1" SpinButtonPlacementMode="Compact" VerticalAlignment="Center" />
                                 <ComboBox x:Name="DownLimitUnitBox" AutomationProperties.AutomationId="DownLimitUnitBox" MinWidth="72" VerticalAlignment="Center" SelectedValuePath="Tag">
                                     <ComboBoxItem loc:Localize.Uid="SpeedUnitByte" Tag="B" />
                                     <ComboBoxItem loc:Localize.Uid="SpeedUnitKByte" Tag="KB" />
@@ -144,7 +144,7 @@
                                 <FontIcon Glyph="&#xE898;" />
                             </tk:SettingsCard.HeaderIcon>
                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                <NumberBox x:Name="UpLimitBox" AutomationProperties.AutomationId="UpLimitBox" Minimum="0" MinWidth="120" SmallChange="1" SpinButtonPlacementMode="Compact" />
+                                <NumberBox x:Name="UpLimitBox" AutomationProperties.AutomationId="UpLimitBox" Minimum="0" MinWidth="120" SmallChange="1" SpinButtonPlacementMode="Compact" VerticalAlignment="Center" />
                                 <ComboBox x:Name="UpLimitUnitBox" AutomationProperties.AutomationId="UpLimitUnitBox" MinWidth="72" VerticalAlignment="Center" SelectedValuePath="Tag">
                                     <ComboBoxItem loc:Localize.Uid="SpeedUnitByte" Tag="B" />
                                     <ComboBoxItem loc:Localize.Uid="SpeedUnitKByte" Tag="KB" />
