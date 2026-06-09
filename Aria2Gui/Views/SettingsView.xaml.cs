@@ -82,10 +82,8 @@ public sealed partial class SettingsView : UserControl
             var s = Aria2Service.Instance.Settings;
             _entrySettings = s;
             DirText.Text = s.DownloadDirectory;
-            PopulateLimitPresets(DownLimitBox);
-            PopulateLimitPresets(UpLimitBox);
-            DownLimitBox.Text = FormatLimit(SpeedToMegabytes(s.MaxDownloadLimit));
-            UpLimitBox.Text = FormatLimit(SpeedToMegabytes(s.MaxUploadLimit));
+            SetLimitCombo(DownLimitBox, SpeedToMegabytes(s.MaxDownloadLimit));
+            SetLimitCombo(UpLimitBox, SpeedToMegabytes(s.MaxUploadLimit));
             ConcurrentBox.Value = s.MaxConcurrentDownloads;
             ConnectionsBox.Value = s.MaxConnectionsPerServer;
             ThemeBox.SelectedIndex = s.Theme switch { "Light" => 1, "Dark" => 2, _ => 0 };
@@ -392,13 +390,27 @@ public sealed partial class SettingsView : UserControl
     // Preset scale (MB/s) for the editable download/upload limit combo boxes. 0 = unlimited.
     private static readonly double[] LimitPresetsMb = { 0, 1, 2, 5, 10, 20, 50, 100 };
 
-    /// <summary>Fills an editable limit combo box with its preset scale (once).</summary>
-    private static void PopulateLimitPresets(ComboBox box)
+    /// <summary>Fills an editable limit combo with the preset scale and selects the saved value.
+    /// Selection (not <see cref="ComboBox.Text"/>) is used so the value shows even on first open:
+    /// setting <c>Text</c> directly is silently dropped while the combo is still collapsed/unloaded
+    /// and its edit box has no template, which left the field blank. A custom value outside the
+    /// preset scale is appended so it too can be selected and displayed.</summary>
+    private static void SetLimitCombo(ComboBox box, double megabytes)
     {
-        if (box.Items.Count > 0)
-            return;
-        foreach (var mb in LimitPresetsMb)
-            box.Items.Add(FormatLimit(mb));
+        box.Items.Clear();
+        int selected = 0;
+        for (int i = 0; i < LimitPresetsMb.Length; i++)
+        {
+            box.Items.Add(FormatLimit(LimitPresetsMb[i]));
+            if (LimitPresetsMb[i] == megabytes)
+                selected = i;
+        }
+        if (megabytes > 0 && !Array.Exists(LimitPresetsMb, p => p == megabytes))
+        {
+            box.Items.Add(FormatLimit(megabytes));
+            selected = box.Items.Count - 1;
+        }
+        box.SelectedIndex = selected;
     }
 
     /// <summary>Formats a MB/s value for display: 0 → localized "Unlimited", else "N MB/s".</summary>
