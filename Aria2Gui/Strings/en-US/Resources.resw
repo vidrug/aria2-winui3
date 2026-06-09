@@ -168,6 +168,7 @@ one per line</value></data>
   <data name="DragCaptionAddToDownloads" xml:space="preserve"><value>Add to downloads</value></data>
   <data name="ErrorOpenFolderPicker" xml:space="preserve"><value>Couldn't open the folder picker: {0}</value></data>
   <data name="SettingsErrorSave" xml:space="preserve"><value>Couldn't save: {0}</value></data>
+  <data name="SettingsErrorBadFormat" xml:space="preserve"><value>Invalid format — use a size like 20M, 512K, or 0.</value></data>
   <data name="AddWindowTitle" xml:space="preserve"><value>New download</value></data>
   <data name="AddErrorReadTorrent" xml:space="preserve"><value>Couldn't read the torrent file: {0}</value></data>
   <data name="AddErrorNoSource" xml:space="preserve"><value>Enter at least one link or choose a .torrent file.</value></data>

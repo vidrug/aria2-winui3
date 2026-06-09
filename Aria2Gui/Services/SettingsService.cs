@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -192,7 +194,9 @@ public static class SettingsService
         settings.MaxConcurrentDownloads = Math.Clamp(settings.MaxConcurrentDownloads, 1, 50);
         settings.MaxConnectionsPerServer = Math.Clamp(settings.MaxConnectionsPerServer, 1, 16);
         settings.BtMaxPeers = Math.Clamp(settings.BtMaxPeers, 0, 1000);
-        settings.SeedRatio = double.IsFinite(settings.SeedRatio) ? Math.Clamp(settings.SeedRatio, 0, 1000) : 1.0;
+        // Keep the stored ceiling in lock-step with the editor's NumberBox (Max=100), or a
+        // hand-edited 300 gets coerced down to 100 and silently re-saved as 100 (B8).
+        settings.SeedRatio = double.IsFinite(settings.SeedRatio) ? Math.Clamp(settings.SeedRatio, 0, 100) : 1.0;
         settings.MaxDownloadLimit = SanitizeSpeed(settings.MaxDownloadLimit);
         settings.MaxUploadLimit = SanitizeSpeed(settings.MaxUploadLimit);
         settings.MaxDownloadLimitUnit = Helpers.SpeedUnit.Sanitize(settings.MaxDownloadLimitUnit);
@@ -209,8 +213,10 @@ public static class SettingsService
         if (settings.BtMinCryptoLevel is not ("plain" or "arc4"))
             settings.BtMinCryptoLevel = "plain";
         settings.LowestSpeedLimit = SanitizeSpeed(settings.LowestSpeedLimit);
-        settings.BtRequestPeerSpeedLimit = SanitizeSpeed(settings.BtRequestPeerSpeedLimit);
-        settings.DiskCache = SanitizeSpeed(settings.DiskCache); // size shares the speed grammar
+        // For these, a literal "0" is a meaningful value ("request all peers" / "cache off"),
+        // so only a *malformed* value falls back to the default — it isn't silently turned off (B20).
+        settings.BtRequestPeerSpeedLimit = SanitizeSpeed(settings.BtRequestPeerSpeedLimit, "50K");
+        settings.DiskCache = SanitizeSpeed(settings.DiskCache, "16M"); // size shares the speed grammar
         settings.BtStopTimeout = Math.Clamp(settings.BtStopTimeout, 0, 86400);
         settings.SeedTimeMinutes = Math.Clamp(settings.SeedTimeMinutes, 1, 525600);
         if (settings.MinTlsVersion is not ("TLSv1.1" or "TLSv1.2" or "TLSv1.3"))
@@ -220,43 +226,106 @@ public static class SettingsService
             settings.SeedMode = settings.SeedRatio <= 0 ? "off" : "ratio";
         if (!SupportedLanguages.Contains(settings.Language))
             settings.Language = "";
+
+        // B2: secrets are stored DPAPI-encrypted; bring them back to plaintext for the UI/engine.
+        settings.HttpPasswd = Unprotect(settings.HttpPasswd);
+        settings.AllProxyPasswd = Unprotect(settings.AllProxyPasswd);
         return settings;
     }
 
-    /// <summary>aria2 size format "&lt;digits&gt;[K|M]"; falls back to <paramref name="fallback"/>.</summary>
+    /// <summary>aria2 size format "&lt;digits&gt;[K|M]"; "0" and malformed both fall back
+    /// to <paramref name="fallback"/> (a size of 0 is not meaningful here, e.g. min-split-size).</summary>
     private static string SanitizeSize(string value, string fallback)
     {
-        string s = SanitizeSpeed(value);
+        string s = SanitizeSpeed(value, fallback);
         return s == "0" ? fallback : s;
     }
 
-    /// <summary>aria2 accepts only "&lt;digits&gt;[K|M]" for speed limits.</summary>
-    private static string SanitizeSpeed(string value)
+    /// <summary>aria2 accepts only "&lt;digits&gt;[K|M]" for speed limits. A literal "0" (and empty)
+    /// is preserved as "0"; only a non-empty *malformed* value yields <paramref name="fallback"/>,
+    /// so we never conflate "off" with "couldn't parse".</summary>
+    private static string SanitizeSpeed(string value, string fallback = "0")
     {
         if (string.IsNullOrWhiteSpace(value))
             return "0";
         string trimmed = value.Trim();
+        if (trimmed == "0")
+            return "0";
         int digits = trimmed.Length;
         char suffix = char.ToUpperInvariant(trimmed[^1]);
         if (suffix is 'K' or 'M')
             digits--;
-        if (digits == 0)
-            return "0";
-        for (int i = 0; i < digits; i++)
-        {
+        bool ok = digits > 0;
+        for (int i = 0; ok && i < digits; i++)
             if (!char.IsAsciiDigit(trimmed[i]))
-                return "0";
+                ok = false;
+        return ok ? trimmed : fallback;
+    }
+
+    private const string DpapiPrefix = "dpapi:";
+
+    /// <summary>DPAPI-encrypts a secret for at-rest storage (current Windows user). Returns ""
+    /// for empty input, and — if encryption itself fails — the plaintext, so we never drop the value.
+    /// Note: this ties settings.json secrets to this user/machine (no cross-machine copy).</summary>
+    private static string Protect(string plain)
+    {
+        if (string.IsNullOrEmpty(plain))
+            return "";
+        try
+        {
+            byte[] enc = ProtectedData.Protect(Encoding.UTF8.GetBytes(plain), null, DataProtectionScope.CurrentUser);
+            return DpapiPrefix + Convert.ToBase64String(enc);
         }
-        return trimmed;
+        catch (CryptographicException)
+        {
+            return plain;
+        }
+    }
+
+    /// <summary>Reverses <see cref="Protect"/>. Legacy plaintext (no prefix) is accepted as-is and
+    /// gets re-encrypted on the next Save; an undecryptable blob (different user/machine) yields "".</summary>
+    private static string Unprotect(string stored)
+    {
+        if (string.IsNullOrEmpty(stored))
+            return "";
+        if (!stored.StartsWith(DpapiPrefix, StringComparison.Ordinal))
+            return stored;
+        try
+        {
+            byte[] enc = Convert.FromBase64String(stored[DpapiPrefix.Length..]);
+            return Encoding.UTF8.GetString(ProtectedData.Unprotect(enc, null, DataProtectionScope.CurrentUser));
+        }
+        catch (Exception ex) when (ex is CryptographicException or FormatException)
+        {
+            return "";
+        }
     }
 
     public static void Save(AppSettings settings)
     {
-        // Atomic write: never leave a torn settings.json behind.
-        string tmp = AppPaths.SettingsFile + ".tmp";
-        File.WriteAllText(tmp, JsonSerializer.Serialize(settings, SettingsJsonContext.Default.AppSettings));
-        File.Move(tmp, AppPaths.SettingsFile, overwrite: true);
+        // B2: encrypt secrets at rest. Swap to ciphertext only for the serialize+write, then
+        // restore the live plaintext so callers and two-way bindings are unaffected.
+        string http = settings.HttpPasswd, proxy = settings.AllProxyPasswd;
+        settings.HttpPasswd = Protect(http);
+        settings.AllProxyPasswd = Protect(proxy);
+        try
+        {
+            // Atomic write: never leave a torn settings.json behind.
+            string tmp = AppPaths.SettingsFile + ".tmp";
+            File.WriteAllText(tmp, JsonSerializer.Serialize(settings, SettingsJsonContext.Default.AppSettings));
+            File.Move(tmp, AppPaths.SettingsFile, overwrite: true);
+        }
+        finally
+        {
+            settings.HttpPasswd = http;
+            settings.AllProxyPasswd = proxy;
+        }
     }
+
+    /// <summary>Stable JSON form of the settings, used to skip a redundant apply/persist when a
+    /// blur or toggle changed nothing (O6). Secrets stay plaintext here (in-memory comparison only).</summary>
+    public static string Snapshot(AppSettings settings) =>
+        JsonSerializer.Serialize(settings, SettingsJsonContext.Default.AppSettings);
 }
 
 [JsonSourceGenerationOptions(WriteIndented = true)]

@@ -33,6 +33,10 @@ public sealed partial class SettingsView : UserControl
     /// <see cref="Aria2Service.ApplySettingsAsync"/>, so this reference stays a stable snapshot.</summary>
     private AppSettings _entrySettings = new();
 
+    /// <summary>JSON of the last successfully-applied settings, so a blur/toggle that changed
+    /// nothing skips the RPC round-trip + disk write (O6).</summary>
+    private string _appliedSnapshot = "";
+
     public SettingsView()
     {
         InitializeComponent();
@@ -83,6 +87,7 @@ public sealed partial class SettingsView : UserControl
         {
             var s = Aria2Service.Instance.Settings;
             _entrySettings = s;
+            _appliedSnapshot = SettingsService.Snapshot(s);
             DirText.Text = s.DownloadDirectory;
             LoadLimit(DownLimitBox, DownLimitUnitBox, s.MaxDownloadLimit, s.MaxDownloadLimitUnit);
             LoadLimit(UpLimitBox, UpLimitUnitBox, s.MaxUploadLimit, s.MaxUploadLimitUnit);
@@ -157,10 +162,18 @@ public sealed partial class SettingsView : UserControl
     {
         if (_loading)
             return;
+        // B21: never push a malformed size/speed string to aria2 — flag the field and stop here.
+        if (!ValidateFormatFields())
+            return;
         var s = BuildSettings();
+        // O6: a blur/toggle that changed nothing skips the RPC round-trip and the disk write.
+        string snap = SettingsService.Snapshot(s);
+        if (snap == _appliedSnapshot)
+            return;
         try
         {
             await Aria2Service.Instance.ApplySettingsAsync(s);
+            _appliedSnapshot = snap;
             ErrorBar.IsOpen = false;
         }
         catch (Exception ex)
@@ -171,6 +184,38 @@ public sealed partial class SettingsView : UserControl
         // even if the live push failed (the setting is already persisted by ApplySettingsAsync).
         Helpers.ThemeHelper.Apply(s.Theme);
         UpdateLanguageRestartHint();
+    }
+
+    /// <summary>Validates the aria2 size/speed text fields against the "&lt;digits&gt;[K|M]" grammar
+    /// (empty or "0" are allowed). Invalid fields get an inline <see cref="TextBox.Description"/>
+    /// error and block the apply, instead of the engine rejecting them with a generic message (B21).</summary>
+    private bool ValidateFormatFields()
+    {
+        bool allValid = true;
+        foreach (var box in new[] { MinSplitSizeBox, LowestSpeedLimitBox, DiskCacheBox, BtPeerSpeedBox })
+        {
+            bool valid = IsAriaSizeFormat(box.Text);
+            box.Description = valid ? null : Helpers.L.Get("SettingsErrorBadFormat");
+            allValid &= valid;
+        }
+        return allValid;
+    }
+
+    private static bool IsAriaSizeFormat(string? text)
+    {
+        string t = (text ?? "").Trim();
+        if (t.Length == 0 || t == "0")
+            return true;
+        int digits = t.Length;
+        char suffix = char.ToUpperInvariant(t[^1]);
+        if (suffix is 'K' or 'M')
+            digits--;
+        if (digits == 0)
+            return false;
+        for (int i = 0; i < digits; i++)
+            if (!char.IsAsciiDigit(t[i]))
+                return false;
+        return true;
     }
 
     /// <summary>Back press: commit any still-focused field, then relaunch the app (language
