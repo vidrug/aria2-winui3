@@ -67,6 +67,7 @@ public sealed class TrayIconManager : IDisposable
 
         // Hide-to-tray when the window is minimised.
         _appWindow.Changed += OnAppWindowChanged;
+        UpdateToggleText(); // label for the window's current (shown) state at startup
     }
 
     /// <summary>Loads the app icon at a tray-appropriate size, picking the closest frame
@@ -113,6 +114,9 @@ public sealed class TrayIconManager : IDisposable
         // the brief Minimized moment while we restore.
         if (!_restoring && sender.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized })
             _appWindow.Hide();
+        // Keep the toggle's label in sync with visibility even if the menu's Opening
+        // event doesn't fire under H.NotifyIcon.
+        UpdateToggleText();
     }
 
     /// <summary>Labels the toggle item for the window's current visibility.</summary>
