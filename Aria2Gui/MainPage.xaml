@@ -203,16 +203,6 @@
                             <KeyboardAccelerator Key="Delete" />
                         </AppBarButton.KeyboardAccelerators>
                     </AppBarButton>
-                    <AppBarSeparator />
-                    <AppBarButton
-                        Command="{x:Bind ViewModel.ToggleAllCommand}"
-                        IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
-                        Label="{x:Bind local:MainPage.ToggleAllLabel(ViewModel.IsAnyActive), Mode=OneWay}"
-                        AutomationProperties.AutomationId="ToggleAllButton">
-                        <AppBarButton.Icon>
-                            <FontIcon Glyph="{x:Bind local:MainPage.ToggleAllGlyph(ViewModel.IsAnyActive), Mode=OneWay}" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
                     <AppBarButton
                         loc:Localize.Uid="ToolbarMoreButton"
                         AutomationProperties.AutomationId="MoreButton">
@@ -221,6 +211,25 @@
                         </AppBarButton.Icon>
                         <AppBarButton.Flyout>
                             <MenuFlyout>
+                                <MenuFlyoutItem
+                                    loc:Localize.Uid="MenuResumeAll"
+                                    Command="{x:Bind ViewModel.ResumeAllCommand}"
+                                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                                    AutomationProperties.AutomationId="ResumeAllButton">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE768;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    loc:Localize.Uid="MenuPauseAll"
+                                    Command="{x:Bind ViewModel.PauseAllCommand}"
+                                    IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                                    AutomationProperties.AutomationId="PauseAllButton">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE769;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutSeparator />
                                 <MenuFlyoutItem
                                     loc:Localize.Uid="MenuClearStopped"
                                     Command="{x:Bind ViewModel.ClearStoppedCommand}"

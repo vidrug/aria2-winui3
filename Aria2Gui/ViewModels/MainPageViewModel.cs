@@ -824,13 +824,6 @@ public sealed partial class MainPageViewModel : ObservableObject
     [RelayCommand]
     private Task ResumeAllAsync() => GuardedRpcAsync(() => _service.Rpc.UnpauseAllAsync());
 
-    /// <summary>Toolbar toggle: pause every download if anything is running, otherwise
-    /// resume them all. The button's label/icon follow <see cref="IsAnyActive"/>.</summary>
-    [RelayCommand]
-    private Task ToggleAllAsync() => IsAnyActive
-        ? GuardedRpcAsync(() => _service.Rpc.PauseAllAsync())
-        : GuardedRpcAsync(() => _service.Rpc.UnpauseAllAsync());
-
     [RelayCommand]
     private async Task ClearStoppedAsync()
     {
