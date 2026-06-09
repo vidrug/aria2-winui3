@@ -33,13 +33,11 @@ public static class TorrentParser
                 if (fileObj is not Dictionary<string, object> file)
                     throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrBadFileList"));
                 long length = file.TryGetValue("length", out var l) && l is long len ? len : 0;
-                object? pathObj = file.TryGetValue("path.utf-8", out var p8) ? p8
-                    : file.TryGetValue("path", out var p) ? p : null;
-                string[] segments = (pathObj as List<object>)?
-                    .OfType<byte[]>()
-                    .Select(b => Encoding.UTF8.GetString(b))
-                    .Where(s => s.Length > 0)
-                    .ToArray() ?? [];
+                // Prefer the UTF-8 path, but fall back to the legacy "path" key when the
+                // UTF-8 variant is present-but-empty (otherwise we'd show a bogus "fileN").
+                string[] segments = ExtractPathSegments(file, "path.utf-8");
+                if (segments.Length == 0)
+                    segments = ExtractPathSegments(file, "path");
                 if (segments.Length == 0)
                     segments = [$"file{index}"];
                 entries.Add(new TorrentFileEntry(index, segments, length));
@@ -55,9 +53,23 @@ public static class TorrentParser
     private static string? GetUtf8(Dictionary<string, object> dict, string key) =>
         dict.TryGetValue(key, out var value) && value is byte[] bytes ? Encoding.UTF8.GetString(bytes) : null;
 
+    private static string[] ExtractPathSegments(Dictionary<string, object> file, string key) =>
+        file.TryGetValue(key, out var obj) && obj is List<object> list
+            ? list.OfType<byte[]>()
+                .Select(b => Encoding.UTF8.GetString(b))
+                .Where(s => s.Length > 0)
+                .ToArray()
+            : [];
+
+    // A pathologically nested .torrent (l l l l …) would otherwise recurse until the
+    // stack overflows — an uncatchable crash. Real torrents nest only a few levels deep.
+    private const int MaxParseDepth = 100;
+
     /// <summary>Bencode: i…e = int, l…e = list, d…e = dict, &lt;len&gt;:&lt;bytes&gt; = string.</summary>
-    private static object ParseValue(byte[] data, ref int pos)
+    private static object ParseValue(byte[] data, ref int pos, int depth = 0)
     {
+        if (depth > MaxParseDepth)
+            throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrInvalidFile"));
         if (pos >= data.Length)
             throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrUnexpectedEnd"));
         byte marker = data[pos];
@@ -68,7 +80,8 @@ public static class TorrentParser
             int end = Array.IndexOf(data, (byte)'e', pos);
             if (end < 0)
                 throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrUnclosedInt"));
-            long value = long.Parse(Encoding.ASCII.GetString(data, pos, end - pos));
+            if (!long.TryParse(Encoding.ASCII.GetString(data, pos, end - pos), out long value))
+                throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrUnclosedInt"));
             pos = end + 1;
             return value;
         }
@@ -78,7 +91,7 @@ public static class TorrentParser
             pos++;
             var list = new List<object>();
             while (pos < data.Length && data[pos] != (byte)'e')
-                list.Add(ParseValue(data, ref pos));
+                list.Add(ParseValue(data, ref pos, depth + 1));
             pos++; // 'e'
             return list;
         }
@@ -89,9 +102,9 @@ public static class TorrentParser
             var dict = new Dictionary<string, object>();
             while (pos < data.Length && data[pos] != (byte)'e')
             {
-                if (ParseValue(data, ref pos) is not byte[] keyBytes)
+                if (ParseValue(data, ref pos, depth + 1) is not byte[] keyBytes)
                     throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrKeyNotString"));
-                dict[Encoding.UTF8.GetString(keyBytes)] = ParseValue(data, ref pos);
+                dict[Encoding.UTF8.GetString(keyBytes)] = ParseValue(data, ref pos, depth + 1);
             }
             pos++; // 'e'
             return dict;
@@ -102,7 +115,8 @@ public static class TorrentParser
             int colon = Array.IndexOf(data, (byte)':', pos);
             if (colon < 0)
                 throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrBadString"));
-            int length = int.Parse(Encoding.ASCII.GetString(data, pos, colon - pos));
+            if (!int.TryParse(Encoding.ASCII.GetString(data, pos, colon - pos), out int length))
+                throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrBadString"));
             if (length < 0 || colon + 1 + length > data.Length)
                 throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrStringOOB"));
             byte[] bytes = new byte[length];
