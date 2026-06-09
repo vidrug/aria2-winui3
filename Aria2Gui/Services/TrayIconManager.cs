@@ -21,6 +21,7 @@ public sealed class TrayIconManager : IDisposable
     private TaskbarIcon? _icon;
     private MainPageViewModel? _viewModel;
     private MenuFlyoutItem? _toggleItem;
+    private MenuFlyoutItem? _pauseAllItem;
     private bool _restoring;
 
     public TrayIconManager(Window window, AppWindow appWindow)
@@ -42,10 +43,12 @@ public sealed class TrayIconManager : IDisposable
             Command = new RelayCommandShim(ToggleWindow),
         };
 
-        var pauseAll = new MenuFlyoutItem
+        // Pause-all / resume-all toggle, mirroring the toolbar button: label + action both
+        // follow whether anything is running.
+        _pauseAllItem = new MenuFlyoutItem
         {
-            Text = L.Get("TrayPauseAll"),
-            Command = new RelayCommandShim(() => _ = Aria2.Aria2Service.Instance.Rpc.PauseAllAsync()),
+            Text = L.Get("ToolbarPauseAll"),
+            Command = new RelayCommandShim(ToggleAllDownloads),
         };
 
         var quit = new MenuFlyoutItem
@@ -56,7 +59,7 @@ public sealed class TrayIconManager : IDisposable
 
         var menu = new MenuFlyout();
         menu.Items.Add(_toggleItem);
-        menu.Items.Add(pauseAll);
+        menu.Items.Add(_pauseAllItem);
         menu.Items.Add(new MenuFlyoutSeparator());
         menu.Items.Add(quit);
         // Re-label the toggle for the window's current state each time the menu opens.
@@ -102,12 +105,32 @@ public sealed class TrayIconManager : IDisposable
         _viewModel = viewModel;
         viewModel.PropertyChanged += OnViewModelPropertyChanged;
         UpdateTooltip();
+        UpdatePauseAllText();
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(MainPageViewModel.GlobalSpeedText) or nameof(MainPageViewModel.CountsText))
             App.DispatcherQueue.TryEnqueue(UpdateTooltip);
+        else if (e.PropertyName == nameof(MainPageViewModel.IsAnyActive))
+            App.DispatcherQueue.TryEnqueue(UpdatePauseAllText);
+    }
+
+    /// <summary>Labels the tray pause/resume-all toggle for the current run state.</summary>
+    private void UpdatePauseAllText()
+    {
+        if (_pauseAllItem is not null)
+            _pauseAllItem.Text = _viewModel?.IsAnyActive == true ? L.Get("ToolbarPauseAll") : L.Get("ToolbarResumeAll");
+    }
+
+    /// <summary>Tray toggle: pause every download if anything is running, otherwise resume all.</summary>
+    private void ToggleAllDownloads()
+    {
+        var rpc = Aria2.Aria2Service.Instance.Rpc;
+        if (_viewModel?.IsAnyActive == true)
+            _ = rpc.PauseAllAsync();
+        else
+            _ = rpc.UnpauseAllAsync();
     }
 
     private void UpdateTooltip()
