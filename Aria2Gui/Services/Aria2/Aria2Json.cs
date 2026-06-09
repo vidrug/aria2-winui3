@@ -25,8 +25,12 @@ public sealed class Aria2BoolConverter : JsonConverter<bool>
     public override bool Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         reader.TokenType switch
         {
-            JsonTokenType.String => string.Equals(reader.GetString(), "true", StringComparison.OrdinalIgnoreCase),
             JsonTokenType.True => true,
+            JsonTokenType.False => false,
+            // aria2 sends booleans as the strings "true"/"false". Anything else is treated as false
+            // deliberately: we can't throw here — one odd field must not abort the whole snapshot
+            // deserialization that drives the entire download list.
+            JsonTokenType.String => string.Equals(reader.GetString(), "true", StringComparison.OrdinalIgnoreCase),
             _ => false,
         };
 

@@ -404,6 +404,18 @@ public sealed partial class SettingsView : UserControl
                     ForceEncryptionToggle.IsOn = parts[5] == "1";
                     CryptoExpander.IsExpanded = CryptoToggle.IsOn;
                 }
+                else
+                {
+                    // B12: no (or corrupt) snapshot to restore — fall back to the app defaults so
+                    // turning privacy off never leaves the forced private preset locked in.
+                    DhtToggle.IsOn = true;
+                    PexToggle.IsOn = true;
+                    LpdToggle.IsOn = false;
+                    CryptoToggle.IsOn = false;
+                    CryptoLevelRadio.SelectedIndex = 0;
+                    ForceEncryptionToggle.IsOn = false;
+                    CryptoExpander.IsExpanded = false;
+                }
                 _privacySnapshot = "";
             }
             SetPrivacyControlsEnabled(PrivacyToggle.IsOn);

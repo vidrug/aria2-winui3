@@ -37,7 +37,7 @@ public sealed class Aria2RpcClient : IAsyncDisposable
         "followedBy", "following",
     ];
 
-    private readonly ConcurrentDictionary<long, TaskCompletionSource<JsonElement>> _pending = new();
+    private readonly ConcurrentDictionary<long, IPendingCall> _pending = new();
     private readonly SemaphoreSlim _sendLock = new(1, 1);
     // Serializes ConnectAsync / CloseSocketAsync / DisposeAsync so a reconnect can
     // never race teardown (double-disposed CTS, orphaned receive loop).
@@ -82,30 +82,24 @@ public sealed class Aria2RpcClient : IAsyncDisposable
 
     // ---------------------------------------------------------------- typed API
 
-    public async Task<string> AddUriAsync(IReadOnlyList<string> uris, IReadOnlyDictionary<string, string>? options = null, CancellationToken ct = default)
-    {
-        var result = await InvokeAsync("aria2.addUri", w =>
+    public Task<string> AddUriAsync(IReadOnlyList<string> uris, IReadOnlyDictionary<string, string>? options = null, CancellationToken ct = default) =>
+        InvokeAsync("aria2.addUri", w =>
         {
             w.WriteStartArray();
             foreach (var uri in uris)
                 w.WriteStringValue(uri);
             w.WriteEndArray();
             WriteOptions(w, options);
-        }, ct).ConfigureAwait(false);
-        return result.GetString() ?? "";
-    }
+        }, static r => r.GetString() ?? "", ct);
 
-    public async Task<string> AddTorrentAsync(byte[] torrent, IReadOnlyDictionary<string, string>? options = null, CancellationToken ct = default)
-    {
-        var result = await InvokeAsync("aria2.addTorrent", w =>
+    public Task<string> AddTorrentAsync(byte[] torrent, IReadOnlyDictionary<string, string>? options = null, CancellationToken ct = default) =>
+        InvokeAsync("aria2.addTorrent", w =>
         {
             w.WriteBase64StringValue(torrent);
             w.WriteStartArray(); // web-seed URIs (none)
             w.WriteEndArray();
             WriteOptions(w, options);
-        }, ct).ConfigureAwait(false);
-        return result.GetString() ?? "";
-    }
+        }, static r => r.GetString() ?? "", ct);
 
     public Task PauseAsync(string gid, bool force = false, CancellationToken ct = default) =>
         InvokeAsync(force ? "aria2.forcePause" : "aria2.pause", w => w.WriteStringValue(gid), ct);
@@ -143,34 +137,32 @@ public sealed class Aria2RpcClient : IAsyncDisposable
 
     /// <summary>Reads all of one download's current options (aria2.getOption) as a string map.
     /// Used to carry per-download options across a recheck re-add.</summary>
-    public async Task<Dictionary<string, string>> GetOptionAsync(string gid, CancellationToken ct = default)
-    {
-        var result = await InvokeAsync("aria2.getOption", w => w.WriteStringValue(gid), ct).ConfigureAwait(false);
-        var map = new Dictionary<string, string>(StringComparer.Ordinal);
-        if (result.ValueKind == JsonValueKind.Object)
-            foreach (var prop in result.EnumerateObject())
-                if (prop.Value.ValueKind == JsonValueKind.String && prop.Value.GetString() is { } s)
-                    map[prop.Name] = s;
-        return map;
-    }
+    public Task<Dictionary<string, string>> GetOptionAsync(string gid, CancellationToken ct = default) =>
+        InvokeAsync("aria2.getOption", w => w.WriteStringValue(gid), static result =>
+        {
+            var map = new Dictionary<string, string>(StringComparer.Ordinal);
+            if (result.ValueKind == JsonValueKind.Object)
+                foreach (var prop in result.EnumerateObject())
+                    if (prop.Value.ValueKind == JsonValueKind.String && prop.Value.GetString() is { } s)
+                        map[prop.Name] = s;
+            return map;
+        }, ct);
 
     /// <summary>Reads one download's current per-download speed limits as aria2 speed strings
     /// ("0" = no limit). Used to pre-fill the per-download speed-limit flyout.</summary>
-    public async Task<(string down, string up)> GetSpeedLimitsAsync(string gid, CancellationToken ct = default)
-    {
-        var result = await InvokeAsync("aria2.getOption", w => w.WriteStringValue(gid), ct).ConfigureAwait(false);
-        string Read(string key) =>
-            result.ValueKind == JsonValueKind.Object && result.TryGetProperty(key, out var v)
-                ? v.GetString() ?? "0"
-                : "0";
-        return (Read("max-download-limit"), Read("max-upload-limit"));
-    }
+    public Task<(string down, string up)> GetSpeedLimitsAsync(string gid, CancellationToken ct = default) =>
+        InvokeAsync("aria2.getOption", w => w.WriteStringValue(gid), static result =>
+        {
+            string Read(string key) =>
+                result.ValueKind == JsonValueKind.Object && result.TryGetProperty(key, out var v)
+                    ? v.GetString() ?? "0"
+                    : "0";
+            return (Read("max-download-limit"), Read("max-upload-limit"));
+        }, ct);
 
-    public async Task<Aria2VersionInfo> GetVersionAsync(CancellationToken ct = default)
-    {
-        var result = await InvokeAsync("aria2.getVersion", null, ct).ConfigureAwait(false);
-        return result.Deserialize(Aria2JsonContext.Default.Aria2VersionInfo) ?? new Aria2VersionInfo();
-    }
+    public Task<Aria2VersionInfo> GetVersionAsync(CancellationToken ct = default) =>
+        InvokeAsync("aria2.getVersion", null,
+            static r => r.Deserialize(Aria2JsonContext.Default.Aria2VersionInfo) ?? new Aria2VersionInfo(), ct);
 
     public Task ShutdownAsync(bool force = false, CancellationToken ct = default) =>
         InvokeAsync(force ? "aria2.forceShutdown" : "aria2.shutdown", null, ct);
@@ -181,19 +173,16 @@ public sealed class Aria2RpcClient : IAsyncDisposable
         InvokeAsync("aria2.saveSession", null, ct);
 
     /// <summary>Connected peers of a BitTorrent download (errors for non-BT gids).</summary>
-    public async Task<List<Aria2Peer>> GetPeersAsync(string gid, CancellationToken ct = default)
-    {
-        var result = await InvokeAsync("aria2.getPeers", w => w.WriteStringValue(gid), ct).ConfigureAwait(false);
-        return result.Deserialize(Aria2JsonContext.Default.ListAria2Peer) ?? [];
-    }
+    public Task<List<Aria2Peer>> GetPeersAsync(string gid, CancellationToken ct = default) =>
+        InvokeAsync("aria2.getPeers", w => w.WriteStringValue(gid),
+            static r => r.Deserialize(Aria2JsonContext.Default.ListAria2Peer) ?? [], ct);
 
     /// <summary>
     /// Fetches active + waiting + stopped downloads and global transfer stats in a
     /// single system.multicall round-trip — one WebSocket message per poll tick.
     /// </summary>
-    public async Task<Aria2Snapshot> GetSnapshotAsync(CancellationToken ct = default)
-    {
-        var result = await InvokeAsync("system.multicall", w =>
+    public Task<Aria2Snapshot> GetSnapshotAsync(CancellationToken ct = default) =>
+        InvokeAsync("system.multicall", w =>
         {
             w.WriteStartArray();
             WriteMulticallEntry(w, "aria2.tellActive", static w2 => WriteKeys(w2));
@@ -211,8 +200,11 @@ public sealed class Aria2RpcClient : IAsyncDisposable
             });
             WriteMulticallEntry(w, "aria2.getGlobalStat", null);
             w.WriteEndArray();
-        }, ct).ConfigureAwait(false);
+        }, ParseSnapshot, ct);
 
+    // Parsed on the receive loop directly off the live multicall result (no Clone — O1).
+    private static Aria2Snapshot ParseSnapshot(JsonElement result)
+    {
         var downloads = new List<Aria2Download>();
         var stat = new Aria2GlobalStat();
 
@@ -239,7 +231,32 @@ public sealed class Aria2RpcClient : IAsyncDisposable
 
     // ---------------------------------------------------------------- JSON-RPC plumbing
 
-    private async Task<JsonElement> InvokeAsync(string method, Action<Utf8JsonWriter>? writeArgs, CancellationToken ct)
+    /// <summary>A response handler that parses the LIVE result element inside the receive loop
+    /// (before the pooled JsonDocument is disposed), so we never deep-clone the whole subtree (O1).</summary>
+    private interface IPendingCall
+    {
+        void Complete(JsonElement result);
+        void Fail(Exception ex);
+        void Cancel();
+    }
+
+    private sealed class PendingCall<T>(Func<JsonElement, T> parse) : IPendingCall
+    {
+        public TaskCompletionSource<T> Tcs { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public void Complete(JsonElement result)
+        {
+            try { Tcs.TrySetResult(parse(result)); }
+            catch (Exception ex) { Tcs.TrySetException(ex); }
+        }
+        public void Fail(Exception ex) => Tcs.TrySetException(ex);
+        public void Cancel() => Tcs.TrySetCanceled();
+    }
+
+    /// <summary>Fire-and-forget call whose result is ignored (pause, remove, changeOption, …).</summary>
+    private Task InvokeAsync(string method, Action<Utf8JsonWriter>? writeArgs, CancellationToken ct) =>
+        InvokeAsync(method, writeArgs, static _ => true, ct);
+
+    private async Task<T> InvokeAsync<T>(string method, Action<Utf8JsonWriter>? writeArgs, Func<JsonElement, T> parse, CancellationToken ct)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         var socket = _socket ?? throw new InvalidOperationException("RPC client is not connected.");
@@ -262,8 +279,8 @@ public sealed class Aria2RpcClient : IAsyncDisposable
             writer.WriteEndObject();
         }
 
-        var tcs = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
-        _pending[id] = tcs;
+        var pending = new PendingCall<T>(parse);
+        _pending[id] = pending;
         try
         {
             // The timeout covers the whole round-trip, including waiting for the send
@@ -282,9 +299,9 @@ public sealed class Aria2RpcClient : IAsyncDisposable
                     _sendLock.Release();
                 }
 
-                await using (timeoutCts.Token.Register(static state => ((TaskCompletionSource<JsonElement>)state!).TrySetCanceled(), tcs).ConfigureAwait(false))
+                await using (timeoutCts.Token.Register(static state => ((IPendingCall)state!).Cancel(), pending).ConfigureAwait(false))
                 {
-                    return await tcs.Task.ConfigureAwait(false);
+                    return await pending.Tcs.Task.ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException) when (!ct.IsCancellationRequested)
@@ -404,23 +421,24 @@ public sealed class Aria2RpcClient : IAsyncDisposable
             JsonValueKind.String when long.TryParse(idProp.GetString(), out var parsed) => parsed,
             _ => -1,
         };
-        if (!_pending.TryRemove(id, out var tcs))
+        if (!_pending.TryRemove(id, out var pending))
             return;
 
         if (root.TryGetProperty("error", out var error))
         {
             int code = error.TryGetProperty("code", out var codeProp) && codeProp.TryGetInt32(out var c) ? c : 0;
             string msg = error.TryGetProperty("message", out var msgProp) ? msgProp.GetString() ?? "RPC error" : "RPC error";
-            tcs.TrySetException(new Aria2RpcException(code, msg));
+            pending.Fail(new Aria2RpcException(code, msg));
         }
         else if (root.TryGetProperty("result", out var resultProp))
         {
-            // Clone so the element outlives the pooled JsonDocument.
-            tcs.TrySetResult(resultProp.Clone());
+            // Parse the live element here (still inside the using) instead of deep-cloning the
+            // whole result subtree just to deserialize it on the awaiting thread (O1).
+            pending.Complete(resultProp);
         }
         else
         {
-            tcs.TrySetException(new Aria2RpcException(0, "Malformed RPC response."));
+            pending.Fail(new Aria2RpcException(0, "Malformed RPC response."));
         }
     }
 
@@ -428,8 +446,8 @@ public sealed class Aria2RpcClient : IAsyncDisposable
     {
         foreach (var key in _pending.Keys)
         {
-            if (_pending.TryRemove(key, out var tcs))
-                tcs.TrySetException(new Aria2RpcException(-1, Aria2Gui.Helpers.L.Get("RpcConnectionLost")));
+            if (_pending.TryRemove(key, out var call))
+                call.Fail(new Aria2RpcException(-1, Aria2Gui.Helpers.L.Get("RpcConnectionLost")));
         }
     }
 

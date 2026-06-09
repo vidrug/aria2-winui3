@@ -80,8 +80,19 @@ public sealed class Aria2Service
     /// propagates so the caller can surface it.</summary>
     public async Task ApplySettingsAsync(AppSettings settings, CancellationToken ct = default)
     {
-        Settings = settings;
-        SettingsService.Save(settings);
+        // B10: serialize the Settings swap + persist against a concurrent restart, which reads
+        // Settings to build its command line. The RPC push runs outside the lock (it can't race
+        // a restart — the socket is down during one — and shouldn't block on a long restart).
+        await _recoveryLock.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            Settings = settings;
+            SettingsService.Save(settings);
+        }
+        finally
+        {
+            _recoveryLock.Release();
+        }
         if (_rpc.IsConnected)
             await _rpc.ChangeGlobalOptionAsync(BuildRuntimeOptions(settings), ct).ConfigureAwait(false);
     }
@@ -168,19 +179,32 @@ public sealed class Aria2Service
 
     private async Task StartProcessAndConnectAsync(CancellationToken ct)
     {
-        Directory.CreateDirectory(Settings.DownloadDirectory);
+        // B9: a restart/recovery in flight when the app is exiting must not respawn aria2c after
+        // Shutdown() has killed it. This is the single choke point for every spawn path.
+        if (_shuttingDown)
+            throw new OperationCanceledException("The engine is shutting down.");
 
-        // Two attempts: a fresh port on the second try covers the (rare) case of
-        // the free-port probe racing another process for the same port.
-        for (int attempt = 1; ; attempt++)
+        string dir = Settings.DownloadDirectory;
+        var startupOptions = BuildStartupOptions(Settings);
+
+        // B14: bounded retries with a fresh port each time cover the (rare) case of the free-port
+        // probe racing another process for the same port; the last attempt's failure propagates.
+        const int maxAttempts = 3;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++)
         {
-            _process.Start(Settings.DownloadDirectory, AppPaths.SessionFile, BuildStartupOptions(Settings));
+            // O3: the directory creation + process spawn (DriveInfo/CreateDirectory/ADS probe)
+            // hit the disk synchronously — keep them off the calling (UI) thread.
+            await Task.Run(() =>
+            {
+                Directory.CreateDirectory(dir);
+                _process.Start(dir, AppPaths.SessionFile, startupOptions);
+            }, ct).ConfigureAwait(false);
             try
             {
                 await ConnectWithRetryAsync(ct).ConfigureAwait(false);
                 return;
             }
-            catch when (attempt == 1 && !ct.IsCancellationRequested)
+            catch when (attempt < maxAttempts && !ct.IsCancellationRequested)
             {
                 _process.Stop();
             }
@@ -297,7 +321,7 @@ public sealed class Aria2Service
         options["disable-ipv6"] = s.DisableIpv6 ? "true" : "false";
         AddCommonOptions(options, s);
         AddSeedOptions(options, s);
-        ApplyExtraOptions(options, s.ExtraAria2Options);
+        ApplyExtraOptions(options, s.ExtraAria2Options, s.PrivacyMode);
         return options;
     }
 
@@ -343,13 +367,20 @@ public sealed class Aria2Service
     /// Free-form "key=value" lines giving access to any aria2 flag. Applied last so
     /// they override our defaults — except keys the app's own plumbing depends on.
     /// </summary>
-    private static void ApplyExtraOptions(Dictionary<string, string> options, string raw)
+    private static void ApplyExtraOptions(Dictionary<string, string> options, string raw, bool privacyOn)
     {
         // These keys are owned by the app: overriding them breaks RPC/session wiring.
         string[] blocked =
         [
             "enable-rpc", "rpc-listen-port", "rpc-secret", "rpc-listen-all",
             "stop-with-process", "save-session", "input-file", "no-conf", "conf-path", "dir",
+        ];
+        // B11: while privacy mode is on, an extra line like "enable-dht=true" must not silently
+        // undo the privacy preset. These keys are off-limits until privacy mode is turned off.
+        string[] privacyKeys =
+        [
+            "enable-dht", "enable-peer-exchange", "bt-enable-lpd",
+            "bt-require-crypto", "bt-min-crypto-level", "bt-force-encryption",
         ];
         foreach (var rawLine in raw.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
@@ -362,6 +393,8 @@ public sealed class Aria2Service
             if (key.Length == 0 || !key.All(c => char.IsAsciiLetterLower(c) || char.IsAsciiDigit(c) || c == '-'))
                 continue;
             if (blocked.Contains(key))
+                continue;
+            if (privacyOn && privacyKeys.Contains(key))
                 continue;
             options[key] = value;
         }

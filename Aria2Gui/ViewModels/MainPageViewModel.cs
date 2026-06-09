@@ -713,17 +713,26 @@ public sealed partial class MainPageViewModel : ObservableObject
 
     private async Task PushSelectFileAsync(string gid, IReadOnlyList<int> indices)
     {
-        try
+        string value = string.Join(',', indices);
+        // B3: retry a transient failure. Until aria2 accepts it the option was never applied (no
+        // restart happened yet), so re-pushing is safe — unlike re-pushing an already-applied
+        // selection every poll, which ReconcilePendingSelection deliberately avoids.
+        for (int attempt = 0; attempt < 3; attempt++)
         {
-            await _service.Rpc.ChangeOptionAsync(gid, new Dictionary<string, string>
+            try
             {
-                ["select-file"] = string.Join(',', indices),
-            });
+                await _service.Rpc.ChangeOptionAsync(gid, new Dictionary<string, string> { ["select-file"] = value });
+                return;
+            }
+            catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
+            {
+                await Task.Delay(300);
+            }
         }
-        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
-        {
-            // Engine busy/reconnecting — the pending set re-pushes on the next poll.
-        }
+        // Persistent failure — drop the optimistic hold (if still ours) so the UI reverts to aria2's
+        // real state instead of showing a selection the engine never received.
+        if (_pendingSelection is { } ps && ps.Gid == gid)
+            _pendingSelection = null;
     }
 
     private async Task RefreshPeersAsync()
