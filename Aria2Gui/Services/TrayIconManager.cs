@@ -148,9 +148,11 @@ public sealed class TrayIconManager : IDisposable
         // the brief Minimized moment while we restore.
         if (!_restoring && sender.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized })
             _appWindow.Hide();
-        // Keep the toggle's label in sync with visibility even if the menu's Opening
-        // event doesn't fire under H.NotifyIcon.
-        UpdateToggleText();
+        // Keep the toggle's label in sync with visibility even if the menu's Opening event doesn't
+        // fire under H.NotifyIcon — but only on an actual visibility change, not on every
+        // move/resize/DPI change this event also fires for (O7).
+        if (args.DidVisibilityChange)
+            UpdateToggleText();
     }
 
     /// <summary>Labels the toggle item for the window's current visibility.</summary>

@@ -36,6 +36,13 @@ public static class Localize
         if (e.NewValue is not string uid || string.IsNullOrEmpty(uid))
             return;
 
+        // On an actual Uid change (normally it's set once), clear any property the OLD uid set that
+        // the NEW one doesn't, so stale text from the previous uid can't linger (B24).
+        if (e.OldValue is string oldUid && oldUid.Length > 0 && oldUid != uid)
+            foreach (string property in StringProperties)
+                if (L.TryGet($"{oldUid}.{property}", out _) && !L.TryGet($"{uid}.{property}", out _))
+                    SetStringProperty(d, property, "");
+
         foreach (string property in StringProperties)
             if (L.TryGet($"{uid}.{property}", out string value))
                 SetStringProperty(d, property, value);

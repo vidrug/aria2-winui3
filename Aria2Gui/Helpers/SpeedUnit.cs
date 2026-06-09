@@ -50,7 +50,8 @@ public static class SpeedUnit
         string unit = Sanitize(preferredUnit);
         if (bytes <= 0)
             return (0, unit);
-        return (bytes / Multiplier(unit), unit);
+        // Round for display so the NumberBox shows e.g. "4.77 MB", not "4.7683715820 MB" (B25).
+        return (Math.Round(bytes / Multiplier(unit), 2), unit);
     }
 
     /// <summary>Picks the largest unit that still yields a value ≥ 1 for the given byte count,

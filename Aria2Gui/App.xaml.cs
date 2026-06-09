@@ -60,9 +60,19 @@ public partial class App : Application
         {
             try
             {
-                File.AppendAllText(
-                    Path.Combine(Services.AppPaths.DataDirectory, "crash.log"),
-                    $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {e.Exception}{Environment.NewLine}");
+                string path = Path.Combine(Services.AppPaths.DataDirectory, "crash.log");
+                // B22: a recurring exception would grow this without bound. Rotate to crash.log.old
+                // once it passes ~1 MB so total on-disk size stays capped.
+                try
+                {
+                    var info = new FileInfo(path);
+                    if (info.Exists && info.Length > 1_000_000)
+                        File.Move(path, path + ".old", overwrite: true);
+                }
+                catch (IOException)
+                {
+                }
+                File.AppendAllText(path, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {e.Exception}{Environment.NewLine}");
             }
             catch
             {
