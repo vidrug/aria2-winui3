@@ -21,11 +21,16 @@ public sealed class AppSettings
 
     public int BtMaxPeers { get; set; } = 55;
 
-    /// <summary>
-    /// Seed until this ratio after a torrent completes; 0 disables seeding
-    /// (mapped to aria2 --seed-time=0, since --seed-ratio=0 means "seed forever").
-    /// </summary>
+    /// <summary>How seeding stops after a torrent completes: "ratio" (until
+    /// <see cref="SeedRatio"/>), "time" (until <see cref="SeedTimeMinutes"/>), or "off"
+    /// (don't seed). Empty is migrated from the legacy <see cref="SeedRatio"/> in Load.</summary>
+    public string SeedMode { get; set; } = "";
+
+    /// <summary>Share ratio at which seeding stops in "ratio" mode.</summary>
     public double SeedRatio { get; set; } = 1.0;
+
+    /// <summary>Minutes to seed in "time" mode before stopping.</summary>
+    public int SeedTimeMinutes { get; set; } = 60;
 
     /// <summary>"Default" (follow system), "Light" or "Dark".</summary>
     public string Theme { get; set; } = "Default";
@@ -65,6 +70,16 @@ public sealed class AppSettings
     /// <summary>Max simultaneously open files across all BT downloads.</summary>
     public int BtMaxOpenFiles { get; set; } = 100;
 
+    /// <summary>Per-peer download speed cap that triggers requesting more peers, aria2 speed
+    /// format (e.g. "50K"); "0" = unlimited.</summary>
+    public string BtRequestPeerSpeedLimit { get; set; } = "50K";
+
+    /// <summary>Keep seeding-only torrents out of the concurrent-downloads count.</summary>
+    public bool BtDetachSeedOnly { get; set; }
+
+    /// <summary>Stop a BT download this many seconds after it makes no progress; 0 = never.</summary>
+    public int BtStopTimeout { get; set; }
+
     // ---- Connection / HTTP(S)/FTP ----
 
     /// <summary>Timeout in seconds for a stalled connection.</summary>
@@ -91,6 +106,25 @@ public sealed class AppSettings
     /// <summary>Lowest size, aria2 format (e.g. "1M"), at which a download is split for a new connection.</summary>
     public string MinSplitSize { get; set; } = "20M";
 
+    /// <summary>Abort a download whose speed stays below this (aria2 speed format); "0" = off.</summary>
+    public string LowestSpeedLimit { get; set; } = "0";
+
+    /// <summary>HTTP basic-auth user / password applied to all HTTP downloads (blank = none).</summary>
+    public string HttpUser { get; set; } = "";
+
+    public string HttpPasswd { get; set; } = "";
+
+    /// <summary>Credentials for the proxy in <see cref="AllProxy"/> (blank = none).</summary>
+    public string AllProxyUser { get; set; } = "";
+
+    public string AllProxyPasswd { get; set; } = "";
+
+    /// <summary>Minimum TLS version for HTTPS: "TLSv1.1", "TLSv1.2" or "TLSv1.3".</summary>
+    public string MinTlsVersion { get; set; } = "TLSv1.2";
+
+    /// <summary>Disable IPv6 name resolution / connections.</summary>
+    public bool DisableIpv6 { get; set; }
+
     // ---- Files ----
 
     /// <summary>"none", "prealloc", "trunc", "falloc", or "auto" (NTFS→falloc, else prealloc).</summary>
@@ -101,6 +135,9 @@ public sealed class AppSettings
 
     /// <summary>Rename file to file.1, file.2 … when a name collides.</summary>
     public bool AutoFileRenaming { get; set; } = true;
+
+    /// <summary>In-memory disk cache size, aria2 size format (e.g. "16M"); "0" = off.</summary>
+    public string DiskCache { get; set; } = "16M";
 
     /// <summary>Raw aria2 options, one "key=value" per line — full access to any flag.</summary>
     public string ExtraAria2Options { get; set; } = "";
@@ -148,6 +185,16 @@ public static class SettingsService
             settings.FileAllocation = "auto";
         if (settings.BtMinCryptoLevel is not ("plain" or "arc4"))
             settings.BtMinCryptoLevel = "plain";
+        settings.LowestSpeedLimit = SanitizeSpeed(settings.LowestSpeedLimit);
+        settings.BtRequestPeerSpeedLimit = SanitizeSpeed(settings.BtRequestPeerSpeedLimit);
+        settings.DiskCache = SanitizeSpeed(settings.DiskCache); // size shares the speed grammar
+        settings.BtStopTimeout = Math.Clamp(settings.BtStopTimeout, 0, 86400);
+        settings.SeedTimeMinutes = Math.Clamp(settings.SeedTimeMinutes, 1, 525600);
+        if (settings.MinTlsVersion is not ("TLSv1.1" or "TLSv1.2" or "TLSv1.3"))
+            settings.MinTlsVersion = "TLSv1.2";
+        // Migrate the legacy single SeedRatio (0 meant "don't seed") into the explicit mode.
+        if (settings.SeedMode is not ("ratio" or "time" or "off"))
+            settings.SeedMode = settings.SeedRatio <= 0 ? "off" : "ratio";
         if (!SupportedLanguages.Contains(settings.Language))
             settings.Language = "";
         return settings;

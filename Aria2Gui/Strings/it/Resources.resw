@@ -262,4 +262,46 @@ uno per riga</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Riduci nell'area di notifica</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>Sospendi tutto</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>Riprendi tutto</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Limite di velocità…</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Limite di velocità (MB/s)</value></data>
+  <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>Download</value></data>
+  <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>Upload</value></data>
+  <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — nessun limite</value></data>
+  <data name="LowestSpeedLimitCard.Header" xml:space="preserve"><value>Velocità minima</value></data>
+  <data name="LowestSpeedLimitCard.Description" xml:space="preserve"><value>Interrompe un download la cui velocità resta sotto questa soglia (es. 10K); 0 — disattivato</value></data>
+  <data name="MinTlsCard.Header" xml:space="preserve"><value>Versione TLS minima</value></data>
+  <data name="MinTlsCard.Description" xml:space="preserve"><value>Versione TLS minima accettata per HTTPS</value></data>
+  <data name="DisableIpv6Card.Header" xml:space="preserve"><value>Disattiva IPv6</value></data>
+  <data name="DisableIpv6Card.Description" xml:space="preserve"><value>Usa solo IPv4 per la risoluzione dei nomi e le connessioni</value></data>
+  <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>Attivato</value></data>
+  <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>Disattivato</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>Autenticazione</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>Credenziali HTTP e proxy</value></data>
+  <data name="HttpUserCard.Header" xml:space="preserve"><value>Utente HTTP</value></data>
+  <data name="HttpUserCard.Description" xml:space="preserve"><value>Nome utente per l'autenticazione HTTP di base</value></data>
+  <data name="HttpPasswdCard.Header" xml:space="preserve"><value>Password HTTP</value></data>
+  <data name="HttpPasswdCard.Description" xml:space="preserve"><value>Password per l'autenticazione HTTP di base</value></data>
+  <data name="ProxyUserCard.Header" xml:space="preserve"><value>Utente proxy</value></data>
+  <data name="ProxyUserCard.Description" xml:space="preserve"><value>Nome utente per il proxy</value></data>
+  <data name="ProxyPasswdCard.Header" xml:space="preserve"><value>Password proxy</value></data>
+  <data name="ProxyPasswdCard.Description" xml:space="preserve"><value>Password per il proxy</value></data>
+  <data name="DiskCacheCard.Header" xml:space="preserve"><value>Cache su disco</value></data>
+  <data name="DiskCacheCard.Description" xml:space="preserve"><value>Dimensione della cache in memoria (es. 16M); 0 — disattivata</value></data>
+  <data name="BtPeerSpeedCard.Header" xml:space="preserve"><value>Limite di velocità per peer</value></data>
+  <data name="BtPeerSpeedCard.Description" xml:space="preserve"><value>Cerca altri peer quando un peer è più lento di questa soglia (es. 50K)</value></data>
+  <data name="BtStopTimeoutCard.Header" xml:space="preserve"><value>Arresta dopo inattività</value></data>
+  <data name="BtStopTimeoutCard.Description" xml:space="preserve"><value>Arresta un torrent dopo questi secondi senza progressi; 0 — mai</value></data>
+  <data name="BtDetachSeedCard.Header" xml:space="preserve"><value>Distacca solo in seeding</value></data>
+  <data name="BtDetachSeedCard.Description" xml:space="preserve"><value>Non conteggiare i torrent in solo seeding nel limite di download simultanei</value></data>
+  <data name="BtDetachSeedToggle.OnContent" xml:space="preserve"><value>Attivato</value></data>
+  <data name="BtDetachSeedToggle.OffContent" xml:space="preserve"><value>Disattivato</value></data>
+  <data name="SeedCard.Header" xml:space="preserve"><value>Seeding</value></data>
+  <data name="SeedCard.Description" xml:space="preserve"><value>Cosa interrompe il seeding al termine di un torrent</value></data>
+  <data name="SeedModeRatioItem.Content" xml:space="preserve"><value>Per rapporto</value></data>
+  <data name="SeedModeTimeItem.Content" xml:space="preserve"><value>Per tempo</value></data>
+  <data name="SeedModeOffItem.Content" xml:space="preserve"><value>Non distribuire</value></data>
+  <data name="SeedValueRatioHeader" xml:space="preserve"><value>Rapporto di condivisione</value></data>
+  <data name="SeedValueRatioDesc" xml:space="preserve"><value>Interrompe il seeding quando il rapporto upload/download raggiunge questo valore</value></data>
+  <data name="SeedValueTimeHeader" xml:space="preserve"><value>Tempo di seeding (minuti)</value></data>
+  <data name="SeedValueTimeDesc" xml:space="preserve"><value>Interrompe il seeding dopo questi minuti</value></data>
 </root>

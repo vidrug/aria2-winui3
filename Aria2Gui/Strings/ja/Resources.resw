@@ -262,4 +262,46 @@
   <data name="TrayHide" xml:space="preserve"><value>トレイに最小化</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>すべて一時停止</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>すべて再開</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>速度制限…</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>速度制限 (MB/s)</value></data>
+  <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>アップロード</value></data>
+  <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — 無制限</value></data>
+  <data name="LowestSpeedLimitCard.Header" xml:space="preserve"><value>最低速度の制限</value></data>
+  <data name="LowestSpeedLimitCard.Description" xml:space="preserve"><value>速度がこれを下回り続けるダウンロードを中止します(例: 10K)。0 — 無効</value></data>
+  <data name="MinTlsCard.Header" xml:space="preserve"><value>最小 TLS バージョン</value></data>
+  <data name="MinTlsCard.Description" xml:space="preserve"><value>HTTPS で許可する最も低い TLS バージョン</value></data>
+  <data name="DisableIpv6Card.Header" xml:space="preserve"><value>IPv6 を無効にする</value></data>
+  <data name="DisableIpv6Card.Description" xml:space="preserve"><value>名前解決と接続に IPv4 のみを使用します</value></data>
+  <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>認証</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP およびプロキシの資格情報</value></data>
+  <data name="HttpUserCard.Header" xml:space="preserve"><value>HTTP ユーザー</value></data>
+  <data name="HttpUserCard.Description" xml:space="preserve"><value>HTTP ベーシック認証のユーザー名</value></data>
+  <data name="HttpPasswdCard.Header" xml:space="preserve"><value>HTTP パスワード</value></data>
+  <data name="HttpPasswdCard.Description" xml:space="preserve"><value>HTTP ベーシック認証のパスワード</value></data>
+  <data name="ProxyUserCard.Header" xml:space="preserve"><value>プロキシユーザー</value></data>
+  <data name="ProxyUserCard.Description" xml:space="preserve"><value>プロキシのユーザー名</value></data>
+  <data name="ProxyPasswdCard.Header" xml:space="preserve"><value>プロキシパスワード</value></data>
+  <data name="ProxyPasswdCard.Description" xml:space="preserve"><value>プロキシのパスワード</value></data>
+  <data name="DiskCacheCard.Header" xml:space="preserve"><value>ディスクキャッシュ</value></data>
+  <data name="DiskCacheCard.Description" xml:space="preserve"><value>メモリ内キャッシュのサイズ(例: 16M)。0 — 無効</value></data>
+  <data name="BtPeerSpeedCard.Header" xml:space="preserve"><value>ピアごとの速度制限</value></data>
+  <data name="BtPeerSpeedCard.Description" xml:space="preserve"><value>ピアの速度がこれを下回ったら追加のピアを要求します(例: 50K)</value></data>
+  <data name="BtStopTimeoutCard.Header" xml:space="preserve"><value>アイドル後に停止</value></data>
+  <data name="BtStopTimeoutCard.Description" xml:space="preserve"><value>進捗がないまま指定の秒数が経過したら torrent を停止します。0 — 停止しない</value></data>
+  <data name="BtDetachSeedCard.Header" xml:space="preserve"><value>シードのみを分離</value></data>
+  <data name="BtDetachSeedCard.Description" xml:space="preserve"><value>シードのみの torrent を同時ダウンロード数の制限に含めません</value></data>
+  <data name="BtDetachSeedToggle.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="BtDetachSeedToggle.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SeedCard.Header" xml:space="preserve"><value>シード</value></data>
+  <data name="SeedCard.Description" xml:space="preserve"><value>torrent 完了後にシードを停止する条件</value></data>
+  <data name="SeedModeRatioItem.Content" xml:space="preserve"><value>比率で</value></data>
+  <data name="SeedModeTimeItem.Content" xml:space="preserve"><value>時間で</value></data>
+  <data name="SeedModeOffItem.Content" xml:space="preserve"><value>シードしない</value></data>
+  <data name="SeedValueRatioHeader" xml:space="preserve"><value>共有比率</value></data>
+  <data name="SeedValueRatioDesc" xml:space="preserve"><value>アップロード/ダウンロード比率がこれに達したらシードを停止します</value></data>
+  <data name="SeedValueTimeHeader" xml:space="preserve"><value>シード時間(分)</value></data>
+  <data name="SeedValueTimeDesc" xml:space="preserve"><value>指定の分数が経過したらシードを停止します</value></data>
 </root>

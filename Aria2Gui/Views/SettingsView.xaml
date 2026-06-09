@@ -243,6 +243,47 @@
                             </tk:SettingsCard.HeaderIcon>
                             <TextBox x:Name="UserAgentBox" loc:Localize.Uid="UserAgentBox" AutomationProperties.AutomationId="UserAgentBox" MinWidth="300" />
                         </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="LowestSpeedLimitCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE9D9;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <TextBox x:Name="LowestSpeedLimitBox" AutomationProperties.AutomationId="LowestSpeedLimitBox" MinWidth="148" PlaceholderText="0" />
+                        </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="MinTlsCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE72E;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <ComboBox x:Name="MinTlsBox" AutomationProperties.AutomationId="MinTlsBox" MinWidth="148">
+                                <ComboBoxItem Content="TLS 1.1" Tag="TLSv1.1" />
+                                <ComboBoxItem Content="TLS 1.2" Tag="TLSv1.2" />
+                                <ComboBoxItem Content="TLS 1.3" Tag="TLSv1.3" />
+                            </ComboBox>
+                        </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="DisableIpv6Card">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE968;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <ToggleSwitch x:Name="DisableIpv6Toggle" loc:Localize.Uid="DisableIpv6Toggle" AutomationProperties.AutomationId="DisableIpv6Toggle" />
+                        </tk:SettingsCard>
+                        <tk:SettingsExpander loc:Localize.Uid="AuthExpander">
+                            <tk:SettingsExpander.HeaderIcon>
+                                <FontIcon Glyph="&#xE8D7;" />
+                            </tk:SettingsExpander.HeaderIcon>
+                            <tk:SettingsExpander.Items>
+                                <tk:SettingsCard loc:Localize.Uid="HttpUserCard">
+                                    <TextBox x:Name="HttpUserBox" AutomationProperties.AutomationId="HttpUserBox" MinWidth="220" />
+                                </tk:SettingsCard>
+                                <tk:SettingsCard loc:Localize.Uid="HttpPasswdCard">
+                                    <PasswordBox x:Name="HttpPasswdBox" AutomationProperties.AutomationId="HttpPasswdBox" MinWidth="220" />
+                                </tk:SettingsCard>
+                                <tk:SettingsCard loc:Localize.Uid="ProxyUserCard">
+                                    <TextBox x:Name="ProxyUserBox" AutomationProperties.AutomationId="ProxyUserBox" MinWidth="220" />
+                                </tk:SettingsCard>
+                                <tk:SettingsCard loc:Localize.Uid="ProxyPasswdCard">
+                                    <PasswordBox x:Name="ProxyPasswdBox" AutomationProperties.AutomationId="ProxyPasswdBox" MinWidth="220" />
+                                </tk:SettingsCard>
+                            </tk:SettingsExpander.Items>
+                        </tk:SettingsExpander>
                     </StackPanel>
 
                     <!-- ===== Файлы ===== -->
@@ -270,6 +311,12 @@
                                 <FontIcon Glyph="&#xE8AC;" />
                             </tk:SettingsCard.HeaderIcon>
                             <ToggleSwitch x:Name="AutoRenameToggle" loc:Localize.Uid="AutoRenameToggle" AutomationProperties.AutomationId="AutoRenameToggle" />
+                        </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="DiskCacheCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xEDA2;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <TextBox x:Name="DiskCacheBox" AutomationProperties.AutomationId="DiskCacheBox" MinWidth="148" PlaceholderText="16M" />
                         </tk:SettingsCard>
                     </StackPanel>
 
@@ -353,12 +400,46 @@
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="BtMaxOpenFilesBox" AutomationProperties.AutomationId="BtMaxOpenFilesBox" Minimum="1" Maximum="10000" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
-                        <tk:SettingsCard loc:Localize.Uid="SeedRatioCard">
+                        <tk:SettingsCard loc:Localize.Uid="BtPeerSpeedCard">
                             <tk:SettingsCard.HeaderIcon>
-                                <FontIcon Glyph="&#xE898;" />
+                                <FontIcon Glyph="&#xE9D9;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <NumberBox x:Name="SeedRatioBox" AutomationProperties.AutomationId="SeedRatioBox" Minimum="0" Maximum="100" SmallChange="0.1" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                            <TextBox x:Name="BtPeerSpeedBox" AutomationProperties.AutomationId="BtPeerSpeedBox" MinWidth="148" PlaceholderText="50K" />
                         </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="BtStopTimeoutCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE916;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <NumberBox x:Name="BtStopTimeoutBox" AutomationProperties.AutomationId="BtStopTimeoutBox" Minimum="0" Maximum="86400" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                        </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="BtDetachSeedCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE8AF;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <ToggleSwitch x:Name="BtDetachSeedToggle" loc:Localize.Uid="BtDetachSeedToggle" AutomationProperties.AutomationId="BtDetachSeedToggle" />
+                        </tk:SettingsCard>
+                        <!-- Seeding as a SettingsExpander: the mode (ratio / time / off) is the header
+                             control and its value (ratio or minutes) expands out as a parameter,
+                             mirroring the encryption expander. The value card's header/units adapt
+                             to the mode in code; "off" collapses it. -->
+                        <tk:SettingsExpander x:Name="SeedExpander" loc:Localize.Uid="SeedCard">
+                            <tk:SettingsExpander.HeaderIcon>
+                                <FontIcon Glyph="&#xE898;" />
+                            </tk:SettingsExpander.HeaderIcon>
+                            <ComboBox x:Name="SeedModeBox" AutomationProperties.AutomationId="SeedModeBox" MinWidth="180">
+                                <ComboBoxItem loc:Localize.Uid="SeedModeRatioItem" Tag="ratio" />
+                                <ComboBoxItem loc:Localize.Uid="SeedModeTimeItem" Tag="time" />
+                                <ComboBoxItem loc:Localize.Uid="SeedModeOffItem" Tag="off" />
+                            </ComboBox>
+                            <tk:SettingsExpander.Items>
+                                <tk:SettingsCard x:Name="SeedValueCard">
+                                    <tk:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xE9D5;" />
+                                    </tk:SettingsCard.HeaderIcon>
+                                    <NumberBox x:Name="SeedValueBox" AutomationProperties.AutomationId="SeedValueBox" Minimum="0" Maximum="525600" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                                </tk:SettingsCard>
+                            </tk:SettingsExpander.Items>
+                        </tk:SettingsExpander>
                         <tk:SettingsExpander loc:Localize.Uid="TrackersExpander">
                             <tk:SettingsExpander.HeaderIcon>
                                 <FontIcon Glyph="&#xE774;" />

@@ -290,6 +290,10 @@ public sealed class Aria2Service
         string trackers = NormalizeTrackers(s.ExtraTrackers);
         if (trackers.Length > 0)
             options["bt-tracker"] = trackers;
+        // Startup-only — changeGlobalOption rejects these, so they apply on the engine restart.
+        options["disk-cache"] = s.DiskCache;
+        options["min-tls-version"] = s.MinTlsVersion;
+        options["disable-ipv6"] = s.DisableIpv6 ? "true" : "false";
         AddCommonOptions(options, s);
         AddSeedOptions(options, s);
         ApplyExtraOptions(options, s.ExtraAria2Options);
@@ -309,10 +313,22 @@ public sealed class Aria2Service
         options["min-split-size"] = s.MinSplitSize;
         options["allow-overwrite"] = s.AllowOverwrite ? "true" : "false";
         options["auto-file-renaming"] = s.AutoFileRenaming ? "true" : "false";
+        options["lowest-speed-limit"] = s.LowestSpeedLimit;
+        options["bt-request-peer-speed-limit"] = s.BtRequestPeerSpeedLimit;
+        options["bt-detach-seed-only"] = s.BtDetachSeedOnly ? "true" : "false";
+        options["bt-stop-timeout"] = inv(s.BtStopTimeout);
         if (!string.IsNullOrWhiteSpace(s.UserAgent))
             options["user-agent"] = s.UserAgent.Trim();
         if (!string.IsNullOrWhiteSpace(s.AllProxy))
             options["all-proxy"] = s.AllProxy.Trim();
+        if (!string.IsNullOrWhiteSpace(s.HttpUser))
+            options["http-user"] = s.HttpUser.Trim();
+        if (!string.IsNullOrWhiteSpace(s.HttpPasswd))
+            options["http-passwd"] = s.HttpPasswd;
+        if (!string.IsNullOrWhiteSpace(s.AllProxyUser))
+            options["all-proxy-user"] = s.AllProxyUser.Trim();
+        if (!string.IsNullOrWhiteSpace(s.AllProxyPasswd))
+            options["all-proxy-passwd"] = s.AllProxyPasswd;
         // "auto" is resolved per download dir in the process manager; pass concrete others.
         if (s.FileAllocation is not "auto")
             options["file-allocation"] = s.FileAllocation;
@@ -369,21 +385,29 @@ public sealed class Aria2Service
     }
 
     /// <summary>
-    /// In aria2 --seed-ratio=0 means "seed forever". "Don't seed" is expressed with
-    /// --seed-time=0 instead, so map our SeedRatio==0 to that. When a ratio is set,
-    /// seed-time gets an effectively-infinite value so a previous runtime "0" cannot
-    /// linger and cut seeding short (there is no "unset" in changeGlobalOption).
+    /// Maps the seeding mode to aria2's seed-ratio/seed-time pair (aria2 stops on whichever is
+    /// reached first). "ratio": cap by share ratio, with an effectively-infinite time so it can't
+    /// cut seeding short. "time": cap by minutes, with seed-ratio=0 (aria2's "ignore ratio").
+    /// "off": don't seed, via seed-time=0 (since seed-ratio=0 alone means "seed forever"). Both
+    /// keys are always written so a previous runtime value can't linger (changeGlobalOption has no
+    /// way to unset an option).
     /// </summary>
     private static void AddSeedOptions(Dictionary<string, string> options, AppSettings s)
     {
-        if (s.SeedRatio <= 0)
+        switch (s.SeedMode)
         {
-            options["seed-time"] = "0";
-        }
-        else
-        {
-            options["seed-ratio"] = s.SeedRatio.ToString("0.0##", CultureInfo.InvariantCulture);
-            options["seed-time"] = "525600"; // a year, in minutes
+            case "time":
+                options["seed-ratio"] = "0"; // ignore ratio — time is the limiter
+                options["seed-time"] = s.SeedTimeMinutes.ToString(CultureInfo.InvariantCulture);
+                break;
+            case "off":
+                options["seed-ratio"] = "0";
+                options["seed-time"] = "0"; // stop seeding the moment the download completes
+                break;
+            default: // "ratio"
+                options["seed-ratio"] = s.SeedRatio.ToString("0.0##", CultureInfo.InvariantCulture);
+                options["seed-time"] = "525600"; // a year in minutes, so the ratio cuts off first
+                break;
         }
     }
 

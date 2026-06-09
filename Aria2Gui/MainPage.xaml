@@ -98,6 +98,38 @@
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
             <Setter Property="IsTextSelectionEnabled" Value="True" />
         </Style>
+
+        <!-- Per-download speed-limit panel, shown from a row's context menu (SpeedLimit_Click sets
+             its DataContext to the clicked DownloadItemViewModel). The slider and the number box in
+             each row both bind to the same VM property, so they stay linked; 0 = no limit. -->
+        <Flyout x:Key="SpeedLimitFlyout">
+            <StackPanel Width="324" Spacing="14">
+                <TextBlock loc:Localize.Uid="SpeedLimitTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                <StackPanel Spacing="2">
+                    <TextBlock loc:Localize.Uid="SpeedLimitDownLabel" Style="{StaticResource DetailLabelStyle}" />
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Slider Grid.Column="0" AutomationProperties.AutomationId="SpeedLimitDownSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitDownMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <NumberBox Grid.Column="1" AutomationProperties.AutomationId="SpeedLimitDownBox" Width="108" Minimum="0" Maximum="100" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitDownMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+                <StackPanel Spacing="2">
+                    <TextBlock loc:Localize.Uid="SpeedLimitUpLabel" Style="{StaticResource DetailLabelStyle}" />
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Slider Grid.Column="0" AutomationProperties.AutomationId="SpeedLimitUpSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitUpMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <NumberBox Grid.Column="1" AutomationProperties.AutomationId="SpeedLimitUpBox" Width="108" Minimum="0" Maximum="100" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitUpMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+                <TextBlock loc:Localize.Uid="SpeedLimitHint" Style="{StaticResource DetailLabelStyle}" TextWrapping="Wrap" />
+            </StackPanel>
+        </Flyout>
     </Page.Resources>
 
     <Grid
@@ -357,6 +389,11 @@
                                             IsEnabled="{x:Bind CanPauseResume, Mode=OneWay}">
                                             <MenuFlyoutItem.Icon>
                                                 <FontIcon Glyph="&#xE769;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem loc:Localize.Uid="RowMenuSpeedLimit" Click="SpeedLimit_Click">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE896;" />
                                             </MenuFlyoutItem.Icon>
                                         </MenuFlyoutItem>
                                         <MenuFlyoutItem loc:Localize.Uid="RowMenuOpenFolder" Command="{x:Bind OpenFolderCommand}">

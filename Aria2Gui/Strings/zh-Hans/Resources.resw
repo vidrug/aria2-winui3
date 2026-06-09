@@ -262,4 +262,46 @@
   <data name="TrayHide" xml:space="preserve"><value>最小化到托盘</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>全部暂停</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>全部继续</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>限速…</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>限速 (MB/s)</value></data>
+  <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>下载</value></data>
+  <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>上传</value></data>
+  <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — 不限速</value></data>
+  <data name="LowestSpeedLimitCard.Header" xml:space="preserve"><value>最低速度限制</value></data>
+  <data name="LowestSpeedLimitCard.Description" xml:space="preserve"><value>当下载速度持续低于此值时中止（例如 10K）；0 — 关闭</value></data>
+  <data name="MinTlsCard.Header" xml:space="preserve"><value>最低 TLS 版本</value></data>
+  <data name="MinTlsCard.Description" xml:space="preserve"><value>HTTPS 可接受的最低 TLS 版本</value></data>
+  <data name="DisableIpv6Card.Header" xml:space="preserve"><value>禁用 IPv6</value></data>
+  <data name="DisableIpv6Card.Description" xml:space="preserve"><value>仅使用 IPv4 进行名称解析和连接</value></data>
+  <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>身份验证</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP 和代理凭据</value></data>
+  <data name="HttpUserCard.Header" xml:space="preserve"><value>HTTP 用户名</value></data>
+  <data name="HttpUserCard.Description" xml:space="preserve"><value>HTTP 基本认证的用户名</value></data>
+  <data name="HttpPasswdCard.Header" xml:space="preserve"><value>HTTP 密码</value></data>
+  <data name="HttpPasswdCard.Description" xml:space="preserve"><value>HTTP 基本认证的密码</value></data>
+  <data name="ProxyUserCard.Header" xml:space="preserve"><value>代理用户名</value></data>
+  <data name="ProxyUserCard.Description" xml:space="preserve"><value>代理的用户名</value></data>
+  <data name="ProxyPasswdCard.Header" xml:space="preserve"><value>代理密码</value></data>
+  <data name="ProxyPasswdCard.Description" xml:space="preserve"><value>代理的密码</value></data>
+  <data name="DiskCacheCard.Header" xml:space="preserve"><value>磁盘缓存</value></data>
+  <data name="DiskCacheCard.Description" xml:space="preserve"><value>内存缓存大小（例如 16M）；0 — 关闭</value></data>
+  <data name="BtPeerSpeedCard.Header" xml:space="preserve"><value>单节点速度限制</value></data>
+  <data name="BtPeerSpeedCard.Description" xml:space="preserve"><value>当某节点速度低于此值时请求更多节点（例如 50K）</value></data>
+  <data name="BtStopTimeoutCard.Header" xml:space="preserve"><value>空闲后停止</value></data>
+  <data name="BtStopTimeoutCard.Description" xml:space="preserve"><value>种子在无进展达到此秒数后停止；0 — 永不</value></data>
+  <data name="BtDetachSeedCard.Header" xml:space="preserve"><value>分离仅做种任务</value></data>
+  <data name="BtDetachSeedCard.Description" xml:space="preserve"><value>仅做种的种子不计入同时下载数限制</value></data>
+  <data name="BtDetachSeedToggle.OnContent" xml:space="preserve"><value>开</value></data>
+  <data name="BtDetachSeedToggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="SeedCard.Header" xml:space="preserve"><value>做种</value></data>
+  <data name="SeedCard.Description" xml:space="preserve"><value>种子完成后停止做种的条件</value></data>
+  <data name="SeedModeRatioItem.Content" xml:space="preserve"><value>按分享率</value></data>
+  <data name="SeedModeTimeItem.Content" xml:space="preserve"><value>按时间</value></data>
+  <data name="SeedModeOffItem.Content" xml:space="preserve"><value>不做种</value></data>
+  <data name="SeedValueRatioHeader" xml:space="preserve"><value>分享率</value></data>
+  <data name="SeedValueRatioDesc" xml:space="preserve"><value>当上传/下载比率达到此值时停止做种</value></data>
+  <data name="SeedValueTimeHeader" xml:space="preserve"><value>做种时间（分钟）</value></data>
+  <data name="SeedValueTimeDesc" xml:space="preserve"><value>做种达到此分钟数后停止</value></data>
 </root>

@@ -141,6 +141,18 @@ public sealed class Aria2RpcClient : IAsyncDisposable
             WriteOptions(w, options);
         }, ct);
 
+    /// <summary>Reads one download's current per-download speed limits as aria2 speed strings
+    /// ("0" = no limit). Used to pre-fill the per-download speed-limit flyout.</summary>
+    public async Task<(string down, string up)> GetSpeedLimitsAsync(string gid, CancellationToken ct = default)
+    {
+        var result = await InvokeAsync("aria2.getOption", w => w.WriteStringValue(gid), ct).ConfigureAwait(false);
+        string Read(string key) =>
+            result.ValueKind == JsonValueKind.Object && result.TryGetProperty(key, out var v)
+                ? v.GetString() ?? "0"
+                : "0";
+        return (Read("max-download-limit"), Read("max-upload-limit"));
+    }
+
     public async Task<Aria2VersionInfo> GetVersionAsync(CancellationToken ct = default)
     {
         var result = await InvokeAsync("aria2.getVersion", null, ct).ConfigureAwait(false);

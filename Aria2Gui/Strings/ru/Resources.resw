@@ -262,4 +262,46 @@
   <data name="TrayHide" xml:space="preserve"><value>Свернуть в трей</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>Остановить все</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>Продолжить все</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Лимит скорости…</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Лимит скорости (MB/s)</value></data>
+  <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>Загрузка</value></data>
+  <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>Отдача</value></data>
+  <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — без ограничения</value></data>
+  <data name="LowestSpeedLimitCard.Header" xml:space="preserve"><value>Минимальная скорость</value></data>
+  <data name="LowestSpeedLimitCard.Description" xml:space="preserve"><value>Прерывать загрузку, если скорость держится ниже этого значения (напр. 10K); 0 — выкл</value></data>
+  <data name="MinTlsCard.Header" xml:space="preserve"><value>Минимальная версия TLS</value></data>
+  <data name="MinTlsCard.Description" xml:space="preserve"><value>Самая низкая версия TLS, допустимая для HTTPS</value></data>
+  <data name="DisableIpv6Card.Header" xml:space="preserve"><value>Отключить IPv6</value></data>
+  <data name="DisableIpv6Card.Description" xml:space="preserve"><value>Использовать только IPv4 для разрешения имён и соединений</value></data>
+  <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>Вкл</value></data>
+  <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>Выкл</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>Аутентификация</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>Учётные данные HTTP и прокси</value></data>
+  <data name="HttpUserCard.Header" xml:space="preserve"><value>Пользователь HTTP</value></data>
+  <data name="HttpUserCard.Description" xml:space="preserve"><value>Имя пользователя для базовой аутентификации HTTP</value></data>
+  <data name="HttpPasswdCard.Header" xml:space="preserve"><value>Пароль HTTP</value></data>
+  <data name="HttpPasswdCard.Description" xml:space="preserve"><value>Пароль для базовой аутентификации HTTP</value></data>
+  <data name="ProxyUserCard.Header" xml:space="preserve"><value>Пользователь прокси</value></data>
+  <data name="ProxyUserCard.Description" xml:space="preserve"><value>Имя пользователя для прокси</value></data>
+  <data name="ProxyPasswdCard.Header" xml:space="preserve"><value>Пароль прокси</value></data>
+  <data name="ProxyPasswdCard.Description" xml:space="preserve"><value>Пароль для прокси</value></data>
+  <data name="DiskCacheCard.Header" xml:space="preserve"><value>Дисковый кэш</value></data>
+  <data name="DiskCacheCard.Description" xml:space="preserve"><value>Размер кэша в памяти (напр. 16M); 0 — выкл</value></data>
+  <data name="BtPeerSpeedCard.Header" xml:space="preserve"><value>Лимит скорости на пира</value></data>
+  <data name="BtPeerSpeedCard.Description" xml:space="preserve"><value>Запрашивать больше пиров, если пир медленнее этого значения (напр. 50K)</value></data>
+  <data name="BtStopTimeoutCard.Header" xml:space="preserve"><value>Остановка при простое</value></data>
+  <data name="BtStopTimeoutCard.Description" xml:space="preserve"><value>Останавливать торрент после стольких секунд без прогресса; 0 — никогда</value></data>
+  <data name="BtDetachSeedCard.Header" xml:space="preserve"><value>Отделять только раздачи</value></data>
+  <data name="BtDetachSeedCard.Description" xml:space="preserve"><value>Не учитывать торренты, которые только раздаются, в лимите одновременных загрузок</value></data>
+  <data name="BtDetachSeedToggle.OnContent" xml:space="preserve"><value>Вкл</value></data>
+  <data name="BtDetachSeedToggle.OffContent" xml:space="preserve"><value>Выкл</value></data>
+  <data name="SeedCard.Header" xml:space="preserve"><value>Раздача</value></data>
+  <data name="SeedCard.Description" xml:space="preserve"><value>Что останавливает раздачу после завершения торрента</value></data>
+  <data name="SeedModeRatioItem.Content" xml:space="preserve"><value>По рейтингу</value></data>
+  <data name="SeedModeTimeItem.Content" xml:space="preserve"><value>По времени</value></data>
+  <data name="SeedModeOffItem.Content" xml:space="preserve"><value>Не раздавать</value></data>
+  <data name="SeedValueRatioHeader" xml:space="preserve"><value>Рейтинг раздачи</value></data>
+  <data name="SeedValueRatioDesc" xml:space="preserve"><value>Прекратить раздачу, когда рейтинг отдачи/загрузки достигнет этого значения</value></data>
+  <data name="SeedValueTimeHeader" xml:space="preserve"><value>Время раздачи (минуты)</value></data>
+  <data name="SeedValueTimeDesc" xml:space="preserve"><value>Прекратить раздачу через столько минут</value></data>
 </root>

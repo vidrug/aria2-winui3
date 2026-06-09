@@ -56,6 +56,21 @@ public sealed partial class MainPage : Page
         }
     }
 
+    /// <summary>Opens the per-download speed-limit flyout for the right-clicked row, pre-filled
+    /// with its current limits and anchored to its row. The shared flyout's DataContext is set to
+    /// the clicked download so its slider / number-box pairs bind to that row's limits.</summary>
+    private async void SpeedLimit_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: DownloadItemViewModel vm }
+            || Resources["SpeedLimitFlyout"] is not Flyout flyout)
+            return;
+        if (flyout.Content is FrameworkElement content)
+            content.DataContext = vm;
+        await vm.LoadSpeedLimitsAsync();
+        var anchor = DownloadsList.ContainerFromItem(vm) as FrameworkElement ?? DownloadsList;
+        flyout.ShowAt(anchor, new FlyoutShowOptions { Placement = FlyoutPlacementMode.Right });
+    }
+
     /// <summary>
     /// Reproduces NavigationView's page-change transition for the in-place filtered table:
     /// a quick fade-in plus a small upward slide on the table container, mirroring the

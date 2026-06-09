@@ -262,4 +262,46 @@ one per line</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Hide to tray</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>Pause all</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>Resume all</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Speed limit…</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Speed limit (MB/s)</value></data>
+  <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>Download</value></data>
+  <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>Upload</value></data>
+  <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — no limit</value></data>
+  <data name="LowestSpeedLimitCard.Header" xml:space="preserve"><value>Lowest speed limit</value></data>
+  <data name="LowestSpeedLimitCard.Description" xml:space="preserve"><value>Abort a download whose speed stays below this (e.g. 10K); 0 — off</value></data>
+  <data name="MinTlsCard.Header" xml:space="preserve"><value>Minimum TLS version</value></data>
+  <data name="MinTlsCard.Description" xml:space="preserve"><value>Lowest TLS version accepted for HTTPS</value></data>
+  <data name="DisableIpv6Card.Header" xml:space="preserve"><value>Disable IPv6</value></data>
+  <data name="DisableIpv6Card.Description" xml:space="preserve"><value>Use IPv4 only for name resolution and connections</value></data>
+  <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>Authentication</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP and proxy credentials</value></data>
+  <data name="HttpUserCard.Header" xml:space="preserve"><value>HTTP user</value></data>
+  <data name="HttpUserCard.Description" xml:space="preserve"><value>User name for HTTP basic authentication</value></data>
+  <data name="HttpPasswdCard.Header" xml:space="preserve"><value>HTTP password</value></data>
+  <data name="HttpPasswdCard.Description" xml:space="preserve"><value>Password for HTTP basic authentication</value></data>
+  <data name="ProxyUserCard.Header" xml:space="preserve"><value>Proxy user</value></data>
+  <data name="ProxyUserCard.Description" xml:space="preserve"><value>User name for the proxy</value></data>
+  <data name="ProxyPasswdCard.Header" xml:space="preserve"><value>Proxy password</value></data>
+  <data name="ProxyPasswdCard.Description" xml:space="preserve"><value>Password for the proxy</value></data>
+  <data name="DiskCacheCard.Header" xml:space="preserve"><value>Disk cache</value></data>
+  <data name="DiskCacheCard.Description" xml:space="preserve"><value>In-memory cache size (e.g. 16M); 0 — off</value></data>
+  <data name="BtPeerSpeedCard.Header" xml:space="preserve"><value>Per-peer speed limit</value></data>
+  <data name="BtPeerSpeedCard.Description" xml:space="preserve"><value>Ask for more peers when a peer is slower than this (e.g. 50K)</value></data>
+  <data name="BtStopTimeoutCard.Header" xml:space="preserve"><value>Stop after idle</value></data>
+  <data name="BtStopTimeoutCard.Description" xml:space="preserve"><value>Stop a torrent after this many seconds without progress; 0 — never</value></data>
+  <data name="BtDetachSeedCard.Header" xml:space="preserve"><value>Detach seeding-only</value></data>
+  <data name="BtDetachSeedCard.Description" xml:space="preserve"><value>Don't count seeding-only torrents toward the concurrent-downloads limit</value></data>
+  <data name="BtDetachSeedToggle.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="BtDetachSeedToggle.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SeedCard.Header" xml:space="preserve"><value>Seeding</value></data>
+  <data name="SeedCard.Description" xml:space="preserve"><value>What stops seeding after a torrent finishes</value></data>
+  <data name="SeedModeRatioItem.Content" xml:space="preserve"><value>By ratio</value></data>
+  <data name="SeedModeTimeItem.Content" xml:space="preserve"><value>By time</value></data>
+  <data name="SeedModeOffItem.Content" xml:space="preserve"><value>Don't seed</value></data>
+  <data name="SeedValueRatioHeader" xml:space="preserve"><value>Share ratio</value></data>
+  <data name="SeedValueRatioDesc" xml:space="preserve"><value>Stop seeding once the upload/download ratio reaches this</value></data>
+  <data name="SeedValueTimeHeader" xml:space="preserve"><value>Seeding time (minutes)</value></data>
+  <data name="SeedValueTimeDesc" xml:space="preserve"><value>Stop seeding after this many minutes</value></data>
 </root>

@@ -262,4 +262,46 @@ her satıra bir tane</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Tepsiye küçült</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>Tümünü duraklat</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>Tümünü sürdür</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Hız limiti…</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Hız limiti (MB/s)</value></data>
+  <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>İndirme</value></data>
+  <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>Gönderme</value></data>
+  <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — sınırsız</value></data>
+  <data name="LowestSpeedLimitCard.Header" xml:space="preserve"><value>En düşük hız limiti</value></data>
+  <data name="LowestSpeedLimitCard.Description" xml:space="preserve"><value>Hızı bunun altında kalan indirmeyi durdurur (örn. 10K); 0 — kapalı</value></data>
+  <data name="MinTlsCard.Header" xml:space="preserve"><value>Minimum TLS sürümü</value></data>
+  <data name="MinTlsCard.Description" xml:space="preserve"><value>HTTPS için kabul edilen en düşük TLS sürümü</value></data>
+  <data name="DisableIpv6Card.Header" xml:space="preserve"><value>IPv6'yı devre dışı bırak</value></data>
+  <data name="DisableIpv6Card.Description" xml:space="preserve"><value>Ad çözümleme ve bağlantılar için yalnızca IPv4 kullan</value></data>
+  <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>Kimlik doğrulama</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP ve proxy kimlik bilgileri</value></data>
+  <data name="HttpUserCard.Header" xml:space="preserve"><value>HTTP kullanıcısı</value></data>
+  <data name="HttpUserCard.Description" xml:space="preserve"><value>HTTP temel kimlik doğrulaması için kullanıcı adı</value></data>
+  <data name="HttpPasswdCard.Header" xml:space="preserve"><value>HTTP parolası</value></data>
+  <data name="HttpPasswdCard.Description" xml:space="preserve"><value>HTTP temel kimlik doğrulaması için parola</value></data>
+  <data name="ProxyUserCard.Header" xml:space="preserve"><value>Proxy kullanıcısı</value></data>
+  <data name="ProxyUserCard.Description" xml:space="preserve"><value>Proxy için kullanıcı adı</value></data>
+  <data name="ProxyPasswdCard.Header" xml:space="preserve"><value>Proxy parolası</value></data>
+  <data name="ProxyPasswdCard.Description" xml:space="preserve"><value>Proxy için parola</value></data>
+  <data name="DiskCacheCard.Header" xml:space="preserve"><value>Disk önbelleği</value></data>
+  <data name="DiskCacheCard.Description" xml:space="preserve"><value>Bellek içi önbellek boyutu (örn. 16M); 0 — kapalı</value></data>
+  <data name="BtPeerSpeedCard.Header" xml:space="preserve"><value>Eş başına hız limiti</value></data>
+  <data name="BtPeerSpeedCard.Description" xml:space="preserve"><value>Bir eş bundan yavaşsa daha fazla eş iste (örn. 50K)</value></data>
+  <data name="BtStopTimeoutCard.Header" xml:space="preserve"><value>Boştaysa durdur</value></data>
+  <data name="BtStopTimeoutCard.Description" xml:space="preserve"><value>Bir torrenti bu kadar saniye ilerleme olmazsa durdur; 0 — asla</value></data>
+  <data name="BtDetachSeedCard.Header" xml:space="preserve"><value>Yalnızca tohumlayanları ayır</value></data>
+  <data name="BtDetachSeedCard.Description" xml:space="preserve"><value>Yalnızca tohumlanan torrentleri eşzamanlı indirme sınırına dahil etme</value></data>
+  <data name="BtDetachSeedToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="BtDetachSeedToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SeedCard.Header" xml:space="preserve"><value>Tohumlama</value></data>
+  <data name="SeedCard.Description" xml:space="preserve"><value>Bir torrent tamamlandıktan sonra tohumlamayı ne durdurur</value></data>
+  <data name="SeedModeRatioItem.Content" xml:space="preserve"><value>Orana göre</value></data>
+  <data name="SeedModeTimeItem.Content" xml:space="preserve"><value>Süreye göre</value></data>
+  <data name="SeedModeOffItem.Content" xml:space="preserve"><value>Tohumlama</value></data>
+  <data name="SeedValueRatioHeader" xml:space="preserve"><value>Paylaşım oranı</value></data>
+  <data name="SeedValueRatioDesc" xml:space="preserve"><value>Gönderme/indirme oranı buna ulaştığında tohumlamayı durdur</value></data>
+  <data name="SeedValueTimeHeader" xml:space="preserve"><value>Tohumlama süresi (dakika)</value></data>
+  <data name="SeedValueTimeDesc" xml:space="preserve"><value>Bu kadar dakika sonra tohumlamayı durdur</value></data>
 </root>

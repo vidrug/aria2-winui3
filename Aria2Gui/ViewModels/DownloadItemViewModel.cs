@@ -111,6 +111,15 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     [ObservableProperty]
     public partial bool HasMagnet { get; set; }
 
+    /// <summary>Per-download speed caps (MB/s; 0 = unlimited) for the row's speed-limit flyout.
+    /// The slider and the number box both bind here, so they stay linked; a change is pushed to
+    /// aria2 live (per gid) via <see cref="ApplySpeedLimitAsync"/>.</summary>
+    [ObservableProperty]
+    public partial double SpeedLimitDownMb { get; set; }
+
+    [ObservableProperty]
+    public partial double SpeedLimitUpMb { get; set; }
+
     /// <summary>Filter bucket; recomputed on every poll tick.</summary>
     public DownloadCategory Category { get; private set; } = DownloadCategory.Downloading;
 
@@ -138,6 +147,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
 
     private bool _isStopped;
     private string? _firstFilePath;
+
+    /// <summary>True while <see cref="LoadSpeedLimitsAsync"/> seeds the flyout fields, so the
+    /// resulting property changes don't immediately push the same value back to aria2.</summary>
+    private bool _suppressSpeedApply;
 
     public DownloadItemViewModel(string gid, TableColumns columns)
     {
@@ -348,6 +361,73 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         {
             // Engine reconnecting or the entry vanished under us — the list resyncs next tick.
         }
+    }
+
+    /// <summary>Pre-fills the speed-limit flyout with this download's current per-gid limits,
+    /// without re-pushing them back to aria2 (suppressed). Called as the flyout opens.</summary>
+    public async Task LoadSpeedLimitsAsync()
+    {
+        try
+        {
+            var (down, up) = await _service.Rpc.GetSpeedLimitsAsync(Gid);
+            _suppressSpeedApply = true;
+            SpeedLimitDownMb = AriaSpeedToMb(down);
+            SpeedLimitUpMb = AriaSpeedToMb(up);
+        }
+        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
+        {
+            // Engine reconnecting — leave the fields at their last values.
+        }
+        finally
+        {
+            _suppressSpeedApply = false;
+        }
+    }
+
+    // The slider and the number box both write these, so the apply runs whichever the user moves.
+    partial void OnSpeedLimitDownMbChanged(double value) => PushSpeedLimit();
+    partial void OnSpeedLimitUpMbChanged(double value) => PushSpeedLimit();
+
+    private void PushSpeedLimit()
+    {
+        if (!_suppressSpeedApply)
+            _ = ApplySpeedLimitAsync();
+    }
+
+    /// <summary>Pushes the current per-download limits to aria2 via changeOption (per gid).</summary>
+    private async Task ApplySpeedLimitAsync()
+    {
+        try
+        {
+            await _service.Rpc.ChangeOptionAsync(Gid, new Dictionary<string, string>
+            {
+                ["max-download-limit"] = MbToAriaSpeed(SpeedLimitDownMb),
+                ["max-upload-limit"] = MbToAriaSpeed(SpeedLimitUpMb),
+            });
+        }
+        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
+        {
+            // Status changed under us or the engine is reconnecting — harmless; next open resyncs.
+        }
+    }
+
+    /// <summary>MB/s → aria2 speed string in KiB ("0" = no limit).</summary>
+    private static string MbToAriaSpeed(double mb) =>
+        mb <= 0 ? "0" : ((long)Math.Round(mb * 1024)).ToString(CultureInfo.InvariantCulture) + "K";
+
+    /// <summary>aria2 speed string ("0", "512K", "5M", or a raw byte count) → MB/s.</summary>
+    private static double AriaSpeedToMb(string speed)
+    {
+        if (string.IsNullOrWhiteSpace(speed))
+            return 0;
+        string t = speed.Trim();
+        double mult = 1;
+        char last = char.ToUpperInvariant(t[^1]);
+        if (last == 'K') { mult = 1024; t = t[..^1]; }
+        else if (last == 'M') { mult = 1024 * 1024; t = t[..^1]; }
+        return double.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out var n)
+            ? Math.Round(n * mult / (1024 * 1024), 2)
+            : 0;
     }
 
     [RelayCommand]
