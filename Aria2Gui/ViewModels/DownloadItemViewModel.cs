@@ -111,14 +111,32 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     [ObservableProperty]
     public partial bool HasMagnet { get; set; }
 
-    /// <summary>Per-download speed caps (MB/s; 0 = unlimited) for the row's speed-limit flyout.
-    /// The slider and the number box both bind here, so they stay linked; a change is pushed to
-    /// aria2 live (per gid) via <see cref="ApplySpeedLimitAsync"/>.</summary>
+    /// <summary>Per-download speed cap as a value in the currently selected unit
+    /// (<see cref="SpeedLimitDownUnit"/>); 0 = unlimited. This is the real, UNCAPPED value bound to
+    /// the number box — you can enter any speed. The matching <see cref="SpeedLimitDownSlider"/>/
+    /// <see cref="SpeedLimitUpSlider"/> mirror it but clamp to the slider's 0–<see cref="SpeedSliderMax"/>
+    /// range, so a value above the slider maximum shows the typed number in the box while the slider
+    /// pins at its top. A change is pushed to aria2 live (per gid) as a byte count via the unit.</summary>
     [ObservableProperty]
     public partial double SpeedLimitDownMb { get; set; }
 
     [ObservableProperty]
     public partial double SpeedLimitUpMb { get; set; }
+
+    /// <summary>Unit symbol (B/KB/Kb/MB/Mb) the download value above is expressed in. Changing it
+    /// re-interprets the typed number in the new unit and re-applies; the slider scale follows.</summary>
+    [ObservableProperty]
+    public partial string SpeedLimitDownUnit { get; set; } = SpeedUnit.Default;
+
+    [ObservableProperty]
+    public partial string SpeedLimitUpUnit { get; set; } = SpeedUnit.Default;
+
+    /// <summary>Slider position (0–<see cref="SpeedSliderMax"/> of the selected unit) mirroring the limit.</summary>
+    [ObservableProperty]
+    public partial double SpeedLimitDownSlider { get; set; }
+
+    [ObservableProperty]
+    public partial double SpeedLimitUpSlider { get; set; }
 
     /// <summary>Filter bucket; recomputed on every poll tick.</summary>
     public DownloadCategory Category { get; private set; } = DownloadCategory.Downloading;
@@ -151,6 +169,13 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     /// <summary>True while <see cref="LoadSpeedLimitsAsync"/> seeds the flyout fields, so the
     /// resulting property changes don't immediately push the same value back to aria2.</summary>
     private bool _suppressSpeedApply;
+
+    /// <summary>Guards the two-way mirror between a real limit and its slider position so syncing
+    /// one doesn't recurse back into the other.</summary>
+    private bool _syncingSpeed;
+
+    /// <summary>Upper bound of the speed-limit slider (in the selected unit); the box is uncapped.</summary>
+    private const double SpeedSliderMax = 100;
 
     public DownloadItemViewModel(string gid, TableColumns columns)
     {
@@ -351,10 +376,24 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     {
         if (string.IsNullOrEmpty(InfoHash))
             return;
+        string hash = InfoHash;
         try
         {
-            string magnet = $"magnet:?xt=urn:btih:{InfoHash}&dn={Uri.EscapeDataString(Name)}";
-            await RemoveAsync();
+            string magnet = $"magnet:?xt=urn:btih:{hash}&dn={Uri.EscapeDataString(Name)}";
+            // Force-stop, then keep purging the result until aria2's BitTorrent engine has fully
+            // released this info hash. Re-adding the magnet before that makes aria2 spawn a second
+            // entry that immediately errors with "already downloading" — the duplicate the user saw.
+            try { await _service.Rpc.RemoveAsync(Gid, force: true); }
+            catch (Aria2RpcException) { /* already stopped */ }
+            for (int i = 0; i < 25; i++)
+            {
+                try { await _service.Rpc.RemoveDownloadResultAsync(Gid); }
+                catch (Aria2RpcException) { /* not yet removable — retry */ }
+                var snap = await _service.Rpc.GetSnapshotAsync();
+                if (!snap.Downloads.Any(d => string.Equals(d.InfoHash, hash, StringComparison.OrdinalIgnoreCase)))
+                    break;
+                await Task.Delay(200);
+            }
             await DownloadAdder.AddUrisAsync(magnet, Directory);
         }
         catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
@@ -371,8 +410,11 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         {
             var (down, up) = await _service.Rpc.GetSpeedLimitsAsync(Gid);
             _suppressSpeedApply = true;
-            SpeedLimitDownMb = AriaSpeedToMb(down);
-            SpeedLimitUpMb = AriaSpeedToMb(up);
+            long downBytes = SpeedUnit.ParseStoredBytes(down);
+            long upBytes = SpeedUnit.ParseStoredBytes(up);
+            // Pick the largest unit giving a value ≥ 1 (MB when 0), then show the value in it.
+            (SpeedLimitDownMb, SpeedLimitDownUnit) = SpeedUnit.FromBytes(downBytes, SpeedUnit.BestUnit(downBytes));
+            (SpeedLimitUpMb, SpeedLimitUpUnit) = SpeedUnit.FromBytes(upBytes, SpeedUnit.BestUnit(upBytes));
         }
         catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
         {
@@ -384,9 +426,49 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         }
     }
 
-    // The slider and the number box both write these, so the apply runs whichever the user moves.
-    partial void OnSpeedLimitDownMbChanged(double value) => PushSpeedLimit();
-    partial void OnSpeedLimitUpMbChanged(double value) => PushSpeedLimit();
+    // The number box holds the real (uncapped) value in the selected unit; the slider mirrors it
+    // clamped to its range. Each handler syncs its counterpart (guarded against recursion) then
+    // pushes once. Changing the unit keeps the typed number (it's re-interpreted in the new unit
+    // by ApplySpeedLimitAsync) and just re-applies — only the byte count sent to aria2 changes.
+    partial void OnSpeedLimitDownMbChanged(double value)
+    {
+        if (_syncingSpeed) return;
+        _syncingSpeed = true;
+        SpeedLimitDownSlider = Math.Clamp(value, 0, SpeedSliderMax);
+        _syncingSpeed = false;
+        PushSpeedLimit();
+    }
+
+    partial void OnSpeedLimitUpMbChanged(double value)
+    {
+        if (_syncingSpeed) return;
+        _syncingSpeed = true;
+        SpeedLimitUpSlider = Math.Clamp(value, 0, SpeedSliderMax);
+        _syncingSpeed = false;
+        PushSpeedLimit();
+    }
+
+    partial void OnSpeedLimitDownSliderChanged(double value)
+    {
+        if (_syncingSpeed) return;
+        _syncingSpeed = true;
+        SpeedLimitDownMb = value;
+        _syncingSpeed = false;
+        PushSpeedLimit();
+    }
+
+    partial void OnSpeedLimitUpSliderChanged(double value)
+    {
+        if (_syncingSpeed) return;
+        _syncingSpeed = true;
+        SpeedLimitUpMb = value;
+        _syncingSpeed = false;
+        PushSpeedLimit();
+    }
+
+    // Changing the unit re-interprets the same typed number in the new unit and re-applies.
+    partial void OnSpeedLimitDownUnitChanged(string value) => PushSpeedLimit();
+    partial void OnSpeedLimitUpUnitChanged(string value) => PushSpeedLimit();
 
     private void PushSpeedLimit()
     {
@@ -394,15 +476,16 @@ public sealed partial class DownloadItemViewModel : ObservableObject
             _ = ApplySpeedLimitAsync();
     }
 
-    /// <summary>Pushes the current per-download limits to aria2 via changeOption (per gid).</summary>
+    /// <summary>Pushes the current per-download limits to aria2 via changeOption (per gid),
+    /// converting each value+unit to a plain byte count ("0" = no limit).</summary>
     private async Task ApplySpeedLimitAsync()
     {
         try
         {
             await _service.Rpc.ChangeOptionAsync(Gid, new Dictionary<string, string>
             {
-                ["max-download-limit"] = MbToAriaSpeed(SpeedLimitDownMb),
-                ["max-upload-limit"] = MbToAriaSpeed(SpeedLimitUpMb),
+                ["max-download-limit"] = ToAriaBytes(SpeedLimitDownMb, SpeedLimitDownUnit),
+                ["max-upload-limit"] = ToAriaBytes(SpeedLimitUpMb, SpeedLimitUpUnit),
             });
         }
         catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
@@ -411,23 +494,11 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         }
     }
 
-    /// <summary>MB/s → aria2 speed string in KiB ("0" = no limit).</summary>
-    private static string MbToAriaSpeed(double mb) =>
-        mb <= 0 ? "0" : ((long)Math.Round(mb * 1024)).ToString(CultureInfo.InvariantCulture) + "K";
-
-    /// <summary>aria2 speed string ("0", "512K", "5M", or a raw byte count) → MB/s.</summary>
-    private static double AriaSpeedToMb(string speed)
+    /// <summary>value + unit → aria2 byte-count string ("0" = no limit).</summary>
+    private static string ToAriaBytes(double value, string unit)
     {
-        if (string.IsNullOrWhiteSpace(speed))
-            return 0;
-        string t = speed.Trim();
-        double mult = 1;
-        char last = char.ToUpperInvariant(t[^1]);
-        if (last == 'K') { mult = 1024; t = t[..^1]; }
-        else if (last == 'M') { mult = 1024 * 1024; t = t[..^1]; }
-        return double.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out var n)
-            ? Math.Round(n * mult / (1024 * 1024), 2)
-            : 0;
+        long bytes = SpeedUnit.ToBytes(value, unit);
+        return bytes <= 0 ? "0" : bytes.ToString(CultureInfo.InvariantCulture);
     }
 
     [RelayCommand]

@@ -72,9 +72,9 @@
   <data name="DownloadFolderCard.Description" xml:space="preserve"><value>Куди зберігати файли за замовчуванням</value></data>
   <data name="BrowseFolderButton.Content" xml:space="preserve"><value>Огляд…</value></data>
   <data name="DownLimitCard.Header" xml:space="preserve"><value>Ліміт завантаження</value></data>
-  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — без обмеження, МБ/с</value></data>
+  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — без обмеження</value></data>
   <data name="UpLimitCard.Header" xml:space="preserve"><value>Ліміт віддачі</value></data>
-  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — без обмеження, МБ/с</value></data>
+  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — без обмеження</value></data>
   <data name="ConcurrentCard.Header" xml:space="preserve"><value>Одночасних завантажень</value></data>
   <data name="ConcurrentCard.Description" xml:space="preserve"><value>Скільки файлів завантажувати паралельно</value></data>
   <data name="ConnectionsCard.Header" xml:space="preserve"><value>З'єднань на сервер</value></data>
@@ -262,8 +262,8 @@
   <data name="TrayHide" xml:space="preserve"><value>Згорнути в трей</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>Зупинити все</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>Відновити все</value></data>
-  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Ліміт швидкості…</value></data>
-  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Ліміт швидкості (MB/s)</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Обмежити швидкість</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Обмежити швидкість</value></data>
   <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>Завантаження</value></data>
   <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>Віддача</value></data>
   <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — без обмеження</value></data>
@@ -304,4 +304,9 @@
   <data name="SeedValueRatioDesc" xml:space="preserve"><value>Зупинити роздавання, щойно рейтинг віддачі/завантаження досягне цього</value></data>
   <data name="SeedValueTimeHeader" xml:space="preserve"><value>Час роздавання (хвилини)</value></data>
   <data name="SeedValueTimeDesc" xml:space="preserve"><value>Зупинити роздавання після стількох хвилин</value></data>
+  <data name="SpeedUnitByte.Content" xml:space="preserve"><value>Б</value></data>
+  <data name="SpeedUnitKByte.Content" xml:space="preserve"><value>КБ</value></data>
+  <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Кб</value></data>
+  <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>МБ</value></data>
+  <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Мб</value></data>
 </root>

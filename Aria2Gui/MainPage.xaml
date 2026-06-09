@@ -111,9 +111,17 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Slider Grid.Column="0" AutomationProperties.AutomationId="SpeedLimitDownSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitDownMb, Mode=TwoWay}" VerticalAlignment="Center" />
-                        <NumberBox Grid.Column="1" AutomationProperties.AutomationId="SpeedLimitDownBox" Width="108" Minimum="0" Maximum="100" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitDownMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <Slider Grid.Column="0" AutomationProperties.AutomationId="SpeedLimitDownSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitDownSlider, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <NumberBox Grid.Column="1" AutomationProperties.AutomationId="SpeedLimitDownBox" Width="92" Minimum="0" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitDownMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="2" AutomationProperties.AutomationId="SpeedLimitDownUnit" MinWidth="68" VerticalAlignment="Center" SelectedValuePath="Tag" SelectedValue="{Binding SpeedLimitDownUnit, Mode=TwoWay}">
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitByte" Tag="B" />
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitKByte" Tag="KB" />
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitKBit" Tag="Kb" />
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitMByte" Tag="MB" />
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitMBit" Tag="Mb" />
+                        </ComboBox>
                     </Grid>
                 </StackPanel>
                 <StackPanel Spacing="2">
@@ -122,9 +130,17 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Slider Grid.Column="0" AutomationProperties.AutomationId="SpeedLimitUpSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitUpMb, Mode=TwoWay}" VerticalAlignment="Center" />
-                        <NumberBox Grid.Column="1" AutomationProperties.AutomationId="SpeedLimitUpBox" Width="108" Minimum="0" Maximum="100" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitUpMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <Slider Grid.Column="0" AutomationProperties.AutomationId="SpeedLimitUpSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitUpSlider, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <NumberBox Grid.Column="1" AutomationProperties.AutomationId="SpeedLimitUpBox" Width="92" Minimum="0" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitUpMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="2" AutomationProperties.AutomationId="SpeedLimitUpUnit" MinWidth="68" VerticalAlignment="Center" SelectedValuePath="Tag" SelectedValue="{Binding SpeedLimitUpUnit, Mode=TwoWay}">
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitByte" Tag="B" />
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitKByte" Tag="KB" />
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitKBit" Tag="Kb" />
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitMByte" Tag="MB" />
+                            <ComboBoxItem loc:Localize.Uid="SpeedUnitMBit" Tag="Mb" />
+                        </ComboBox>
                     </Grid>
                 </StackPanel>
                 <TextBlock loc:Localize.Uid="SpeedLimitHint" Style="{StaticResource DetailLabelStyle}" TextWrapping="Wrap" />

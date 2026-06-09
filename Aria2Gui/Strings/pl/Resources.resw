@@ -72,9 +72,9 @@
   <data name="DownloadFolderCard.Description" xml:space="preserve"><value>Gdzie domyślnie zapisywać pliki</value></data>
   <data name="BrowseFolderButton.Content" xml:space="preserve"><value>Przeglądaj…</value></data>
   <data name="DownLimitCard.Header" xml:space="preserve"><value>Limit pobierania</value></data>
-  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — bez ograniczeń, MB/s</value></data>
+  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — bez ograniczeń</value></data>
   <data name="UpLimitCard.Header" xml:space="preserve"><value>Limit wysyłania</value></data>
-  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — bez ograniczeń, MB/s</value></data>
+  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — bez ograniczeń</value></data>
   <data name="ConcurrentCard.Header" xml:space="preserve"><value>Równoczesne pobierania</value></data>
   <data name="ConcurrentCard.Description" xml:space="preserve"><value>Ile plików pobierać równolegle</value></data>
   <data name="ConnectionsCard.Header" xml:space="preserve"><value>Połączenia na serwer</value></data>
@@ -262,8 +262,8 @@ jeden w wierszu</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Zminimalizuj do zasobnika</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>Wstrzymaj wszystko</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>Wznów wszystko</value></data>
-  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Limit prędkości…</value></data>
-  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Limit prędkości (MB/s)</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Ogranicz prędkość</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Ogranicz prędkość</value></data>
   <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>Pobieranie</value></data>
   <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>Wysyłanie</value></data>
   <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — bez ograniczeń</value></data>
@@ -304,4 +304,9 @@ jeden w wierszu</value></data>
   <data name="SeedValueRatioDesc" xml:space="preserve"><value>Zatrzymaj seedowanie, gdy ratio wysyłania/pobierania osiągnie tę wartość</value></data>
   <data name="SeedValueTimeHeader" xml:space="preserve"><value>Czas seedowania (minuty)</value></data>
   <data name="SeedValueTimeDesc" xml:space="preserve"><value>Zatrzymaj seedowanie po tylu minutach</value></data>
+  <data name="SpeedUnitByte.Content" xml:space="preserve"><value>B</value></data>
+  <data name="SpeedUnitKByte.Content" xml:space="preserve"><value>KB</value></data>
+  <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Kb</value></data>
+  <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>MB</value></data>
+  <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Mb</value></data>
 </root>

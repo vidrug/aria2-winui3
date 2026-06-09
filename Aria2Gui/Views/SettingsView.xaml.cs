@@ -46,27 +46,20 @@ public sealed partial class SettingsView : UserControl
     {
         foreach (var nb in new[]
         {
+            DownLimitBox, UpLimitBox,
             ConcurrentBox, ConnectionsBox, TimeoutBox, ConnectTimeoutBox,
             MaxTriesBox, RetryWaitBox, ListenPortBox, PeersBox, BtMaxOpenFilesBox,
             BtStopTimeoutBox, SeedValueBox,
         })
             nb.ValueChanged += OnNumberChanged;
 
-        foreach (var cb in new[] { ThemeBox, LanguageBox, FileAllocBox, MinTlsBox })
+        foreach (var cb in new[] { DownLimitUnitBox, UpLimitUnitBox, ThemeBox, LanguageBox, FileAllocBox, MinTlsBox })
             cb.SelectionChanged += OnSelectionChanged;
         // The seeding mode also reshapes its value card, so it gets a dedicated handler.
         SeedModeBox.SelectionChanged += OnSeedModeChanged;
         HttpPasswdBox.LostFocus += OnTextCommitted;
         ProxyPasswdBox.LostFocus += OnTextCommitted;
 
-        // Speed limits are editable combo boxes: apply when a preset is picked, when a custom
-        // value is submitted (Enter), and when the edit box loses focus.
-        foreach (var lb in new[] { DownLimitBox, UpLimitBox })
-        {
-            lb.SelectionChanged += OnSelectionChanged;
-            lb.TextSubmitted += OnLimitSubmitted;
-            lb.LostFocus += OnTextCommitted;
-        }
         CryptoLevelRadio.SelectionChanged += OnSelectionChanged;
 
         // CryptoToggle keeps its own handler (OnCryptoToggled) which also applies.
@@ -91,8 +84,8 @@ public sealed partial class SettingsView : UserControl
             var s = Aria2Service.Instance.Settings;
             _entrySettings = s;
             DirText.Text = s.DownloadDirectory;
-            SetLimitCombo(DownLimitBox, SpeedToMegabytes(s.MaxDownloadLimit));
-            SetLimitCombo(UpLimitBox, SpeedToMegabytes(s.MaxUploadLimit));
+            LoadLimit(DownLimitBox, DownLimitUnitBox, s.MaxDownloadLimit, s.MaxDownloadLimitUnit);
+            LoadLimit(UpLimitBox, UpLimitUnitBox, s.MaxUploadLimit, s.MaxUploadLimitUnit);
             ConcurrentBox.Value = s.MaxConcurrentDownloads;
             ConnectionsBox.Value = s.MaxConnectionsPerServer;
             ThemeBox.SelectedIndex = s.Theme switch { "Light" => 1, "Dark" => 2, _ => 0 };
@@ -152,13 +145,6 @@ public sealed partial class SettingsView : UserControl
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e) => _ = ApplyChangeAsync();
     private void OnToggled(object sender, RoutedEventArgs e) => _ = ApplyChangeAsync();
     private void OnTextCommitted(object sender, RoutedEventArgs e) => _ = ApplyChangeAsync();
-
-    private void OnLimitSubmitted(ComboBox sender, ComboBoxTextSubmittedEventArgs args)
-    {
-        // Keep the user's typed custom value instead of letting the ComboBox revert it.
-        args.Handled = true;
-        _ = ApplyChangeAsync();
-    }
 
     /// <summary>Applies and persists the current form state immediately (live aria2 options +
     /// theme). Restart-only options are saved here too but take effect on the engine restart
@@ -384,11 +370,15 @@ public sealed partial class SettingsView : UserControl
         var old = Aria2Service.Instance.Settings;
         string seedMode = (SeedModeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "ratio";
         double seedValue = SafeValue(SeedValueBox.Value, seedMode == "time" ? 60 : 1.0);
+        string downUnit = (DownLimitUnitBox.SelectedValue as string) ?? Helpers.SpeedUnit.Default;
+        string upUnit = (UpLimitUnitBox.SelectedValue as string) ?? Helpers.SpeedUnit.Default;
         return new AppSettings
         {
             DownloadDirectory = DirText.Text,
-            MaxDownloadLimit = MegabytesToSpeed(ParseLimitToMegabytes(DownLimitBox.Text)),
-            MaxUploadLimit = MegabytesToSpeed(ParseLimitToMegabytes(UpLimitBox.Text)),
+            MaxDownloadLimit = LimitToStored(DownLimitBox.Value, downUnit),
+            MaxUploadLimit = LimitToStored(UpLimitBox.Value, upUnit),
+            MaxDownloadLimitUnit = downUnit,
+            MaxUploadLimitUnit = upUnit,
             MaxConcurrentDownloads = (int)SafeValue(ConcurrentBox.Value, 5),
             MaxConnectionsPerServer = (int)SafeValue(ConnectionsBox.Value, 8),
             Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
@@ -461,78 +451,22 @@ public sealed partial class SettingsView : UserControl
     // non-privileged 1024-65535. Clamping here keeps the live value equal to what reloads.
     private static int ClampListenPort(int port) => port == 0 ? 0 : Math.Clamp(port, 1024, 65535);
 
-    // Preset scale (MB/s) for the editable download/upload limit combo boxes. 0 = unlimited.
-    private static readonly double[] LimitPresetsMb = { 0, 1, 2, 5, 10, 20, 50, 100 };
-
-    /// <summary>Fills an editable limit combo with the preset scale and selects the saved value.
-    /// Selection (not <see cref="ComboBox.Text"/>) is used so the value shows even on first open:
-    /// setting <c>Text</c> directly is silently dropped while the combo is still collapsed/unloaded
-    /// and its edit box has no template, which left the field blank. A custom value outside the
-    /// preset scale is appended so it too can be selected and displayed.</summary>
-    private static void SetLimitCombo(ComboBox box, double megabytes)
+    /// <summary>Populates a download/upload limit editor (NumberBox value + unit combo) from a
+    /// stored byte-count string. The stored unit drives the display unit; legacy "10240K"/"5M"
+    /// values still parse (their bytes shown in the stored unit). 0 → empty cap in the default unit.</summary>
+    private static void LoadLimit(NumberBox valueBox, ComboBox unitBox, string stored, string storedUnit)
     {
-        box.Items.Clear();
-        int selected = 0;
-        for (int i = 0; i < LimitPresetsMb.Length; i++)
-        {
-            box.Items.Add(FormatLimit(LimitPresetsMb[i]));
-            if (LimitPresetsMb[i] == megabytes)
-                selected = i;
-        }
-        if (megabytes > 0 && !Array.Exists(LimitPresetsMb, p => p == megabytes))
-        {
-            box.Items.Add(FormatLimit(megabytes));
-            selected = box.Items.Count - 1;
-        }
-        box.SelectedIndex = selected;
+        string unit = Helpers.SpeedUnit.Sanitize(storedUnit);
+        long bytes = Helpers.SpeedUnit.ParseStoredBytes(stored);
+        (double value, unit) = Helpers.SpeedUnit.FromBytes(bytes, unit);
+        valueBox.Value = value;
+        unitBox.SelectedValue = unit;
     }
 
-    /// <summary>Formats a MB/s value for display: 0 → localized "Unlimited", else "N MB/s".</summary>
-    private static string FormatLimit(double megabytes)
+    /// <summary>NumberBox value + unit symbol → aria2 byte-count string ("0" = unlimited).</summary>
+    private static string LimitToStored(double value, string unit)
     {
-        if (double.IsNaN(megabytes) || megabytes <= 0)
-            return Helpers.L.Get("LimitUnlimited");
-        return megabytes.ToString("0.##", CultureInfo.CurrentCulture) + " MB/s";
-    }
-
-    /// <summary>Parses a typed or selected limit back to MB/s. Empty or non-numeric text
-    /// (e.g. the "Unlimited" preset) means no limit (0). A trailing K/G unit is honored;
-    /// the default unit is MB/s, matching the card hint.</summary>
-    private static double ParseLimitToMegabytes(string? text)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-            return 0;
-        var m = System.Text.RegularExpressions.Regex.Match(text, @"[0-9]+(?:[.,][0-9]+)?");
-        if (!m.Success ||
-            !double.TryParse(m.Value.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out var n))
-            return 0;
-        string unit = text[(m.Index + m.Length)..].TrimStart().ToUpperInvariant();
-        if (unit.StartsWith('K'))
-            return n / 1024.0;     // KB/s
-        if (unit.StartsWith('G'))
-            return n * 1024.0;     // GB/s
-        return n;                  // MB/s (default; also "M" / "MB/s")
-    }
-
-    private static double SpeedToMegabytes(string aria2Speed)
-    {
-        if (string.IsNullOrWhiteSpace(aria2Speed))
-            return 0;
-        string trimmed = aria2Speed.Trim();
-        double multiplier = 1;
-        char last = char.ToUpperInvariant(trimmed[^1]);
-        if (last == 'K') { multiplier = 1024; trimmed = trimmed[..^1]; }
-        else if (last == 'M') { multiplier = 1024 * 1024; trimmed = trimmed[..^1]; }
-        return double.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out var value)
-            ? Math.Round(value * multiplier / (1024 * 1024), 4)
-            : 0;
-    }
-
-    private static string MegabytesToSpeed(double megabytes)
-    {
-        if (double.IsNaN(megabytes) || megabytes <= 0)
-            return "0";
-        long kib = Math.Max(1, (long)Math.Round(megabytes * 1024));
-        return kib.ToString(CultureInfo.InvariantCulture) + "K";
+        long bytes = Helpers.SpeedUnit.ToBytes(SafeValue(value, 0), unit);
+        return bytes <= 0 ? "0" : bytes.ToString(CultureInfo.InvariantCulture);
     }
 }

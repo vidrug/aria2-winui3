@@ -8,11 +8,20 @@ public sealed class AppSettings
 {
     public string DownloadDirectory { get; set; } = "";
 
-    /// <summary>aria2 speed format: "0" = unlimited, otherwise e.g. "500K", "5M".</summary>
+    /// <summary>Download cap aria2 receives: a plain byte count ("0" = unlimited). Legacy
+    /// "500K"/"5M" values still load. The matching <see cref="MaxDownloadLimitUnit"/> is only a
+    /// display hint for the settings editor and does not change how aria2 consumes this.</summary>
     public string MaxDownloadLimit { get; set; } = "0";
 
-    /// <summary>aria2 speed format: "0" = unlimited, otherwise e.g. "500K", "5M".</summary>
+    /// <summary>Upload cap aria2 receives: a plain byte count ("0" = unlimited). Legacy
+    /// "500K"/"5M" values still load.</summary>
     public string MaxUploadLimit { get; set; } = "0";
+
+    /// <summary>Unit symbol (B/KB/Kb/MB/Mb) the download-limit editor displays the value in.</summary>
+    public string MaxDownloadLimitUnit { get; set; } = Helpers.SpeedUnit.Default;
+
+    /// <summary>Unit symbol (B/KB/Kb/MB/Mb) the upload-limit editor displays the value in.</summary>
+    public string MaxUploadLimitUnit { get; set; } = Helpers.SpeedUnit.Default;
 
     public int MaxConcurrentDownloads { get; set; } = 5;
 
@@ -174,6 +183,8 @@ public static class SettingsService
         settings.SeedRatio = double.IsFinite(settings.SeedRatio) ? Math.Clamp(settings.SeedRatio, 0, 1000) : 1.0;
         settings.MaxDownloadLimit = SanitizeSpeed(settings.MaxDownloadLimit);
         settings.MaxUploadLimit = SanitizeSpeed(settings.MaxUploadLimit);
+        settings.MaxDownloadLimitUnit = Helpers.SpeedUnit.Sanitize(settings.MaxDownloadLimitUnit);
+        settings.MaxUploadLimitUnit = Helpers.SpeedUnit.Sanitize(settings.MaxUploadLimitUnit);
         settings.ListenPort = settings.ListenPort is 0 ? 0 : Math.Clamp(settings.ListenPort, 1024, 65535);
         settings.BtMaxOpenFiles = Math.Clamp(settings.BtMaxOpenFiles, 1, 10000);
         settings.Timeout = Math.Clamp(settings.Timeout, 1, 600);

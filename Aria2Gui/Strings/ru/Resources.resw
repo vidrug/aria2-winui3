@@ -72,9 +72,9 @@
   <data name="DownloadFolderCard.Description" xml:space="preserve"><value>Куда сохранять файлы по умолчанию</value></data>
   <data name="BrowseFolderButton.Content" xml:space="preserve"><value>Обзор…</value></data>
   <data name="DownLimitCard.Header" xml:space="preserve"><value>Лимит загрузки</value></data>
-  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — без ограничения, МБ/с</value></data>
+  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — без ограничения</value></data>
   <data name="UpLimitCard.Header" xml:space="preserve"><value>Лимит отдачи</value></data>
-  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — без ограничения, МБ/с</value></data>
+  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — без ограничения</value></data>
   <data name="ConcurrentCard.Header" xml:space="preserve"><value>Одновременных загрузок</value></data>
   <data name="ConcurrentCard.Description" xml:space="preserve"><value>Сколько файлов качать параллельно</value></data>
   <data name="ConnectionsCard.Header" xml:space="preserve"><value>Соединений на сервер</value></data>
@@ -262,11 +262,16 @@
   <data name="TrayHide" xml:space="preserve"><value>Свернуть в трей</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>Остановить все</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>Продолжить все</value></data>
-  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Лимит скорости…</value></data>
-  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Лимит скорости (MB/s)</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Ограничить скорость</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Ограничить скорость</value></data>
   <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>Загрузка</value></data>
   <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>Отдача</value></data>
   <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — без ограничения</value></data>
+  <data name="SpeedUnitByte.Content" xml:space="preserve"><value>Б</value></data>
+  <data name="SpeedUnitKByte.Content" xml:space="preserve"><value>КБ</value></data>
+  <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Кб</value></data>
+  <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>МБ</value></data>
+  <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Мб</value></data>
   <data name="LowestSpeedLimitCard.Header" xml:space="preserve"><value>Минимальная скорость</value></data>
   <data name="LowestSpeedLimitCard.Description" xml:space="preserve"><value>Прерывать загрузку, если скорость держится ниже этого значения (напр. 10K); 0 — выкл</value></data>
   <data name="MinTlsCard.Header" xml:space="preserve"><value>Минимальная версия TLS</value></data>

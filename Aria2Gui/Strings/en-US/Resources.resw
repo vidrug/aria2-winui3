@@ -72,9 +72,9 @@
   <data name="DownloadFolderCard.Description" xml:space="preserve"><value>Where to save files by default</value></data>
   <data name="BrowseFolderButton.Content" xml:space="preserve"><value>Browse…</value></data>
   <data name="DownLimitCard.Header" xml:space="preserve"><value>Download limit</value></data>
-  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — unlimited, MB/s</value></data>
+  <data name="DownLimitCard.Description" xml:space="preserve"><value>0 — unlimited</value></data>
   <data name="UpLimitCard.Header" xml:space="preserve"><value>Upload limit</value></data>
-  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — unlimited, MB/s</value></data>
+  <data name="UpLimitCard.Description" xml:space="preserve"><value>0 — unlimited</value></data>
   <data name="ConcurrentCard.Header" xml:space="preserve"><value>Concurrent downloads</value></data>
   <data name="ConcurrentCard.Description" xml:space="preserve"><value>How many files to download in parallel</value></data>
   <data name="ConnectionsCard.Header" xml:space="preserve"><value>Connections per server</value></data>
@@ -262,11 +262,16 @@ one per line</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Hide to tray</value></data>
   <data name="ToolbarPauseAll" xml:space="preserve"><value>Pause all</value></data>
   <data name="ToolbarResumeAll" xml:space="preserve"><value>Resume all</value></data>
-  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Speed limit…</value></data>
-  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Speed limit (MB/s)</value></data>
+  <data name="RowMenuSpeedLimit.Text" xml:space="preserve"><value>Limit speed</value></data>
+  <data name="SpeedLimitTitle.Text" xml:space="preserve"><value>Limit speed</value></data>
   <data name="SpeedLimitDownLabel.Text" xml:space="preserve"><value>Download</value></data>
   <data name="SpeedLimitUpLabel.Text" xml:space="preserve"><value>Upload</value></data>
   <data name="SpeedLimitHint.Text" xml:space="preserve"><value>0 — no limit</value></data>
+  <data name="SpeedUnitByte.Content" xml:space="preserve"><value>B</value></data>
+  <data name="SpeedUnitKByte.Content" xml:space="preserve"><value>KB</value></data>
+  <data name="SpeedUnitKBit.Content" xml:space="preserve"><value>Kb</value></data>
+  <data name="SpeedUnitMByte.Content" xml:space="preserve"><value>MB</value></data>
+  <data name="SpeedUnitMBit.Content" xml:space="preserve"><value>Mb</value></data>
   <data name="LowestSpeedLimitCard.Header" xml:space="preserve"><value>Lowest speed limit</value></data>
   <data name="LowestSpeedLimitCard.Description" xml:space="preserve"><value>Abort a download whose speed stays below this (e.g. 10K); 0 — off</value></data>
   <data name="MinTlsCard.Header" xml:space="preserve"><value>Minimum TLS version</value></data>
