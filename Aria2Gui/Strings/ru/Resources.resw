@@ -316,4 +316,6 @@
   <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Отклонять незашифрованные соединения с пирами (bt-force-encryption)</value></data>
   <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>Вкл</value></data>
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Выкл</value></data>
+  <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>Вкл</value></data>
+  <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>Выкл</value></data>
 </root>

@@ -74,8 +74,16 @@ public sealed class AppSettings
     public string BtMinCryptoLevel { get; set; } = "plain";
 
     /// <summary>Refuse unencrypted peer connections (bt-force-encryption); implies require-crypto
-    /// + arc4. Set by the one-click privacy preset.</summary>
+    /// + arc4. Set by the privacy mode toggle.</summary>
     public bool BtForceEncryption { get; set; }
+
+    /// <summary>Whether privacy mode is on (forces encryption + turns DHT/PEX/LPD off).</summary>
+    public bool PrivacyMode { get; set; }
+
+    /// <summary>The DHT/PEX/LPD/encryption values captured when privacy mode was switched on, so
+    /// switching it off restores them. Internal "dht|pex|lpd|crypto|level|force" snapshot; empty
+    /// when privacy mode is off.</summary>
+    public string PrivacySnapshot { get; set; } = "";
 
     /// <summary>Extra trackers appended to every torrent (one URI per line).</summary>
     public string ExtraTrackers { get; set; } = "";

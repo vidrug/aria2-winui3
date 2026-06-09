@@ -316,4 +316,6 @@ one per line</value></data>
   <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Refuse unencrypted peer connections (bt-force-encryption)</value></data>
   <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>On</value></data>
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>Off</value></data>
 </root>

@@ -129,6 +129,9 @@ public sealed partial class SettingsView : UserControl
             CryptoLevelRadio.SelectedIndex = s.BtMinCryptoLevel == "arc4" ? 1 : 0;
             ForceEncryptionToggle.IsOn = s.BtForceEncryption;
             CryptoExpander.IsExpanded = s.RequireCrypto;
+            PrivacyToggle.IsOn = s.PrivacyMode;
+            _privacySnapshot = s.PrivacySnapshot;
+            SetPrivacyControlsEnabled(s.PrivacyMode);
             TrackersBox.Text = s.ExtraTrackers;
             ExtraOptionsBox.Text = s.ExtraAria2Options;
             ErrorBar.IsOpen = false;
@@ -311,28 +314,72 @@ public sealed partial class SettingsView : UserControl
         _ = ApplyChangeAsync();
     }
 
-    /// <summary>One-click privacy preset: force full encryption (require + arc4 + force-encryption)
-    /// and turn off the public peer-discovery mechanisms (DHT, PEX, LPD). Flips the individual
-    /// toggles so the change is visible; like every BT flag it takes effect on the engine restart
-    /// performed when leaving the page (the BtRestartInfoBar says so).</summary>
-    private async void OnPrivacyMode(object sender, RoutedEventArgs e)
+    /// <summary>Snapshot of the DHT/PEX/LPD/encryption choices captured when privacy mode is turned
+    /// on, so turning it off restores them ("dht|pex|lpd|crypto|level|force"); empty when off.</summary>
+    private string _privacySnapshot = "";
+
+    /// <summary>Privacy mode toggle: turning it ON snapshots the current DHT/PEX/LPD/encryption
+    /// choices and forces the private preset (full encryption + DHT/PEX/LPD off); turning it OFF
+    /// restores that snapshot. The affected controls are disabled while it's on so they can't drift
+    /// out of sync. Like every BT flag it applies on the engine restart performed when leaving.</summary>
+    private void OnPrivacyToggled(object sender, RoutedEventArgs e)
     {
-        _loading = true; // flip several controls without firing one apply per change
+        if (_loading)
+            return;
+        _loading = true; // flip several controls without one apply per change
         try
         {
-            CryptoToggle.IsOn = true;
-            CryptoLevelRadio.SelectedIndex = 1; // arc4
-            ForceEncryptionToggle.IsOn = true;
-            CryptoExpander.IsExpanded = true;
-            DhtToggle.IsOn = false;
-            PexToggle.IsOn = false;
-            LpdToggle.IsOn = false;
+            if (PrivacyToggle.IsOn)
+            {
+                _privacySnapshot = string.Join('|',
+                    DhtToggle.IsOn ? "1" : "0",
+                    PexToggle.IsOn ? "1" : "0",
+                    LpdToggle.IsOn ? "1" : "0",
+                    CryptoToggle.IsOn ? "1" : "0",
+                    CryptoLevelRadio.SelectedIndex.ToString(CultureInfo.InvariantCulture),
+                    ForceEncryptionToggle.IsOn ? "1" : "0");
+                DhtToggle.IsOn = false;
+                PexToggle.IsOn = false;
+                LpdToggle.IsOn = false;
+                CryptoToggle.IsOn = true;
+                CryptoLevelRadio.SelectedIndex = 1; // arc4
+                ForceEncryptionToggle.IsOn = true;
+                CryptoExpander.IsExpanded = true;
+            }
+            else
+            {
+                var parts = _privacySnapshot.Split('|');
+                if (parts.Length == 6)
+                {
+                    DhtToggle.IsOn = parts[0] == "1";
+                    PexToggle.IsOn = parts[1] == "1";
+                    LpdToggle.IsOn = parts[2] == "1";
+                    CryptoToggle.IsOn = parts[3] == "1";
+                    CryptoLevelRadio.SelectedIndex = int.TryParse(parts[4], out var idx) ? idx : 0;
+                    ForceEncryptionToggle.IsOn = parts[5] == "1";
+                    CryptoExpander.IsExpanded = CryptoToggle.IsOn;
+                }
+                _privacySnapshot = "";
+            }
+            SetPrivacyControlsEnabled(PrivacyToggle.IsOn);
         }
         finally
         {
             _loading = false;
         }
-        await ApplyChangeAsync();
+        _ = ApplyChangeAsync();
+    }
+
+    /// <summary>Disables the peer-discovery / encryption controls while privacy mode owns them.</summary>
+    private void SetPrivacyControlsEnabled(bool privacyOn)
+    {
+        bool enabled = !privacyOn;
+        DhtToggle.IsEnabled = enabled;
+        PexToggle.IsEnabled = enabled;
+        LpdToggle.IsEnabled = enabled;
+        CryptoToggle.IsEnabled = enabled;
+        CryptoLevelRadio.IsEnabled = enabled;
+        ForceEncryptionToggle.IsEnabled = enabled;
     }
 
     /// <summary>The seeding value (ratio vs minutes) is a parameter of the mode, so its card
@@ -445,6 +492,8 @@ public sealed partial class SettingsView : UserControl
             RequireCrypto = CryptoToggle.IsOn,
             BtMinCryptoLevel = CryptoLevelRadio.SelectedIndex == 1 ? "arc4" : "plain",
             BtForceEncryption = ForceEncryptionToggle.IsOn,
+            PrivacyMode = PrivacyToggle.IsOn,
+            PrivacySnapshot = _privacySnapshot,
             ExtraTrackers = TrackersBox.Text,
             ExtraAria2Options = ExtraOptionsBox.Text,
         };

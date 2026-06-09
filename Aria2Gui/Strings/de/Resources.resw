@@ -316,4 +316,6 @@ einer pro Zeile</value></data>
   <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Unverschlüsselte Peer-Verbindungen ablehnen (bt-force-encryption)</value></data>
   <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>An</value></data>
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>An</value></data>
+  <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>Aus</value></data>
 </root>

@@ -316,4 +316,6 @@ jeden w wierszu</value></data>
   <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Odrzucaj nieszyfrowane połączenia z peerami (bt-force-encryption)</value></data>
   <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
+  <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
+  <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
 </root>

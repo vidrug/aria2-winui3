@@ -316,4 +316,6 @@
   <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>暗号化されていないピア接続を拒否します (bt-force-encryption)</value></data>
   <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>オン</value></data>
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>オフ</value></data>
 </root>

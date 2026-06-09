@@ -316,4 +316,6 @@ her satıra bir tane</value></data>
   <data name="ForceEncryptionCard.Description" xml:space="preserve"><value>Şifrelenmemiş eş bağlantılarını reddet (bt-force-encryption)</value></data>
   <data name="ForceEncryptionToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
 </root>

@@ -347,7 +347,7 @@
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE72E;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <Button loc:Localize.Uid="PrivacyModeButton" AutomationProperties.AutomationId="PrivacyModeButton" Style="{StaticResource AccentButtonStyle}" Click="OnPrivacyMode" />
+                            <ToggleSwitch x:Name="PrivacyToggle" loc:Localize.Uid="PrivacyToggle" AutomationProperties.AutomationId="PrivacyToggle" Toggled="OnPrivacyToggled" />
                         </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="ListenPortCard">
                             <tk:SettingsCard.HeaderIcon>
