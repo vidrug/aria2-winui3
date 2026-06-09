@@ -260,4 +260,6 @@ un par ligne</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Supprimer les fichiers</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Conserver les fichiers</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Réduire dans la barre d'état</value></data>
+  <data name="ToolbarPauseAll" xml:space="preserve"><value>Tout suspendre</value></data>
+  <data name="ToolbarResumeAll" xml:space="preserve"><value>Tout reprendre</value></data>
 </root>

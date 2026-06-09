@@ -260,4 +260,6 @@ einer pro Zeile</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Dateien löschen</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Dateien behalten</value></data>
   <data name="TrayHide" xml:space="preserve"><value>In den Infobereich minimieren</value></data>
+  <data name="ToolbarPauseAll" xml:space="preserve"><value>Alle anhalten</value></data>
+  <data name="ToolbarResumeAll" xml:space="preserve"><value>Alle fortsetzen</value></data>
 </root>

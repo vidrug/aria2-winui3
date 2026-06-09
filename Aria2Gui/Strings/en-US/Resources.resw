@@ -260,4 +260,6 @@ one per line</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Delete files</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Keep files</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Hide to tray</value></data>
+  <data name="ToolbarPauseAll" xml:space="preserve"><value>Pause all</value></data>
+  <data name="ToolbarResumeAll" xml:space="preserve"><value>Resume all</value></data>
 </root>

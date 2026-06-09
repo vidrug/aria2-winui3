@@ -260,4 +260,6 @@ her satıra bir tane</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Dosyaları sil</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Dosyaları tut</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Tepsiye küçült</value></data>
+  <data name="ToolbarPauseAll" xml:space="preserve"><value>Tümünü duraklat</value></data>
+  <data name="ToolbarResumeAll" xml:space="preserve"><value>Tümünü sürdür</value></data>
 </root>

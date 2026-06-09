@@ -260,4 +260,6 @@
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>删除文件</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>保留文件</value></data>
   <data name="TrayHide" xml:space="preserve"><value>最小化到托盘</value></data>
+  <data name="ToolbarPauseAll" xml:space="preserve"><value>全部暂停</value></data>
+  <data name="ToolbarResumeAll" xml:space="preserve"><value>全部继续</value></data>
 </root>

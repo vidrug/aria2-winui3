@@ -163,6 +163,13 @@ public sealed partial class MainPage : Page
     public static Visibility VisIf(bool value) =>
         value ? Visibility.Visible : Visibility.Collapsed;
 
+    /// <summary>x:Bind helper: label for the pause-all / resume-all toggle.</summary>
+    public static string ToggleAllLabel(bool anyActive) =>
+        Helpers.L.Get(anyActive ? "ToolbarPauseAll" : "ToolbarResumeAll");
+
+    /// <summary>x:Bind helper: glyph for the pause-all / resume-all toggle (pause vs play).</summary>
+    public static string ToggleAllGlyph(bool anyActive) => anyActive ? "\uE769" : "\uE768";
+
     private void ColumnToggle_Click(object sender, RoutedEventArgs e)
     {
         if (sender is ToggleMenuFlyoutItem { Tag: string key } item)

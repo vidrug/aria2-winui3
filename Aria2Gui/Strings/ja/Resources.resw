@@ -260,4 +260,6 @@
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>ファイルを削除</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>ファイルを残す</value></data>
   <data name="TrayHide" xml:space="preserve"><value>トレイに最小化</value></data>
+  <data name="ToolbarPauseAll" xml:space="preserve"><value>すべて一時停止</value></data>
+  <data name="ToolbarResumeAll" xml:space="preserve"><value>すべて再開</value></data>
 </root>

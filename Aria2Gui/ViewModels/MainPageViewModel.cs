@@ -82,6 +82,11 @@ public sealed partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
 
+    /// <summary>True while at least one download is actively running — drives the
+    /// pause-all / resume-all toggle button in the toolbar.</summary>
+    [ObservableProperty]
+    public partial bool IsAnyActive { get; set; }
+
     /// <summary>True while the in-app settings page covers the download list.</summary>
     [ObservableProperty]
     public partial bool SettingsOpen { get; set; }
@@ -315,6 +320,7 @@ public sealed partial class MainPageViewModel : ObservableObject
         IsEmpty = Downloads.Count == 0;
         GlobalSpeedText = $"↓ {FormatUtils.FormatSpeed(snapshot.GlobalStat.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(snapshot.GlobalStat.UploadSpeed)}";
         CountsText = L.Get("CountsText", snapshot.GlobalStat.NumActive, snapshot.GlobalStat.NumWaiting, snapshot.GlobalStat.NumStopped);
+        IsAnyActive = snapshot.GlobalStat.NumActive > 0;
     }
 
     // ------------------------------------------------------------------ filtering
@@ -817,6 +823,13 @@ public sealed partial class MainPageViewModel : ObservableObject
 
     [RelayCommand]
     private Task ResumeAllAsync() => GuardedRpcAsync(() => _service.Rpc.UnpauseAllAsync());
+
+    /// <summary>Toolbar toggle: pause every download if anything is running, otherwise
+    /// resume them all. The button's label/icon follow <see cref="IsAnyActive"/>.</summary>
+    [RelayCommand]
+    private Task ToggleAllAsync() => IsAnyActive
+        ? GuardedRpcAsync(() => _service.Rpc.PauseAllAsync())
+        : GuardedRpcAsync(() => _service.Rpc.UnpauseAllAsync());
 
     [RelayCommand]
     private async Task ClearStoppedAsync()

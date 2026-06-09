@@ -260,4 +260,6 @@
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Удалить файлы</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Оставить файлы</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Свернуть в трей</value></data>
+  <data name="ToolbarPauseAll" xml:space="preserve"><value>Остановить все</value></data>
+  <data name="ToolbarResumeAll" xml:space="preserve"><value>Продолжить все</value></data>
 </root>

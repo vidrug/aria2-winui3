@@ -203,6 +203,16 @@
                             <KeyboardAccelerator Key="Delete" />
                         </AppBarButton.KeyboardAccelerators>
                     </AppBarButton>
+                    <AppBarSeparator />
+                    <AppBarButton
+                        Command="{x:Bind ViewModel.ToggleAllCommand}"
+                        IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                        Label="{x:Bind local:MainPage.ToggleAllLabel(ViewModel.IsAnyActive), Mode=OneWay}"
+                        AutomationProperties.AutomationId="ToggleAllButton">
+                        <AppBarButton.Icon>
+                            <FontIcon Glyph="{x:Bind local:MainPage.ToggleAllGlyph(ViewModel.IsAnyActive), Mode=OneWay}" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
                     <AppBarButton
                         loc:Localize.Uid="ToolbarMoreButton"
                         AutomationProperties.AutomationId="MoreButton">

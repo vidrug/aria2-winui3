@@ -260,4 +260,6 @@ uno por línea</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Eliminar archivos</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Conservar archivos</value></data>
   <data name="TrayHide" xml:space="preserve"><value>Minimizar a la bandeja</value></data>
+  <data name="ToolbarPauseAll" xml:space="preserve"><value>Pausar todo</value></data>
+  <data name="ToolbarResumeAll" xml:space="preserve"><value>Reanudar todo</value></data>
 </root>
