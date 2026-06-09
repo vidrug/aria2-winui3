@@ -79,7 +79,13 @@ public static class DownloadAdder
     /// </summary>
     private static Dictionary<string, string> BuildOptions(string? directory, string? selectFile)
     {
-        var options = new Dictionary<string, string> { ["check-integrity"] = "true" };
+        var options = new Dictionary<string, string>
+        {
+            ["check-integrity"] = "true",
+            // Resume a magnet re-add from its own saved .torrent (bt-save-metadata) instead of
+            // re-fetching the metadata over DHT — so auto-recovery works even with DHT off.
+            ["bt-load-saved-metadata"] = "true",
+        };
         if (!string.IsNullOrWhiteSpace(directory))
             options["dir"] = directory;
         if (!string.IsNullOrEmpty(selectFile))

@@ -259,6 +259,10 @@ public sealed partial class MainPageViewModel : ObservableObject
         }
     }
 
+    /// <summary>Info hashes already auto-recovered this session, so a torrent aria2 dropped to an
+    /// error on reload (errorCode 13) is re-checked once, never in a loop.</summary>
+    private readonly HashSet<string> _autoRecovered = new(StringComparer.OrdinalIgnoreCase);
+
     private void ApplySnapshot(Aria2Snapshot snapshot)
     {
         var seen = new HashSet<string>(snapshot.Downloads.Count);
@@ -291,6 +295,17 @@ public sealed partial class MainPageViewModel : ObservableObject
                 _all.Insert(masterIndex, item);
             }
             SyncViewMembership(item);
+
+            // Auto-recover a completed torrent that aria2 dropped to an error on reload because its
+            // data is on disk but the .aria2 control file is gone (errorCode 13). Re-check it once
+            // per info hash so the list survives engine restarts without manual action.
+            if (download.Status == Aria2Status.Error
+                && download.ErrorCode == "13"
+                && download.InfoHash is { Length: > 0 } infoHash
+                && _autoRecovered.Add(infoHash))
+            {
+                _ = item.RecheckCommand.ExecuteAsync(null);
+            }
         }
 
         // Prune rows only when the snapshot is complete: if the tell* windows were
