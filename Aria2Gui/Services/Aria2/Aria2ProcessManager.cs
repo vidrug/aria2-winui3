@@ -19,9 +19,6 @@ public sealed class Aria2ProcessManager : IDisposable
     private nint _jobHandle;
     private StringBuilder? _stderrTail;
     private bool _disposed;
-    // Set before any intentional kill so the Exited event doesn't trigger the
-    // crash-recovery path for stops we initiated ourselves.
-    private volatile bool _expectedExit;
 
     public int RpcPort { get; private set; }
 
@@ -114,7 +111,6 @@ public sealed class Aria2ProcessManager : IDisposable
                 psi.ArgumentList.Add($"--{key}={value}");
         }
 
-        _expectedExit = false;
         var process = Process.Start(psi)
             ?? throw new InvalidOperationException("Failed to start aria2c.exe.");
 
@@ -127,10 +123,15 @@ public sealed class Aria2ProcessManager : IDisposable
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
         // Subscribe before EnableRaisingEvents so an instant death cannot slip
-        // through the gap unobserved.
+        // through the gap unobserved. Expectedness is per-process: an intentional
+        // Stop/WaitForExitOrKill nulls out _process before killing, so a stale
+        // old-process Exited (delivered asynchronously after a restart reset) is
+        // naturally suppressed and only a crash of the current process fires.
         process.Exited += (_, _) =>
         {
-            if (!_expectedExit)
+            bool current;
+            lock (_gate) { current = ReferenceEquals(_process, process); }
+            if (current)
                 Exited?.Invoke();
         };
         process.EnableRaisingEvents = true;
@@ -148,7 +149,6 @@ public sealed class Aria2ProcessManager : IDisposable
     /// </summary>
     public void WaitForExitOrKill(TimeSpan timeout)
     {
-        _expectedExit = true;
         Process? process;
         lock (_gate)
         {
@@ -174,7 +174,6 @@ public sealed class Aria2ProcessManager : IDisposable
 
     public void Stop()
     {
-        _expectedExit = true;
         Process? process;
         lock (_gate)
         {

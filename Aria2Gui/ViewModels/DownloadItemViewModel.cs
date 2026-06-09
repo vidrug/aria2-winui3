@@ -30,6 +30,20 @@ public sealed partial class DownloadItemViewModel : ObservableObject
 {
     private readonly Aria2Service _service = Aria2Service.Instance;
 
+    // Fixed status/action labels resolved once. The UI language is pinned at startup (see L's
+    // static ctor), so these never change between ticks; UpdateFrom runs per row per second on
+    // the UI thread, so caching avoids an MRT lookup + StringBuilder alloc per call (cf. FormatUtils).
+    private static readonly string _statusMetadata = L.Get("StatusMetadata");
+    private static readonly string _statusSeeding = L.Get("StatusSeeding");
+    private static readonly string _statusDownloading = L.Get("StatusDownloading");
+    private static readonly string _statusQueued = L.Get("StatusQueued");
+    private static readonly string _statusPaused = L.Get("StatusPaused");
+    private static readonly string _statusCompleted = L.Get("StatusCompleted");
+    private static readonly string _statusError = L.Get("StatusError");
+    private static readonly string _statusRemoved = L.Get("StatusRemoved");
+    private static readonly string _actionPause = L.Get("ActionPause");
+    private static readonly string _actionResume = L.Get("ActionResume");
+
     public string Gid { get; }
 
     /// <summary>Shared column widths — row templates bind cell widths to these.</summary>
@@ -168,14 +182,14 @@ public sealed partial class DownloadItemViewModel : ObservableObject
 
         (StatusText, StatusGlyph, Category) = (d.Status, isMetadata, d.Seeder) switch
         {
-            (Aria2Status.Active, true, _) => (L.Get("StatusMetadata"), "", DownloadCategory.Downloading),
-            (Aria2Status.Active, _, true) => (L.Get("StatusSeeding"), "", DownloadCategory.Seeding),
-            (Aria2Status.Active, _, _) => (L.Get("StatusDownloading"), "", DownloadCategory.Downloading),
-            (Aria2Status.Waiting, _, _) => (L.Get("StatusQueued"), "", DownloadCategory.Queued),
-            (Aria2Status.Paused, _, _) => (L.Get("StatusPaused"), "", DownloadCategory.Paused),
-            (Aria2Status.Complete, _, _) => (L.Get("StatusCompleted"), "", DownloadCategory.Completed),
-            (Aria2Status.Error, _, _) => (L.Get("StatusError"), "", DownloadCategory.Error),
-            (Aria2Status.Removed, _, _) => (L.Get("StatusRemoved"), "", DownloadCategory.Completed),
+            (Aria2Status.Active, true, _) => (_statusMetadata, "", DownloadCategory.Downloading),
+            (Aria2Status.Active, _, true) => (_statusSeeding, "", DownloadCategory.Seeding),
+            (Aria2Status.Active, _, _) => (_statusDownloading, "", DownloadCategory.Downloading),
+            (Aria2Status.Waiting, _, _) => (_statusQueued, "", DownloadCategory.Queued),
+            (Aria2Status.Paused, _, _) => (_statusPaused, "", DownloadCategory.Paused),
+            (Aria2Status.Complete, _, _) => (_statusCompleted, "", DownloadCategory.Completed),
+            (Aria2Status.Error, _, _) => (_statusError, "", DownloadCategory.Error),
+            (Aria2Status.Removed, _, _) => (_statusRemoved, "", DownloadCategory.Completed),
             _ => (d.Status, "", DownloadCategory.Completed),
         };
         IsError = d.Status == Aria2Status.Error;
@@ -199,7 +213,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         bool paused = d.Status == Aria2Status.Paused;
         IsPaused = paused;
         CanPauseResume = !_isStopped;
-        PauseResumeText = paused ? L.Get("ActionResume") : L.Get("ActionPause");
+        PauseResumeText = paused ? _actionResume : _actionPause;
         HasMagnet = !string.IsNullOrEmpty(d.InfoHash);
     }
 
