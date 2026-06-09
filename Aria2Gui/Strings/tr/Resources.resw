@@ -259,4 +259,5 @@ her satıra bir tane</value></data>
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>{0} indirme kaldırılsın mı? Dosyaları silmeyi veya tutmayı seçin.</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Dosyaları sil</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Dosyaları tut</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>Tepsiye küçült</value></data>
 </root>

@@ -259,4 +259,5 @@ un par ligne</value></data>
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>Supprimer {0} téléchargements ? Choisissez de supprimer leurs fichiers ou de les conserver.</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Supprimer les fichiers</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Conserver les fichiers</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>Réduire dans la barre d'état</value></data>
 </root>

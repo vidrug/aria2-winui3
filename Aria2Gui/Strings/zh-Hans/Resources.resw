@@ -259,4 +259,5 @@
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>移除 {0} 个下载？选择删除其文件还是保留在磁盘上。</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>删除文件</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>保留文件</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>最小化到托盘</value></data>
 </root>

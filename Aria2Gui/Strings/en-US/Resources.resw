@@ -259,4 +259,5 @@ one per line</value></data>
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>Remove {0} downloads? Choose whether to delete their files or keep them on disk.</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Delete files</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Keep files</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>Hide to tray</value></data>
 </root>

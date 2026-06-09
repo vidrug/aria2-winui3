@@ -259,4 +259,5 @@
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>Удалить загрузок: {0}? Выберите: удалить файлы или оставить их на диске.</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Удалить файлы</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Оставить файлы</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>Свернуть в трей</value></data>
 </root>

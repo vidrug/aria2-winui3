@@ -259,4 +259,5 @@
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>Вилучити завантажень: {0}? Виберіть: видалити файли чи залишити їх.</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Видалити файли</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Залишити файли</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>Згорнути в трей</value></data>
 </root>

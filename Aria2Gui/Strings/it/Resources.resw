@@ -259,4 +259,5 @@ uno per riga</value></data>
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>Rimuovere {0} download? Scegli se eliminare i file o conservarli.</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Elimina file</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Mantieni file</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>Riduci nell'area di notifica</value></data>
 </root>

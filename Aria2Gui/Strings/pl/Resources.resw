@@ -259,4 +259,5 @@ jeden w wierszu</value></data>
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>Usunąć {0} pobierań? Wybierz, czy usunąć pliki, czy je zachować.</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Usuń pliki</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Zachowaj pliki</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>Zminimalizuj do zasobnika</value></data>
 </root>

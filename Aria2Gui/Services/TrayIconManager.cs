@@ -20,6 +20,7 @@ public sealed class TrayIconManager : IDisposable
     private readonly AppWindow _appWindow;
     private TaskbarIcon? _icon;
     private MainPageViewModel? _viewModel;
+    private MenuFlyoutItem? _toggleItem;
     private bool _restoring;
 
     public TrayIconManager(Window window, AppWindow appWindow)
@@ -30,8 +31,11 @@ public sealed class TrayIconManager : IDisposable
 
     public void Initialize()
     {
-        var restore = new MenuFlyoutItem { Text = L.Get("TrayRestore") };
-        restore.Click += (_, _) => ShowWindow();
+        // One toggle item that follows the window: "Hide to tray" while it's showing,
+        // "Restore" while it's hidden. (A fixed "Restore" did nothing when the window was
+        // already visible.)
+        _toggleItem = new MenuFlyoutItem { Text = L.Get("TrayRestore") };
+        _toggleItem.Click += (_, _) => ToggleWindow();
 
         var pauseAll = new MenuFlyoutItem { Text = L.Get("TrayPauseAll") };
         pauseAll.Click += (_, _) => _ = Aria2.Aria2Service.Instance.Rpc.PauseAllAsync();
@@ -40,10 +44,12 @@ public sealed class TrayIconManager : IDisposable
         quit.Click += (_, _) => Quit();
 
         var menu = new MenuFlyout();
-        menu.Items.Add(restore);
+        menu.Items.Add(_toggleItem);
         menu.Items.Add(pauseAll);
         menu.Items.Add(new MenuFlyoutSeparator());
         menu.Items.Add(quit);
+        // Re-label the toggle for the window's current state each time the menu opens.
+        menu.Opening += (_, _) => UpdateToggleText();
 
         _icon = new TaskbarIcon
         {
@@ -107,6 +113,23 @@ public sealed class TrayIconManager : IDisposable
         // the brief Minimized moment while we restore.
         if (!_restoring && sender.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized })
             _appWindow.Hide();
+    }
+
+    /// <summary>Labels the toggle item for the window's current visibility.</summary>
+    private void UpdateToggleText()
+    {
+        if (_toggleItem is not null)
+            _toggleItem.Text = _appWindow.IsVisible ? L.Get("TrayHide") : L.Get("TrayRestore");
+    }
+
+    /// <summary>Tray menu toggle: hide the window to the tray when it's showing, restore it
+    /// when it's hidden.</summary>
+    private void ToggleWindow()
+    {
+        if (_appWindow.IsVisible)
+            _appWindow.Hide();
+        else
+            ShowWindow();
     }
 
     private void ShowWindow()

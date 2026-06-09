@@ -259,4 +259,5 @@
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>{0} 件のダウンロードを削除しますか？ファイルを削除するか残すか選択してください。</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>ファイルを削除</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>ファイルを残す</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>トレイに最小化</value></data>
 </root>

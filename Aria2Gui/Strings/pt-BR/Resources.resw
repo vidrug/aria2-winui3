@@ -259,4 +259,5 @@ um por linha</value></data>
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>Remover {0} downloads? Escolha excluir os arquivos ou mantê-los.</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Excluir arquivos</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Manter arquivos</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>Minimizar para a bandeja</value></data>
 </root>

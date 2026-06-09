@@ -259,4 +259,5 @@ einer pro Zeile</value></data>
   <data name="RemoveConfirmMessageMany" xml:space="preserve"><value>{0} Downloads entfernen? Dateien löschen oder behalten?</value></data>
   <data name="RemoveDeleteFiles" xml:space="preserve"><value>Dateien löschen</value></data>
   <data name="RemoveKeepFiles" xml:space="preserve"><value>Dateien behalten</value></data>
+  <data name="TrayHide" xml:space="preserve"><value>In den Infobereich minimieren</value></data>
 </root>
