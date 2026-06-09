@@ -413,7 +413,7 @@ public sealed partial class SettingsView : UserControl
         SeedValueCard.Description = Helpers.L.Get(time ? "SeedValueTimeDesc" : "SeedValueRatioDesc");
         SeedValueBox.Minimum = time ? 1 : 0.1;
         SeedValueBox.Maximum = time ? 525600 : 100;
-        SeedValueBox.SmallChange = time ? 5 : 0.1;
+        SeedValueBox.SmallChange = time ? 5 : 1; // ratio steps by whole numbers
     }
 
     private async void OnBrowseClick(object sender, RoutedEventArgs e)

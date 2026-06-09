@@ -213,12 +213,21 @@
 
                     <!-- ===== Подключение ===== -->
                     <StackPanel x:Name="ConnectionPanel" Spacing="4" Visibility="Collapsed">
-                        <tk:SettingsCard loc:Localize.Uid="ProxyCard">
-                            <tk:SettingsCard.HeaderIcon>
+                        <!-- Proxy as an expander so its credentials live with the proxy URL. -->
+                        <tk:SettingsExpander loc:Localize.Uid="ProxyCard">
+                            <tk:SettingsExpander.HeaderIcon>
                                 <FontIcon Glyph="&#xE968;" />
-                            </tk:SettingsCard.HeaderIcon>
+                            </tk:SettingsExpander.HeaderIcon>
                             <TextBox x:Name="ProxyBox" loc:Localize.Uid="ProxyBox" AutomationProperties.AutomationId="ProxyBox" MinWidth="300" />
-                        </tk:SettingsCard>
+                            <tk:SettingsExpander.Items>
+                                <tk:SettingsCard loc:Localize.Uid="ProxyUserCard">
+                                    <TextBox x:Name="ProxyUserBox" AutomationProperties.AutomationId="ProxyUserBox" MinWidth="220" />
+                                </tk:SettingsCard>
+                                <tk:SettingsCard loc:Localize.Uid="ProxyPasswdCard">
+                                    <PasswordBox x:Name="ProxyPasswdBox" AutomationProperties.AutomationId="ProxyPasswdBox" MinWidth="220" />
+                                </tk:SettingsCard>
+                            </tk:SettingsExpander.Items>
+                        </tk:SettingsExpander>
                         <tk:SettingsCard loc:Localize.Uid="CheckCertCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE72E;" />
@@ -294,12 +303,6 @@
                                 <tk:SettingsCard loc:Localize.Uid="HttpPasswdCard">
                                     <PasswordBox x:Name="HttpPasswdBox" AutomationProperties.AutomationId="HttpPasswdBox" MinWidth="220" />
                                 </tk:SettingsCard>
-                                <tk:SettingsCard loc:Localize.Uid="ProxyUserCard">
-                                    <TextBox x:Name="ProxyUserBox" AutomationProperties.AutomationId="ProxyUserBox" MinWidth="220" />
-                                </tk:SettingsCard>
-                                <tk:SettingsCard loc:Localize.Uid="ProxyPasswdCard">
-                                    <PasswordBox x:Name="ProxyPasswdBox" AutomationProperties.AutomationId="ProxyPasswdBox" MinWidth="220" />
-                                </tk:SettingsCard>
                             </tk:SettingsExpander.Items>
                         </tk:SettingsExpander>
                     </StackPanel>
@@ -353,7 +356,7 @@
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE945;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <NumberBox x:Name="ListenPortBox" AutomationProperties.AutomationId="ListenPortBox" Minimum="0" Maximum="65535" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                            <NumberBox x:Name="ListenPortBox" AutomationProperties.AutomationId="ListenPortBox" Minimum="0" Maximum="65535" MinWidth="148" SpinButtonPlacementMode="Hidden" />
                         </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="DhtCard">
                             <tk:SettingsCard.HeaderIcon>
@@ -425,13 +428,13 @@
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE716;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <NumberBox x:Name="PeersBox" AutomationProperties.AutomationId="PeersBox" Minimum="0" Maximum="1000" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                            <NumberBox x:Name="PeersBox" AutomationProperties.AutomationId="PeersBox" Minimum="0" Maximum="1000" MinWidth="148" SpinButtonPlacementMode="Hidden" />
                         </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="BtMaxOpenFilesCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE8B7;" />
                             </tk:SettingsCard.HeaderIcon>
-                            <NumberBox x:Name="BtMaxOpenFilesBox" AutomationProperties.AutomationId="BtMaxOpenFilesBox" Minimum="1" Maximum="10000" MinWidth="148" SpinButtonPlacementMode="Compact" />
+                            <NumberBox x:Name="BtMaxOpenFilesBox" AutomationProperties.AutomationId="BtMaxOpenFilesBox" Minimum="1" Maximum="10000" MinWidth="148" SpinButtonPlacementMode="Hidden" />
                         </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="BtPeerSpeedCard">
                             <tk:SettingsCard.HeaderIcon>

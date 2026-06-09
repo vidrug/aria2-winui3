@@ -143,9 +143,9 @@
   <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>Full RC4 encryption — arc4</value></data>
   <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>The entire data stream is encrypted with the ARC4 (RC4) algorithm, not just the handshake. Hides traffic contents more reliably, with slightly higher CPU load.</value></data>
   <data name="MaxPeersCard.Header" xml:space="preserve"><value>Max. peers per torrent</value></data>
-  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Connection limit for a single torrent</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Maximum peers to connect to per torrent. More peers can download faster but use more bandwidth, CPU and open connections.</value></data>
   <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>Max. open files</value></data>
-  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Limit of simultaneously open files across all torrents</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Maximum files kept open at once across all torrents. Raise it for large multi-file torrents; too high can exhaust the OS file-handle limit.</value></data>
   <data name="SeedRatioCard.Header" xml:space="preserve"><value>Seed until ratio</value></data>
   <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — don't seed after downloading</value></data>
   <data name="TrackersExpander.Header" xml:space="preserve"><value>Additional trackers</value></data>
@@ -280,8 +280,8 @@ one per line</value></data>
   <data name="DisableIpv6Card.Description" xml:space="preserve"><value>Use IPv4 only for name resolution and connections</value></data>
   <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>On</value></data>
   <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>Off</value></data>
-  <data name="AuthExpander.Header" xml:space="preserve"><value>Authentication</value></data>
-  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP and proxy credentials</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>HTTP authentication</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>User name and password for HTTP downloads</value></data>
   <data name="HttpUserCard.Header" xml:space="preserve"><value>HTTP user</value></data>
   <data name="HttpUserCard.Description" xml:space="preserve"><value>User name for HTTP basic authentication</value></data>
   <data name="HttpPasswdCard.Header" xml:space="preserve"><value>HTTP password</value></data>

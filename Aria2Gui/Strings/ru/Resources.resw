@@ -143,9 +143,9 @@
   <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>Полное шифрование RC4 — arc4</value></data>
   <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>Шифруется весь поток данных алгоритмом ARC4 (RC4), а не только рукопожатие. Надёжнее скрывает содержимое трафика, нагрузка на процессор немного выше.</value></data>
   <data name="MaxPeersCard.Header" xml:space="preserve"><value>Макс. пиров на торрент</value></data>
-  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Предел подключений для одного торрента</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Максимальное число пиров для подключения на торрент. Больше пиров — выше скорость загрузки, но больше расход трафика, нагрузка на процессор и число открытых соединений.</value></data>
   <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>Макс. открытых файлов</value></data>
-  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Предел одновременно открытых файлов для всех торрентов</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Максимальное число одновременно открытых файлов по всем торрентам. Увеличьте для больших многофайловых торрентов; слишком большое значение может исчерпать лимит дескрипторов файлов в ОС.</value></data>
   <data name="SeedRatioCard.Header" xml:space="preserve"><value>Раздавать до рейтинга</value></data>
   <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — не раздавать после загрузки</value></data>
   <data name="TrackersExpander.Header" xml:space="preserve"><value>Дополнительные трекеры</value></data>
@@ -280,8 +280,8 @@
   <data name="DisableIpv6Card.Description" xml:space="preserve"><value>Использовать только IPv4 для разрешения имён и соединений</value></data>
   <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>Вкл</value></data>
   <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>Выкл</value></data>
-  <data name="AuthExpander.Header" xml:space="preserve"><value>Аутентификация</value></data>
-  <data name="AuthExpander.Description" xml:space="preserve"><value>Учётные данные HTTP и прокси</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>Аутентификация HTTP</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>Имя пользователя и пароль для HTTP-загрузок</value></data>
   <data name="HttpUserCard.Header" xml:space="preserve"><value>Пользователь HTTP</value></data>
   <data name="HttpUserCard.Description" xml:space="preserve"><value>Имя пользователя для базовой аутентификации HTTP</value></data>
   <data name="HttpPasswdCard.Header" xml:space="preserve"><value>Пароль HTTP</value></data>

@@ -143,9 +143,9 @@
   <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>RC4 完全暗号化 — arc4</value></data>
   <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>ハンドシェイクだけでなくデータストリーム全体を ARC4 (RC4) アルゴリズムで暗号化します。通信内容をより確実に隠せますが、CPU 負荷はわずかに高くなります。</value></data>
   <data name="MaxPeersCard.Header" xml:space="preserve"><value>torrent あたりの最大ピア数</value></data>
-  <data name="MaxPeersCard.Description" xml:space="preserve"><value>1 つの torrent の接続数上限</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>torrent ごとに接続する最大ピア数。ピアが多いほど高速にダウンロードできますが、帯域や CPU、開く接続数を多く消費します。</value></data>
   <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>最大オープンファイル数</value></data>
-  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>すべての torrent で同時に開くファイル数の上限</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>すべての torrent で同時に開いたままにするファイル数の上限。多数のファイルを含む大きな torrent では値を上げてください。高くしすぎると OS のファイルハンドル上限を使い切るおそれがあります。</value></data>
   <data name="SeedRatioCard.Header" xml:space="preserve"><value>指定の比率までシード</value></data>
   <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 でダウンロード後にシードしない</value></data>
   <data name="TrackersExpander.Header" xml:space="preserve"><value>追加のトラッカー</value></data>
@@ -275,8 +275,8 @@
   <data name="DisableIpv6Card.Description" xml:space="preserve"><value>名前解決と接続に IPv4 のみを使用します</value></data>
   <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>オン</value></data>
   <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>オフ</value></data>
-  <data name="AuthExpander.Header" xml:space="preserve"><value>認証</value></data>
-  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP およびプロキシの資格情報</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>HTTP 認証</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP ダウンロードのユーザー名とパスワード</value></data>
   <data name="HttpUserCard.Header" xml:space="preserve"><value>HTTP ユーザー</value></data>
   <data name="HttpUserCard.Description" xml:space="preserve"><value>HTTP ベーシック認証のユーザー名</value></data>
   <data name="HttpPasswdCard.Header" xml:space="preserve"><value>HTTP パスワード</value></data>

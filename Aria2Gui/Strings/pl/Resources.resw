@@ -143,9 +143,9 @@
   <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>Pełne szyfrowanie RC4 — arc4</value></data>
   <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>Szyfrowany jest cały strumień danych algorytmem ARC4 (RC4), a nie tylko uzgadnianie. Pewniej ukrywa zawartość ruchu, obciążenie procesora jest nieco wyższe.</value></data>
   <data name="MaxPeersCard.Header" xml:space="preserve"><value>Maks. peerów na torrent</value></data>
-  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Limit połączeń dla jednego torrenta</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Maksymalna liczba peerów, z którymi łączy się jeden torrent. Więcej peerów może przyspieszyć pobieranie, ale zużywa więcej pasma, procesora i otwartych połączeń.</value></data>
   <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>Maks. otwartych plików</value></data>
-  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Limit jednocześnie otwartych plików dla wszystkich torrentów</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Maksymalna liczba plików otwartych jednocześnie we wszystkich torrentach. Zwiększ ją dla dużych wieloplikowych torrentów; zbyt wysoka wartość może wyczerpać systemowy limit uchwytów plików.</value></data>
   <data name="SeedRatioCard.Header" xml:space="preserve"><value>Seeduj do ratio</value></data>
   <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — nie seeduj po pobraniu</value></data>
   <data name="TrackersExpander.Header" xml:space="preserve"><value>Dodatkowe trackery</value></data>
@@ -275,8 +275,8 @@ jeden w wierszu</value></data>
   <data name="DisableIpv6Card.Description" xml:space="preserve"><value>Używaj tylko IPv4 do rozwiązywania nazw i połączeń</value></data>
   <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>Wł.</value></data>
   <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>Wył.</value></data>
-  <data name="AuthExpander.Header" xml:space="preserve"><value>Uwierzytelnianie</value></data>
-  <data name="AuthExpander.Description" xml:space="preserve"><value>Dane logowania HTTP i proxy</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>Uwierzytelnianie HTTP</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>Nazwa użytkownika i hasło do pobrań HTTP</value></data>
   <data name="HttpUserCard.Header" xml:space="preserve"><value>Użytkownik HTTP</value></data>
   <data name="HttpUserCard.Description" xml:space="preserve"><value>Nazwa użytkownika do uwierzytelniania podstawowego HTTP</value></data>
   <data name="HttpPasswdCard.Header" xml:space="preserve"><value>Hasło HTTP</value></data>

@@ -143,9 +143,9 @@
   <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>Tam RC4 şifrelemesi — arc4</value></data>
   <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>Yalnızca el sıkışma değil, tüm veri akışı ARC4 (RC4) algoritmasıyla şifrelenir. Trafik içeriğini daha güvenilir şekilde gizler, işlemci yükü biraz daha yüksektir.</value></data>
   <data name="MaxPeersCard.Header" xml:space="preserve"><value>Torrent başına maks. eş</value></data>
-  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Tek bir torrent için bağlantı sınırı</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Torrent başına bağlanılacak en fazla eş sayısı. Daha fazla eş daha hızlı indirebilir ancak daha fazla bant genişliği, CPU ve açık bağlantı kullanır.</value></data>
   <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>Maks. açık dosya</value></data>
-  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Tüm torrentler için aynı anda açık dosya sınırı</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Tüm torrentler genelinde aynı anda açık tutulan en fazla dosya sayısı. Çok dosyalı büyük torrentler için yükseltin; çok yüksek değer işletim sisteminin dosya tanıtıcısı sınırını tüketebilir.</value></data>
   <data name="SeedRatioCard.Header" xml:space="preserve"><value>Şu orana kadar tohumla</value></data>
   <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — indirdikten sonra tohumlama</value></data>
   <data name="TrackersExpander.Header" xml:space="preserve"><value>Ek izleyiciler</value></data>
@@ -275,8 +275,8 @@ her satıra bir tane</value></data>
   <data name="DisableIpv6Card.Description" xml:space="preserve"><value>Ad çözümleme ve bağlantılar için yalnızca IPv4 kullan</value></data>
   <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>Açık</value></data>
   <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
-  <data name="AuthExpander.Header" xml:space="preserve"><value>Kimlik doğrulama</value></data>
-  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP ve proxy kimlik bilgileri</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>HTTP kimlik doğrulaması</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP indirmeleri için kullanıcı adı ve parola</value></data>
   <data name="HttpUserCard.Header" xml:space="preserve"><value>HTTP kullanıcısı</value></data>
   <data name="HttpUserCard.Description" xml:space="preserve"><value>HTTP temel kimlik doğrulaması için kullanıcı adı</value></data>
   <data name="HttpPasswdCard.Header" xml:space="preserve"><value>HTTP parolası</value></data>

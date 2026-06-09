@@ -143,9 +143,9 @@
   <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>完整 RC4 加密 — arc4</value></data>
   <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>使用 ARC4 (RC4) 算法加密整个数据流，而不仅是握手。能更可靠地隐藏流量内容，CPU 占用略高。</value></data>
   <data name="MaxPeersCard.Header" xml:space="preserve"><value>每个种子的最大节点数</value></data>
-  <data name="MaxPeersCard.Description" xml:space="preserve"><value>单个种子的连接数上限</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>每个种子可连接的最大节点数。节点越多下载可能越快，但会占用更多带宽、CPU 和连接数。</value></data>
   <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>最大打开文件数</value></data>
-  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>所有种子同时打开文件数的上限</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>所有种子同时打开的最大文件数。处理大型多文件种子时可调高；设置过高可能耗尽操作系统的文件句柄上限。</value></data>
   <data name="SeedRatioCard.Header" xml:space="preserve"><value>做种到分享率</value></data>
   <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — 下载完成后不做种</value></data>
   <data name="TrackersExpander.Header" xml:space="preserve"><value>附加 Tracker</value></data>
@@ -275,8 +275,8 @@
   <data name="DisableIpv6Card.Description" xml:space="preserve"><value>仅使用 IPv4 进行名称解析和连接</value></data>
   <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>开</value></data>
   <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>关</value></data>
-  <data name="AuthExpander.Header" xml:space="preserve"><value>身份验证</value></data>
-  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP 和代理凭据</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>HTTP 身份验证</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>HTTP 下载的用户名和密码</value></data>
   <data name="HttpUserCard.Header" xml:space="preserve"><value>HTTP 用户名</value></data>
   <data name="HttpUserCard.Description" xml:space="preserve"><value>HTTP 基本认证的用户名</value></data>
   <data name="HttpPasswdCard.Header" xml:space="preserve"><value>HTTP 密码</value></data>

@@ -143,9 +143,9 @@
   <data name="CryptoLevelArc4Title.Text" xml:space="preserve"><value>Crittografia RC4 completa — arc4</value></data>
   <data name="CryptoLevelArc4Desc.Text" xml:space="preserve"><value>L'intero flusso di dati viene crittografato con l'algoritmo ARC4 (RC4), non solo l'handshake. Nasconde il contenuto del traffico in modo più affidabile, con un carico sulla CPU leggermente maggiore.</value></data>
   <data name="MaxPeersCard.Header" xml:space="preserve"><value>Max. peer per torrent</value></data>
-  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Limite di connessioni per un singolo torrent</value></data>
+  <data name="MaxPeersCard.Description" xml:space="preserve"><value>Numero massimo di peer a cui connettersi per ogni torrent. Più peer possono velocizzare il download ma usano più banda, CPU e connessioni aperte.</value></data>
   <data name="BtMaxOpenFilesCard.Header" xml:space="preserve"><value>Max. file aperti</value></data>
-  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Limite di file aperti contemporaneamente per tutti i torrent</value></data>
+  <data name="BtMaxOpenFilesCard.Description" xml:space="preserve"><value>Numero massimo di file tenuti aperti contemporaneamente per tutti i torrent. Aumentalo per torrent di grandi dimensioni con molti file; un valore troppo alto può esaurire il limite di handle dei file del sistema operativo.</value></data>
   <data name="SeedRatioCard.Header" xml:space="preserve"><value>Seed fino al rapporto</value></data>
   <data name="SeedRatioCard.Description" xml:space="preserve"><value>0 — non distribuire dopo il download</value></data>
   <data name="TrackersExpander.Header" xml:space="preserve"><value>Tracker aggiuntivi</value></data>
@@ -275,8 +275,8 @@ uno per riga</value></data>
   <data name="DisableIpv6Card.Description" xml:space="preserve"><value>Usa solo IPv4 per la risoluzione dei nomi e le connessioni</value></data>
   <data name="DisableIpv6Toggle.OnContent" xml:space="preserve"><value>Attivato</value></data>
   <data name="DisableIpv6Toggle.OffContent" xml:space="preserve"><value>Disattivato</value></data>
-  <data name="AuthExpander.Header" xml:space="preserve"><value>Autenticazione</value></data>
-  <data name="AuthExpander.Description" xml:space="preserve"><value>Credenziali HTTP e proxy</value></data>
+  <data name="AuthExpander.Header" xml:space="preserve"><value>Autenticazione HTTP</value></data>
+  <data name="AuthExpander.Description" xml:space="preserve"><value>Nome utente e password per i download HTTP</value></data>
   <data name="HttpUserCard.Header" xml:space="preserve"><value>Utente HTTP</value></data>
   <data name="HttpUserCard.Description" xml:space="preserve"><value>Nome utente per l'autenticazione HTTP di base</value></data>
   <data name="HttpPasswdCard.Header" xml:space="preserve"><value>Password HTTP</value></data>
