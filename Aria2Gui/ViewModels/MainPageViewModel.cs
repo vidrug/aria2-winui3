@@ -126,6 +126,8 @@ public sealed partial class MainPageViewModel : ObservableObject
 
     private readonly Dictionary<int, FileTreeNodeViewModel> _fileLeaves = [];
     private string? _fileTreeGid;
+    /// <summary>First file's path when the tree was built — detects in-place renames (N22).</summary>
+    private string? _fileTreeFirstPath;
 
     /// <summary>
     /// The user's just-requested selected-file set, held as the source of truth for
@@ -592,7 +594,11 @@ public sealed partial class MainPageViewModel : ObservableObject
             return;
         }
 
-        if (_fileTreeGid != item.Gid || _fileLeaves.Count != count)
+        // Rebuild on a path change too (same count): an HTTP download's single file is renamed
+        // when the response/Content-Disposition resolves, and the in-place refresh below never
+        // updates leaf names — without this the Files tab kept showing the stale name (N22).
+        if (_fileTreeGid != item.Gid || _fileLeaves.Count != count
+            || !string.Equals(_fileTreeFirstPath, files![0].Path, StringComparison.Ordinal))
             BuildFileTree(item, files!);
 
         // While a selection the user just made hasn't been confirmed by aria2 yet,
@@ -644,6 +650,7 @@ public sealed partial class MainPageViewModel : ObservableObject
         FileTree.Clear();
         _fileLeaves.Clear();
         _fileTreeGid = item.Gid;
+        _fileTreeFirstPath = files.Count > 0 ? files[0].Path : null;
         // Keep a pending pick alive when the SAME torrent's tree is rebuilt — aria2's
         // select-file restart momentarily empties/recreates the file list — and only drop
         // it when switching to a different torrent. UpdateFileTree re-applies the held
@@ -662,6 +669,13 @@ public sealed partial class MainPageViewModel : ObservableObject
             var segments = rel.Split('\\', StringSplitOptions.RemoveEmptyEntries);
             if (segments.Length == 0)
                 segments = [Path.GetFileName(full)];
+            // Bound the tree depth: TorrentParser's bencode cap doesn't protect magnet-added
+            // torrents (aria2 fetches their metadata itself), and Materialize/Aggregate recurse
+            // once per folder level — a hostile path with thousands of segments would overflow
+            // the stack (N24). Collapse the tail into one leaf segment past the cap.
+            const int maxTreeDepth = 64;
+            if (segments.Length > maxTreeDepth)
+                segments = [.. segments[..(maxTreeDepth - 1)], string.Join('\\', segments[(maxTreeDepth - 1)..])];
 
             var bucket = root;
             for (int s = 0; s < segments.Length - 1; s++)
@@ -734,6 +748,10 @@ public sealed partial class MainPageViewModel : ObservableObject
     /// reverted by the poll until aria2 confirms it. aria2 needs at least one file
     /// selected, so an all-unchecked state is rejected and reverted to "all".
     /// </summary>
+    /// <summary>Monotonic id of the latest selection push; a retrying older push bails out as
+    /// soon as a newer one exists, so it can't replay a stale selection over it (N17).</summary>
+    private int _selectionPushGen;
+
     private Task ApplyFileSelectionAsync(DownloadItemViewModel item)
     {
         // Compare by gid, not reference: the magnet metadata→real transition can recreate
@@ -747,19 +765,23 @@ public sealed partial class MainPageViewModel : ObservableObject
         var indices = _fileLeaves.Values.Where(f => f.IsSelected == true).Select(f => f.Index).OrderBy(i => i).ToList();
         if (indices.Count == 0)
         {
-            // Can't deselect everything — re-check all files.
+            // Can't deselect everything. Revert the checkboxes to aria2's CONFIRMED selection —
+            // not to all-checked: nothing is pushed here, so an all-checked UI would just be
+            // snapped back to the previous partial selection by the next poll (N23).
             _pendingSelection = null;
+            _selectionPushGen++; // invalidate in-flight retries of older pushes
+            var confirmed = item.Files?.Where(f => f.Selected).Select(f => (int)f.Index).ToHashSet();
             foreach (var leaf in _fileLeaves.Values)
-                leaf.SetSelectedFromSnapshot(true);
+                leaf.SetSelectedFromSnapshot(confirmed?.Contains(leaf.Index) ?? true);
             foreach (var root in FileTree)
                 Aggregate(root);
             return Task.CompletedTask;
         }
         _pendingSelection = (item.Gid, [.. indices], 0);
-        return PushSelectFileAsync(item.Gid, indices);
+        return PushSelectFileAsync(item.Gid, indices, ++_selectionPushGen);
     }
 
-    private async Task PushSelectFileAsync(string gid, IReadOnlyList<int> indices)
+    private async Task PushSelectFileAsync(string gid, IReadOnlyList<int> indices, int gen)
     {
         string value = string.Join(',', indices);
         // B3: retry a transient failure. Until aria2 accepts it the option was never applied (no
@@ -767,6 +789,8 @@ public sealed partial class MainPageViewModel : ObservableObject
         // selection every poll, which ReconcilePendingSelection deliberately avoids.
         for (int attempt = 0; attempt < 3; attempt++)
         {
+            if (gen != _selectionPushGen)
+                return; // a newer selection superseded this push — don't replay stale state (N17)
             try
             {
                 await _service.Rpc.ChangeOptionAsync(gid, new Dictionary<string, string> { ["select-file"] = value });
@@ -777,9 +801,9 @@ public sealed partial class MainPageViewModel : ObservableObject
                 await Task.Delay(300);
             }
         }
-        // Persistent failure — drop the optimistic hold (if still ours) so the UI reverts to aria2's
-        // real state instead of showing a selection the engine never received.
-        if (_pendingSelection is { } ps && ps.Gid == gid)
+        // Persistent failure — drop the optimistic hold (only if it is still OURS, by generation,
+        // not just by gid) so the UI reverts to aria2's real state.
+        if (gen == _selectionPushGen && _pendingSelection is { } ps && ps.Gid == gid)
             _pendingSelection = null;
     }
 
