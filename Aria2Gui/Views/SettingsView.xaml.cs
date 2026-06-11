@@ -162,10 +162,20 @@ public sealed partial class SettingsView : UserControl
     {
         if (_loading)
             return;
-        // B21: never push a malformed size/speed string to aria2 — flag the field and stop here.
-        if (!ValidateFormatFields())
-            return;
+        // B21: flag malformed size fields inline. BuildSettings substitutes the last applied
+        // value for an invalid box, so bad text never reaches aria2 — and, unlike a hard gate,
+        // changes to every OTHER field still apply normally (a hidden flagged field on another
+        // section must not silently swallow e.g. a theme change).
+        ValidateFormatFields();
         var s = BuildSettings();
+        // The port box accepts 1-1023 but the applied value is clamped — reflect it back so the
+        // UI never shows a port that differs from what the engine actually got.
+        if ((int)SafeValue(ListenPortBox.Value, 0) != s.ListenPort)
+        {
+            _loading = true;
+            ListenPortBox.Value = s.ListenPort;
+            _loading = false;
+        }
         // O6: a blur/toggle that changed nothing skips the RPC round-trip and the disk write.
         string snap = SettingsService.Snapshot(s);
         if (snap == _appliedSnapshot)
@@ -178,6 +188,10 @@ public sealed partial class SettingsView : UserControl
         }
         catch (Exception ex)
         {
+            // Invalidate the no-op cache: ApplySettingsAsync persists BEFORE the RPC push, so a
+            // failed push leaves the rejected value in Settings/settings.json while this form may
+            // be reverted to the entry state — which would match a stale cache and never re-apply.
+            _appliedSnapshot = "";
             ShowError(Helpers.L.Get("SettingsErrorSave", ex.Message));
         }
         // Theme and the language-restart hint don't depend on the engine RPC, so update them
@@ -188,18 +202,18 @@ public sealed partial class SettingsView : UserControl
 
     /// <summary>Validates the aria2 size/speed text fields against the "&lt;digits&gt;[K|M]" grammar
     /// (empty or "0" are allowed). Invalid fields get an inline <see cref="TextBox.Description"/>
-    /// error and block the apply, instead of the engine rejecting them with a generic message (B21).</summary>
-    private bool ValidateFormatFields()
+    /// error; <see cref="BuildSettings"/> falls back to the last applied value for them (B21).</summary>
+    private void ValidateFormatFields()
     {
-        bool allValid = true;
         foreach (var box in new[] { MinSplitSizeBox, LowestSpeedLimitBox, DiskCacheBox, BtPeerSpeedBox })
-        {
-            bool valid = IsAriaSizeFormat(box.Text);
-            box.Description = valid ? null : Helpers.L.Get("SettingsErrorBadFormat");
-            allValid &= valid;
-        }
-        return allValid;
+            box.Description = IsAriaSizeFormat(box.Text) ? null : Helpers.L.Get("SettingsErrorBadFormat");
     }
+
+    /// <summary>The box's text when it parses, else the last applied value — malformed input must
+    /// never reach aria2 or settings.json (every BuildSettings caller is covered, including the
+    /// Back/relaunch paths that bypass the auto-apply pipeline).</summary>
+    private static string SizeOrLastGood(TextBox box, string lastGood) =>
+        IsAriaSizeFormat(box.Text) ? box.Text : lastGood;
 
     private static bool IsAriaSizeFormat(string? text)
     {
@@ -328,12 +342,13 @@ public sealed partial class SettingsView : UserControl
 
     private bool _aboutLoaded;
 
-    /// <summary>Fills the About cards with the app and aria2 versions (once).</summary>
+    /// <summary>Fills the About cards with the app and aria2 versions. Latches only once the
+    /// aria2 version was actually fetched — if RPC happened to be down on the first visit
+    /// (engine restarting), a later visit retries instead of showing a blank forever.</summary>
     private async void LoadAboutInfo()
     {
         if (_aboutLoaded)
             return;
-        _aboutLoaded = true;
         try
         {
             AppInfoCard.Description = typeof(App).Assembly.GetName().Version?.ToString(3) ?? "";
@@ -344,7 +359,10 @@ public sealed partial class SettingsView : UserControl
         try
         {
             if (Aria2Service.Instance.Rpc.IsConnected)
+            {
                 AriaInfoCard.Description = (await Aria2Service.Instance.Rpc.GetVersionAsync()).Version;
+                _aboutLoaded = true;
+            }
         }
         catch
         {
@@ -445,16 +463,31 @@ public sealed partial class SettingsView : UserControl
     private void OnSeedModeChanged(object sender, SelectionChangedEventArgs e)
     {
         string mode = (SeedModeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "ratio";
-        ApplySeedModeUi(mode);
         if (_loading)
+        {
+            ApplySeedModeUi(mode);
             return;
-        // Ratio and minutes are different scales — repopulate the box with the stored value for
-        // the newly-picked mode so switching modes doesn't reinterpret one as the other.
-        var s = Aria2Service.Instance.Settings;
-        if (mode == "time")
-            SeedValueBox.Value = s.SeedTimeMinutes;
-        else if (mode == "ratio")
-            SeedValueBox.Value = s.SeedRatio;
+        }
+        // ApplySeedModeUi changes the box's Min/Max, which coerces its current value
+        // SYNCHRONOUSLY and fires ValueChanged -> ApplyChangeAsync with the NEW mode tag but the
+        // OTHER mode's (coerced) number — silently corrupting the stored value. Reshape and
+        // repopulate under the loading guard, then apply exactly once.
+        _loading = true;
+        try
+        {
+            ApplySeedModeUi(mode);
+            // Ratio and minutes are different scales — repopulate the box with the stored value
+            // for the newly-picked mode so switching modes doesn't reinterpret one as the other.
+            var s = Aria2Service.Instance.Settings;
+            if (mode == "time")
+                SeedValueBox.Value = s.SeedTimeMinutes;
+            else if (mode == "ratio")
+                SeedValueBox.Value = s.SeedRatio;
+        }
+        finally
+        {
+            _loading = false;
+        }
         _ = ApplyChangeAsync();
     }
 
@@ -520,9 +553,9 @@ public sealed partial class SettingsView : UserControl
             ConnectTimeout = (int)SafeValue(ConnectTimeoutBox.Value, 60),
             MaxTries = (int)SafeValue(MaxTriesBox.Value, 5),
             RetryWait = (int)SafeValue(RetryWaitBox.Value, 0),
-            MinSplitSize = MinSplitSizeBox.Text,
+            MinSplitSize = SizeOrLastGood(MinSplitSizeBox, old.MinSplitSize),
             UserAgent = UserAgentBox.Text,
-            LowestSpeedLimit = LowestSpeedLimitBox.Text,
+            LowestSpeedLimit = SizeOrLastGood(LowestSpeedLimitBox, old.LowestSpeedLimit),
             HttpUser = HttpUserBox.Text,
             HttpPasswd = HttpPasswdBox.Password,
             AllProxyUser = ProxyUserBox.Text,
@@ -532,12 +565,12 @@ public sealed partial class SettingsView : UserControl
             FileAllocation = (FileAllocBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "auto",
             AllowOverwrite = AllowOverwriteToggle.IsOn,
             AutoFileRenaming = AutoRenameToggle.IsOn,
-            DiskCache = DiskCacheBox.Text,
+            DiskCache = SizeOrLastGood(DiskCacheBox, old.DiskCache),
 
             ListenPort = ClampListenPort((int)SafeValue(ListenPortBox.Value, 0)),
             BtMaxPeers = (int)SafeValue(PeersBox.Value, 55),
             BtMaxOpenFiles = (int)SafeValue(BtMaxOpenFilesBox.Value, 100),
-            BtRequestPeerSpeedLimit = BtPeerSpeedBox.Text,
+            BtRequestPeerSpeedLimit = SizeOrLastGood(BtPeerSpeedBox, old.BtRequestPeerSpeedLimit),
             BtStopTimeout = (int)SafeValue(BtStopTimeoutBox.Value, 0),
             BtDetachSeedOnly = BtDetachSeedToggle.IsOn,
             SeedMode = seedMode,
@@ -571,6 +604,9 @@ public sealed partial class SettingsView : UserControl
         || old.RequireCrypto != updated.RequireCrypto
         || old.BtMinCryptoLevel != updated.BtMinCryptoLevel
         || old.BtForceEncryption != updated.BtForceEncryption
+        // PrivacyMode gates the ExtraAria2Options filtering on the command line, so toggling it
+        // alone (with DHT/PEX/crypto already matching the preset) still needs the restart.
+        || old.PrivacyMode != updated.PrivacyMode
         || old.DiskCache != updated.DiskCache
         || old.MinTlsVersion != updated.MinTlsVersion
         || old.DisableIpv6 != updated.DisableIpv6
