@@ -152,6 +152,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     public string RawStatus { get; private set; } = "";
     public string? Directory { get; private set; }
     public string? InfoHash { get; private set; }
+    public string? ErrorCode { get; private set; }
     public string? ErrorMessage { get; private set; }
     public bool IsTorrent { get; private set; }
     public long TotalLength { get; private set; }
@@ -201,6 +202,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         _isStopped = d.Status is Aria2Status.Complete or Aria2Status.Error or Aria2Status.Removed;
         Directory = NormalizePath(d.Dir);
         InfoHash = d.InfoHash;
+        ErrorCode = d.ErrorCode;
         ErrorMessage = d.ErrorMessage;
         IsTorrent = d.IsTorrent;
         TotalLength = d.TotalLength;
@@ -294,7 +296,12 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task RemoveAsync()
+    public Task RemoveAsync() => RemoveCoreAsync();
+
+    /// <summary>Removes the entry from aria2. Returns true only when the result purge was
+    /// CONFIRMED — callers that go on to delete files from disk must not do so when the
+    /// download may still be alive in the engine (it would re-create/redownload them).</summary>
+    private async Task<bool> RemoveCoreAsync()
     {
         try
         {
@@ -318,17 +325,19 @@ public sealed partial class DownloadItemViewModel : ObservableObject
                 try
                 {
                     await _service.Rpc.RemoveDownloadResultAsync(Gid);
-                    return;
+                    return true;
                 }
                 catch (Aria2RpcException)
                 {
                     await Task.Delay(200);
                 }
             }
+            return false;
         }
         catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
         {
             // Already gone or engine reconnecting — the list resyncs on the next tick.
+            return false;
         }
     }
 
@@ -350,7 +359,11 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     {
         var files = Files;
         string? root = Directory;
-        await RemoveAsync();
+        // N11: only touch the disk when aria2 CONFIRMED the entry is gone. Deleting while the
+        // download is still alive in the engine (removal failed / engine reconnecting) would
+        // have aria2 re-create and redownload the files — or fight us over open handles.
+        if (!await RemoveCoreAsync())
+            return;
 
         if (files is null)
             return;
@@ -426,24 +439,58 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         }
     }
 
+    public enum RecheckOutcome
+    {
+        Succeeded,
+        /// <summary>RPC blip / re-add failed — the recheck may be retried later.</summary>
+        TransientFailure,
+        /// <summary>Preconditions missing (no info hash, or no metadata source) — the entry was
+        /// left untouched and retrying won't help until conditions change.</summary>
+        NotPossible,
+    }
+
+    [RelayCommand]
+    private Task RecheckAsync() => RecheckCoreAsync();
+
     /// <summary>
     /// Re-hash and continue a torrent whose data exists on disk but whose aria2 state
-    /// was lost: remove the entry keeping files, then re-add via magnet. BuildOptions
-    /// sets check-integrity, so aria2 re-hashes the existing files and resumes seeding.
+    /// was lost: remove the entry keeping files, then re-add. BuildOptions sets
+    /// check-integrity, so aria2 re-hashes the existing files and resumes seeding.
+    /// Prefers the .torrent aria2 saved (bt-save-metadata) — it keeps the tracker list;
+    /// the magnet fallback carries no trackers and needs DHT to fetch metadata.
     /// </summary>
-    [RelayCommand]
-    private async Task RecheckAsync()
+    public async Task<RecheckOutcome> RecheckCoreAsync()
     {
         if (string.IsNullOrEmpty(InfoHash))
-            return;
+            return RecheckOutcome.NotPossible;
         string hash = InfoHash;
         try
         {
-            string magnet = $"magnet:?xt=urn:btih:{hash}&dn={Uri.EscapeDataString(Name)}";
+            // N12: resolve the metadata source BEFORE destroying the entry. Without the saved
+            // .torrent and without DHT (e.g. privacy mode), a bare magnet could never fetch
+            // metadata — the recheck would replace a working entry with a stuck [METADATA] stub.
+            byte[]? torrentBytes = null;
+            if (!string.IsNullOrEmpty(Directory))
+            {
+                string metaPath = Path.Combine(Directory, hash.ToLowerInvariant() + ".torrent");
+                try
+                {
+                    if (File.Exists(metaPath))
+                        torrentBytes = await File.ReadAllBytesAsync(metaPath);
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    // Unreadable metadata file — fall back to the magnet path below.
+                }
+            }
+            var settings = _service.Settings;
+            bool dhtAvailable = settings.EnableDht && !settings.PrivacyMode;
+            if (torrentBytes is null && !dhtAvailable)
+                return RecheckOutcome.NotPossible;
 
             // B6: carry over the per-download options that a re-add would otherwise drop —
             // the file selection and the speed caps. Read them BEFORE removing the entry.
-            // Auto-recovery routes through this same command, so it benefits too.
+            // Auto-recovery routes through this same path, so it benefits too.
             var preserve = new Dictionary<string, string>(StringComparer.Ordinal);
             try
             {
@@ -452,7 +499,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
                     if (opts.TryGetValue(key, out var v) && !string.IsNullOrEmpty(v) && v != "0")
                         preserve[key] = v;
             }
-            catch (Aria2RpcException) { /* options gone with the entry — re-add without them */ }
+            catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
+            {
+                // Options gone with the entry (or engine blip) — re-add without them.
+            }
 
             // Force-stop, then keep purging the result until aria2's BitTorrent engine has fully
             // released this info hash. Re-adding the magnet before that makes aria2 spawn a second
@@ -461,18 +511,48 @@ public sealed partial class DownloadItemViewModel : ObservableObject
             catch (Aria2RpcException) { /* already stopped */ }
             for (int i = 0; i < 25; i++)
             {
-                try { await _service.Rpc.RemoveDownloadResultAsync(Gid); }
-                catch (Aria2RpcException) { /* not yet removable — retry */ }
-                var snap = await _service.Rpc.GetSnapshotAsync();
-                if (!snap.Downloads.Any(d => string.Equals(d.InfoHash, hash, StringComparison.OrdinalIgnoreCase)))
-                    break;
+                try
+                {
+                    try { await _service.Rpc.RemoveDownloadResultAsync(Gid); }
+                    catch (Aria2RpcException) { /* not yet removable — retry */ }
+                    var snap = await _service.Rpc.GetSnapshotAsync();
+                    if (!snap.Downloads.Any(d => string.Equals(d.InfoHash, hash, StringComparison.OrdinalIgnoreCase)))
+                        break;
+                }
+                catch (Exception ex) when (ex is InvalidOperationException or TimeoutException)
+                {
+                    // N9: engine blip mid-purge must not abort the whole recheck — the entry is
+                    // already being torn down, so press on and retry the poll.
+                }
                 await Task.Delay(200);
             }
-            await DownloadAdder.AddUrisAsync(magnet, Directory, preserve);
+
+            // N9: from here the entry is GONE — a failed re-add silently loses the download,
+            // so retry transient failures instead of swallowing them.
+            string magnet = $"magnet:?xt=urn:btih:{hash}&dn={Uri.EscapeDataString(Name)}";
+            for (int attempt = 0; attempt < 5; attempt++)
+            {
+                try
+                {
+                    if (torrentBytes is not null)
+                    {
+                        await DownloadAdder.AddTorrentBytesAsync(torrentBytes, Directory, null, preserve);
+                        return RecheckOutcome.Succeeded;
+                    }
+                    var result = await DownloadAdder.AddUrisAsync(magnet, Directory, preserve);
+                    if (result.Error is null && result.Added > 0)
+                        return RecheckOutcome.Succeeded;
+                }
+                catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
+                {
+                }
+                await Task.Delay(1000);
+            }
+            return RecheckOutcome.TransientFailure;
         }
         catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
         {
-            // Engine reconnecting or the entry vanished under us — the list resyncs next tick.
+            return RecheckOutcome.TransientFailure;
         }
     }
 

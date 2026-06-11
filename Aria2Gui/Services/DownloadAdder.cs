@@ -56,8 +56,14 @@ public static class DownloadAdder
     }
 
     /// <param name="selectFile">aria2 select-file value ("1,3,5") or null for all files.</param>
-    public static async Task AddTorrentBytesAsync(byte[] torrent, string? directory = null, string? selectFile = null) =>
-        await Aria2Service.Instance.Rpc.AddTorrentAsync(torrent, BuildOptions(directory, selectFile));
+    public static async Task AddTorrentBytesAsync(byte[] torrent, string? directory = null, string? selectFile = null, IReadOnlyDictionary<string, string>? extraOptions = null)
+    {
+        var options = BuildOptions(directory, selectFile);
+        if (extraOptions is not null)
+            foreach (var kv in extraOptions)
+                options[kv.Key] = kv.Value;
+        await Aria2Service.Instance.Rpc.AddTorrentAsync(torrent, options);
+    }
 
     public static async Task AddTorrentFileAsync(IStorageFile file, string? directory = null, string? selectFile = null) =>
         await AddTorrentBytesAsync(await ReadTorrentBytesAsync(file), directory, selectFile);

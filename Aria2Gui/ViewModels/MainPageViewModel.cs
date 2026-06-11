@@ -21,7 +21,6 @@ public sealed partial class MainPageViewModel : ObservableObject
     private readonly List<DownloadItemViewModel> _all = []; // master order (arrival)
     private IReadOnlyList<DownloadItemViewModel> _selection = [];
     private DispatcherQueueTimer? _timer;
-    private bool _refreshing;
     private bool _peersRefreshing;
     private bool _initialized;
 
@@ -206,6 +205,11 @@ public sealed partial class MainPageViewModel : ObservableObject
     /// </summary>
     private async Task HandleNotificationAsync(string method, string gid)
     {
+        // N13: an in-flight refresh's snapshot may PREDATE this event (RefreshAsync coalesces
+        // instead of starting a second poll). Await it, then run one more — aria2 changed its
+        // state before sending the notification, so any snapshot fetched from here on is final.
+        if (_refreshTask is { } running)
+            await running;
         await RefreshAsync();
         NotifyDownloadEvent(method, gid);
     }
@@ -230,6 +234,12 @@ public sealed partial class MainPageViewModel : ObservableObject
         }
         else if (method == "aria2.onDownloadError" && !IsWindowForeground())
         {
+            // errorCode 13 with a burned hash is auto-recovery already repairing the entry —
+            // a background "download error" toast for it would only alarm the user (N21).
+            if (item.ErrorCode == "13"
+                && item.InfoHash is { Length: > 0 } infoHash
+                && _autoRecovered.Contains(infoHash))
+                return;
             NotificationService.ShowDownloadError(item.Name);
         }
     }
@@ -239,11 +249,22 @@ public sealed partial class MainPageViewModel : ObservableObject
     [System.Runtime.InteropServices.DllImport("user32.dll")]
     private static extern nint GetForegroundWindow();
 
-    private async Task RefreshAsync()
+    /// <summary>The in-flight poll, or null. UI-thread only (all callers are dispatched).</summary>
+    private Task? _refreshTask;
+
+    /// <summary>Polls one snapshot. Coalesces: while a poll is in flight, returns ITS task
+    /// instead of silently no-opping, so callers can actually await a refresh.</summary>
+    private Task RefreshAsync()
     {
-        if (_refreshing || !_service.Rpc.IsConnected)
-            return;
-        _refreshing = true;
+        if (_refreshTask is { } running)
+            return running;
+        if (!_service.Rpc.IsConnected)
+            return Task.CompletedTask;
+        return _refreshTask = RefreshCoreAsync();
+    }
+
+    private async Task RefreshCoreAsync()
+    {
         try
         {
             var snapshot = await _service.Rpc.GetSnapshotAsync();
@@ -255,13 +276,23 @@ public sealed partial class MainPageViewModel : ObservableObject
         }
         finally
         {
-            _refreshing = false;
+            _refreshTask = null;
         }
     }
 
     /// <summary>Info hashes already auto-recovered this session, so a torrent aria2 dropped to an
     /// error on reload (errorCode 13) is re-checked once, never in a loop.</summary>
     private readonly HashSet<string> _autoRecovered = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>Runs the recheck and keeps the hash "burned" only when that's correct: a
+    /// TRANSIENT failure un-burns it so a later tick can retry (N10) — otherwise one RPC blip
+    /// mid-recheck would permanently delete the entry. NotPossible stays burned (the entry was
+    /// left untouched; retrying every tick would spin), as does success (prevents re-fires).</summary>
+    private async Task AutoRecoverAsync(DownloadItemViewModel item, string infoHash)
+    {
+        if (await item.RecheckCoreAsync() == DownloadItemViewModel.RecheckOutcome.TransientFailure)
+            _autoRecovered.Remove(infoHash);
+    }
 
     // O4: reused across poll ticks (Clear keeps capacity) instead of allocating each tick.
     private readonly HashSet<string> _seenGids = new(StringComparer.Ordinal);
@@ -308,7 +339,7 @@ public sealed partial class MainPageViewModel : ObservableObject
                 && download.InfoHash is { Length: > 0 } infoHash
                 && _autoRecovered.Add(infoHash))
             {
-                _ = item.RecheckCommand.ExecuteAsync(null);
+                _ = AutoRecoverAsync(item, infoHash);
             }
         }
 
