@@ -14,6 +14,12 @@
   <data name="ToolbarRemoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Remove selected from the list</value></data>
   <data name="ToolbarSettingsButton.Label" xml:space="preserve"><value>Settings</value></data>
   <data name="ToolbarSettingsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Settings</value></data>
+  <data name="SpeedLimitDownSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Download speed limit</value></data>
+  <data name="SpeedLimitDownBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Download speed limit value</value></data>
+  <data name="SpeedLimitDownUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Download speed limit unit</value></data>
+  <data name="SpeedLimitUpSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Upload speed limit</value></data>
+  <data name="SpeedLimitUpBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Upload speed limit value</value></data>
+  <data name="SpeedLimitUpUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Upload speed limit unit</value></data>
   <data name="ToolbarMoreButton.Label" xml:space="preserve"><value>More</value></data>
   <data name="ToolbarMoreButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>More actions</value></data>
   <data name="MenuResumeAll.Text" xml:space="preserve"><value>Resume all</value></data>

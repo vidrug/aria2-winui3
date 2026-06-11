@@ -117,7 +117,9 @@ public static class TorrentParser
                 throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrBadString"));
             if (!int.TryParse(Encoding.ASCII.GetString(data, pos, colon - pos), out int length))
                 throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrBadString"));
-            if (length < 0 || colon + 1 + length > data.Length)
+            // Compare in long: a declared length near int.MaxValue would wrap the int sum
+            // negative, slip past this check, and hit a ~2 GB allocation below instead.
+            if (length < 0 || (long)colon + 1 + length > data.Length)
                 throw new InvalidDataException(Aria2Gui.Helpers.L.Get("TorrentErrStringOOB"));
             byte[] bytes = new byte[length];
             Array.Copy(data, colon + 1, bytes, 0, length);

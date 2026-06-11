@@ -14,6 +14,20 @@
     mc:Ignorable="d">
 
     <Page.Resources>
+        <ResourceDictionary>
+        <ResourceDictionary.ThemeDictionaries>
+            <!-- Zebra-row tint resolved per PAGE theme: code-behind picks the dictionary by
+                 this page's ActualTheme, because an Application.Current.Resources lookup
+                 resolves against the OS theme fixed at launch and ignores the in-app forced
+                 theme (N27). No entry for HighContrast on purpose — no stripe there. -->
+            <ResourceDictionary x:Key="Light">
+                <StaticResource x:Key="ZebraRowBrush" ResourceKey="SubtleFillColorTertiaryBrush" />
+            </ResourceDictionary>
+            <ResourceDictionary x:Key="Dark">
+                <StaticResource x:Key="ZebraRowBrush" ResourceKey="SubtleFillColorTertiaryBrush" />
+            </ResourceDictionary>
+            <ResourceDictionary x:Key="HighContrast" />
+        </ResourceDictionary.ThemeDictionaries>
         <!-- Sortable column headers are real Buttons (focusable, keyboard-invokable, Invoke
              pattern, Button role) but styled flat to read as plain header text. The button
              stretches to fill the whole header cell (full column width and the full header-row
@@ -113,9 +127,9 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Slider Grid.Column="0" AutomationProperties.AutomationId="SpeedLimitDownSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitDownSlider, Mode=TwoWay}" VerticalAlignment="Center" />
-                        <NumberBox Grid.Column="1" AutomationProperties.AutomationId="SpeedLimitDownBox" Width="92" Minimum="0" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitDownMb, Mode=TwoWay}" VerticalAlignment="Center" />
-                        <ComboBox Grid.Column="2" AutomationProperties.AutomationId="SpeedLimitDownUnit" MinWidth="68" VerticalAlignment="Center" SelectedValuePath="Tag" SelectedValue="{Binding SpeedLimitDownUnit, Mode=TwoWay}">
+                        <Slider Grid.Column="0" loc:Localize.Uid="SpeedLimitDownSlider" AutomationProperties.AutomationId="SpeedLimitDownSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitDownSlider, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <NumberBox Grid.Column="1" loc:Localize.Uid="SpeedLimitDownBox" AutomationProperties.AutomationId="SpeedLimitDownBox" Width="92" Minimum="0" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitDownMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="2" loc:Localize.Uid="SpeedLimitDownUnit" AutomationProperties.AutomationId="SpeedLimitDownUnit" MinWidth="68" VerticalAlignment="Center" SelectedValuePath="Tag" SelectedValue="{Binding SpeedLimitDownUnit, Mode=TwoWay}">
                             <ComboBoxItem loc:Localize.Uid="SpeedUnitByte" Tag="B" />
                             <ComboBoxItem loc:Localize.Uid="SpeedUnitKByte" Tag="KB" />
                             <ComboBoxItem loc:Localize.Uid="SpeedUnitKBit" Tag="Kb" />
@@ -132,9 +146,9 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Slider Grid.Column="0" AutomationProperties.AutomationId="SpeedLimitUpSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitUpSlider, Mode=TwoWay}" VerticalAlignment="Center" />
-                        <NumberBox Grid.Column="1" AutomationProperties.AutomationId="SpeedLimitUpBox" Width="92" Minimum="0" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitUpMb, Mode=TwoWay}" VerticalAlignment="Center" />
-                        <ComboBox Grid.Column="2" AutomationProperties.AutomationId="SpeedLimitUpUnit" MinWidth="68" VerticalAlignment="Center" SelectedValuePath="Tag" SelectedValue="{Binding SpeedLimitUpUnit, Mode=TwoWay}">
+                        <Slider Grid.Column="0" loc:Localize.Uid="SpeedLimitUpSlider" AutomationProperties.AutomationId="SpeedLimitUpSlider" Minimum="0" Maximum="100" StepFrequency="0.5" TickFrequency="10" TickPlacement="Outside" Value="{Binding SpeedLimitUpSlider, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <NumberBox Grid.Column="1" loc:Localize.Uid="SpeedLimitUpBox" AutomationProperties.AutomationId="SpeedLimitUpBox" Width="92" Minimum="0" SmallChange="1" SpinButtonPlacementMode="Compact" Value="{Binding SpeedLimitUpMb, Mode=TwoWay}" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="2" loc:Localize.Uid="SpeedLimitUpUnit" AutomationProperties.AutomationId="SpeedLimitUpUnit" MinWidth="68" VerticalAlignment="Center" SelectedValuePath="Tag" SelectedValue="{Binding SpeedLimitUpUnit, Mode=TwoWay}">
                             <ComboBoxItem loc:Localize.Uid="SpeedUnitByte" Tag="B" />
                             <ComboBoxItem loc:Localize.Uid="SpeedUnitKByte" Tag="KB" />
                             <ComboBoxItem loc:Localize.Uid="SpeedUnitKBit" Tag="Kb" />
@@ -146,6 +160,7 @@
                 <TextBlock loc:Localize.Uid="SpeedLimitHint" Style="{StaticResource DetailLabelStyle}" TextWrapping="Wrap" />
             </StackPanel>
         </Flyout>
+        </ResourceDictionary>
     </Page.Resources>
 
     <Grid
@@ -248,7 +263,9 @@
                             <FontIcon Glyph="&#xE74D;" />
                         </AppBarButton.Icon>
                         <AppBarButton.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="Delete" />
+                            <!-- Scoped to the table: a window-global Delete would steal the key
+                                 from every TextBox/NumberBox in the window (N15). -->
+                            <KeyboardAccelerator Key="Delete" ScopeOwner="{x:Bind DownloadsList}" />
                         </AppBarButton.KeyboardAccelerators>
                     </AppBarButton>
                     <AppBarButton

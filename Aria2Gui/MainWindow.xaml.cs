@@ -22,7 +22,10 @@ public sealed partial class MainWindow : Window
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
 
-        AppWindow.SetIcon("Assets/AppIcon.ico");
+        // Absolute path: in the unpackaged (portable) build a relative path resolves against
+        // the process CURRENT directory, so launching the exe from another folder (terminal,
+        // shortcut with a different "Start in") would silently lose the title-bar/taskbar icon.
+        AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.ico"));
 
         // Comfortable default size for the qBittorrent-style table layout,
         // scaled to the monitor DPI; the column set needs ~1100px of width.

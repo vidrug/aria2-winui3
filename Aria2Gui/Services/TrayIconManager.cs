@@ -172,6 +172,11 @@ public sealed class TrayIconManager : IDisposable
             ShowWindow();
     }
 
+    /// <summary>Surfaces the window under the <c>_restoring</c> guard — second-instance
+    /// activation must route through here, or the minimize-watcher in
+    /// <see cref="OnAppWindowChanged"/> can re-hide the window mid-restore (N16).</summary>
+    public void RestoreFromTray() => ShowWindow();
+
     private void ShowWindow()
     {
         // The window was AppWindow.Hide()'d while Minimized, so it's both hidden and
@@ -183,9 +188,13 @@ public sealed class TrayIconManager : IDisposable
         {
             nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_window);
             _appWindow.Show(true); // un-hide AND activate (Show() alone may leave it inactive)
-            if (_appWindow.Presenter is OverlappedPresenter presenter)
+            // Un-minimize only when actually minimized: Restore/SW_RESTORE on a MAXIMIZED
+            // window would un-maximize it (matters for second-instance activation).
+            if (_appWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter)
+            {
                 presenter.Restore();
-            ShowWindow(hwnd, SW_RESTORE);
+                ShowWindow(hwnd, SW_RESTORE);
+            }
             _window.Activate();
             SetForegroundWindow(hwnd);
         }

@@ -206,10 +206,14 @@ public sealed partial class MainPage : Page
         container.Background = (args.ItemIndex & 1) == 1 ? ZebraBrush : null;
     }
 
-    /// <summary>The subtle, theme-aware tint used for odd zebra rows. Resolved once per call
-    /// from the live ThemeResource so it tracks Light/Dark switches.</summary>
-    private static Microsoft.UI.Xaml.Media.Brush? ZebraBrush =>
-        Application.Current.Resources.TryGetValue("SubtleFillColorTertiaryBrush", out var value)
+    /// <summary>The subtle tint used for odd zebra rows, resolved from this page's theme
+    /// dictionaries by the PAGE's ActualTheme — an Application.Current.Resources lookup resolves
+    /// against the OS theme fixed at launch and ignores the in-app forced theme (N27). Null in
+    /// High Contrast (no entry there) — no stripe.</summary>
+    private Microsoft.UI.Xaml.Media.Brush? ZebraBrush =>
+        Resources.ThemeDictionaries.TryGetValue(ActualTheme == ElementTheme.Dark ? "Dark" : "Light", out var dict)
+        && dict is ResourceDictionary themed
+        && themed.TryGetValue("ZebraRowBrush", out var value)
             ? value as Microsoft.UI.Xaml.Media.Brush
             : null;
 

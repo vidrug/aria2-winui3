@@ -186,6 +186,11 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     /// one doesn't recurse back into the other.</summary>
     private bool _syncingSpeed;
 
+    /// <summary>Bumped on every user-initiated limit change. The flyout opens BEFORE
+    /// <see cref="LoadSpeedLimitsAsync"/> finishes, so an edit made during the fetch must not be
+    /// overwritten by the stale fetched values when the await completes (N20).</summary>
+    private int _speedEditGen;
+
     /// <summary>Upper bound of the speed-limit slider (in the selected unit); the box is uncapped.</summary>
     private const double SpeedSliderMax = 100;
 
@@ -560,9 +565,14 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     /// without re-pushing them back to aria2 (suppressed). Called as the flyout opens.</summary>
     public async Task LoadSpeedLimitsAsync()
     {
+        int gen = _speedEditGen;
         try
         {
             var (down, up) = await _service.Rpc.GetSpeedLimitsAsync(Gid);
+            // The user edited a field while we were fetching — their value is newer than what
+            // aria2 just reported; seeding the fields now would visually revert the edit (N20).
+            if (gen != _speedEditGen)
+                return;
             _suppressSpeedApply = true;
             long downBytes = SpeedUnit.ParseStoredBytes(down);
             long upBytes = SpeedUnit.ParseStoredBytes(up);
@@ -627,7 +637,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     private void PushSpeedLimit()
     {
         if (!_suppressSpeedApply)
+        {
+            _speedEditGen++; // a user edit supersedes any in-flight LoadSpeedLimitsAsync (N20)
             _ = ApplySpeedLimitAsync();
+        }
     }
 
     /// <summary>Pushes the current per-download limits to aria2 via changeOption (per gid),

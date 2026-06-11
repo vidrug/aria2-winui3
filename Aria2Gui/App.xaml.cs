@@ -92,18 +92,11 @@ public partial class App : Application
         // Stop aria2c gracefully (saves the session) and remove the tray icon on close.
         Window.Closed += (_, _) => RunExitCleanup();
 
-        // A second app launch redirects here (see Program) — surface our window.
-        // Window.Activate() alone does not restore a minimized window.
+        // A second app launch redirects here (see Program) — surface our window. Route through
+        // the tray's restore: it runs under the _restoring guard, so the tray's minimize-watcher
+        // can't observe the transient Minimized state and re-hide the window mid-restore (N16).
         Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().Activated += (_, _) =>
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                if (Window.AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter
-                    && presenter.State == Microsoft.UI.Windowing.OverlappedPresenterState.Minimized)
-                {
-                    presenter.Restore();
-                }
-                Window.Activate();
-            });
+            DispatcherQueue.TryEnqueue(() => (Window as MainWindow)?.Tray.RestoreFromTray());
 
         Window.Activate();
 
