@@ -98,6 +98,12 @@ public sealed class Aria2ProcessManager : IDisposable
         psi.ArgumentList.Add("--auto-save-interval=15");
         psi.ArgumentList.Add($"--save-session={sessionFile}");
         psi.ArgumentList.Add("--save-session-interval=15");
+        // Without force-save, aria2 drops COMPLETED/seed-stopped downloads from the saved
+        // session — the moment the last torrent finishes seeding, the session is written
+        // EMPTY and the whole list is gone on the next launch (this lost the list repeatedly;
+        // user-removed entries are still purged via removeDownloadResult and never saved).
+        // force-save also keeps the control files, so reloaded entries resume cleanly.
+        psi.ArgumentList.Add("--force-save=true");
         psi.ArgumentList.Add("--bt-save-metadata=true");
         psi.ArgumentList.Add("--rpc-save-upload-metadata=true");
         psi.ArgumentList.Add("--follow-torrent=true");

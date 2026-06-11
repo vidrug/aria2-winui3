@@ -393,6 +393,9 @@ public sealed class Aria2Service
         [
             "enable-rpc", "rpc-listen-port", "rpc-secret", "rpc-listen-all",
             "stop-with-process", "save-session", "input-file", "no-conf", "conf-path", "dir",
+            // force-save keeps completed downloads in the session; overriding it would bring
+            // back the "list empties once everything finished seeding" data loss.
+            "force-save",
         ];
         // B11: while privacy mode is on, an extra line like "enable-dht=true" must not silently
         // undo the privacy preset. These keys are off-limits until privacy mode is turned off.
