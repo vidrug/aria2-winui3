@@ -309,6 +309,13 @@ public sealed class Aria2RpcClient : IAsyncDisposable
                 // Timeout, not caller cancellation — surface a typed, catchable error.
                 throw new TimeoutException($"aria2 RPC request timed out: {method}");
             }
+            catch (Exception ex) when (ex is WebSocketException or ObjectDisposedException)
+            {
+                // The socket died under us (engine crash / restart window before recovery
+                // re-connects). Callers catch the documented trio (Aria2RpcException /
+                // InvalidOperationException / TimeoutException) — keep that contract.
+                throw new InvalidOperationException("RPC connection lost.", ex);
+            }
         }
         finally
         {

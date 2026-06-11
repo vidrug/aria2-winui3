@@ -23,8 +23,15 @@ public sealed class Aria2Service
     private readonly Aria2ProcessManager _process = new();
     private readonly Aria2RpcClient _rpc = new();
     private readonly SemaphoreSlim _recoveryLock = new(1, 1);
+    // Serializes the Settings swap + settings.json write only. Deliberately NOT _recoveryLock:
+    // a restart/recovery holds that for tens of seconds (kill-wait + spawn + connect retries),
+    // and a settings blur must not stall behind it just to persist (N18).
+    private readonly SemaphoreSlim _settingsLock = new(1, 1);
     private volatile bool _shuttingDown;
     private int _restartAttempts;
+    /// <summary>When the last crash recovery started — lets RecoverAsync distinguish a burst of
+    /// failures (counts toward the give-up cap) from a crash after hours of stability (fresh cap).</summary>
+    private DateTime _lastRecoveryUtc = DateTime.MinValue;
 
     public Aria2RpcClient Rpc => _rpc;
 
@@ -80,10 +87,11 @@ public sealed class Aria2Service
     /// propagates so the caller can surface it.</summary>
     public async Task ApplySettingsAsync(AppSettings settings, CancellationToken ct = default)
     {
-        // B10: serialize the Settings swap + persist against a concurrent restart, which reads
-        // Settings to build its command line. The RPC push runs outside the lock (it can't race
-        // a restart — the socket is down during one — and shouldn't block on a long restart).
-        await _recoveryLock.WaitAsync(ct).ConfigureAwait(false);
+        // B10: serialize the Settings swap + persist against concurrent appliers. The restart
+        // path snapshots Settings into a local before use, so a dedicated lightweight lock is
+        // enough — waiting on the recovery lock here would stall every settings blur for the
+        // full duration of an engine restart (N18).
+        await _settingsLock.WaitAsync(ct).ConfigureAwait(false);
         try
         {
             Settings = settings;
@@ -91,7 +99,7 @@ public sealed class Aria2Service
         }
         finally
         {
-            _recoveryLock.Release();
+            _settingsLock.Release();
         }
         if (_rpc.IsConnected)
             await _rpc.ChangeGlobalOptionAsync(BuildRuntimeOptions(settings), ct).ConfigureAwait(false);
@@ -184,8 +192,11 @@ public sealed class Aria2Service
         if (_shuttingDown)
             throw new OperationCanceledException("The engine is shutting down.");
 
-        string dir = Settings.DownloadDirectory;
-        var startupOptions = BuildStartupOptions(Settings);
+        // Snapshot the settings reference once so a concurrent ApplySettingsAsync swap can't
+        // give us a dir from one object and options from another.
+        var settings = Settings;
+        string dir = settings.DownloadDirectory;
+        var startupOptions = BuildStartupOptions(settings);
 
         // B14: bounded retries with a fresh port each time cover the (rare) case of the free-port
         // probe racing another process for the same port; the last attempt's failure propagates.
@@ -244,6 +255,13 @@ public sealed class Aria2Service
             if (_shuttingDown || State is Aria2ServiceState.Running && _rpc.IsConnected && _process.IsRunning)
                 return; // a concurrent recovery already fixed things
 
+            // N7: count attempts within a failure BURST. Resetting on every successful connect
+            // made the cap unreachable for an engine that crashes shortly AFTER connecting
+            // (restart-loop forever); a crash after a long stable run still gets a fresh cap.
+            if (DateTime.UtcNow - _lastRecoveryUtc > TimeSpan.FromMinutes(2))
+                _restartAttempts = 0;
+            _lastRecoveryUtc = DateTime.UtcNow;
+
             if (++_restartAttempts > 3)
             {
                 LastError = $"{reason}; giving up after {_restartAttempts - 1} restart attempts. {_process.StderrTail}";
@@ -273,7 +291,8 @@ public sealed class Aria2Service
                     _process.Stop();
                     await StartProcessAndConnectAsync(CancellationToken.None).ConfigureAwait(false);
                 }
-                _restartAttempts = 0;
+                // No counter reset here: a quick re-crash must keep accumulating toward the cap;
+                // the time window above grants a fresh cap only after sustained stability.
                 SetState(Aria2ServiceState.Running);
             }
             catch (Exception ex)
@@ -415,6 +434,12 @@ public sealed class Aria2Service
         };
         AddCommonOptions(options, s);
         AddSeedOptions(options, s);
+        // AddCommonOptions omits these when blank — right for the command line, but
+        // changeGlobalOption can't unset an omitted key, so CLEARING the proxy/credentials/
+        // user-agent would otherwise never reach the running engine (N6). An empty value is
+        // aria2's documented way to clear these at runtime.
+        foreach (var key in new[] { "user-agent", "all-proxy", "http-user", "http-passwd", "all-proxy-user", "all-proxy-passwd" })
+            options.TryAdd(key, "");
         return options;
     }
 
