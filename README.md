@@ -10,12 +10,19 @@ No installer, no dependencies: unzip and run. The aria2 engine, the .NET runtime
 
 ## Features
 
-- **qBittorrent-style layout** - a status-filter sidebar, a sortable download table (name, size, progress, status, seeds/peers, down/up speed, ETA, ratio) with resizable columns, and a details pane (General / Files / Peers).
+- **qBittorrent-style layout** - a status-filter sidebar, a sortable download table (name, size, progress, status, seeds/peers, down/up speed, ETA, ratio) with resizable columns, and a details pane (General / Files / Peers / Trackers).
 - **Add downloads** - HTTP/FTP and magnet links (one per line) and/or a `.torrent` file, with a collapsible **per-file selection tree** (folders, select all / none) so you grab only what you want.
-- **Instant settings** - Windows 11 style: every change applies and is saved immediately, no Save button. Covers download folder, speed limits, concurrency, connections, proxy, timeouts/retries, file allocation, BT listen port, DHT/PEX/LPD, encryption (with level), max peers, seed ratio, extra trackers and raw aria2 options.
+- **Browser integration** - register as the handler for `magnet:` links and `.torrent` files (opt-in), watch a folder for dropped `.torrent` files, or catch a copied magnet link from the clipboard - each opens the add dialog so you still pick the save folder.
+- **Speed control** - global and per-torrent limits with selectable units (B/KB/Kb/MB/Mb), plus **slow mode**: an alternative limit pair switched with one click from the toolbar or the tray.
+- **Queue management** - move waiting downloads to top/up/down/bottom; the table follows the engine's live order.
+- **One-click privacy mode** - forces full peer encryption and disables DHT/PEX/LPD; switching it off restores your previous settings.
+- **Seeding modes** - by ratio, by time, or off; per-torrent recheck and **set location** (move files to another folder without losing progress).
+- **Instant settings** - Windows 11 style: every change applies and is saved immediately, no Save button. Covers download folder, speed limits, concurrency, connections, proxy (with credentials), timeouts/retries, file allocation, disk cache, BT listen port, DHT/PEX/LPD, encryption (with level), max peers, extra trackers and raw aria2 options.
+- **Statistics** - session and all-time totals (downloaded / uploaded / ratio) in a status-bar flyout.
 - **12 languages** - English, Русский, Español, Deutsch, Français, Português (BR), Italiano, 中文 (简体), 日本語, Українська, Polski, Türkçe - switchable from inside the app (works in the portable build too).
-- **System tray** - minimize to tray, restore, pause-all, quit, with a live download tooltip.
+- **System tray** - minimize or close to tray, start with Windows, start minimized, pause-all and slow-mode toggles, live download tooltip.
 - **Drag & drop** - drop links or `.torrent` files straight onto the window.
+- **Quality of life** - keeps the computer awake while transfers run; desktop notifications for completed/failed downloads; the download list survives every restart.
 - **Themes** - System / Light / Dark, on a Mica backdrop.
 - **Truly portable** - self-contained; runs from any folder or USB stick. Settings and the aria2 session live in a `data\` folder next to the executable. One instance per copy (two GUIs would corrupt a shared session).
 

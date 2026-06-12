@@ -11,7 +11,7 @@
   <Identity
     Name="5E3C0559-7A88-4535-94C7-6700E2187906"
     Publisher="CN=AppPublisher"
-    Version="1.0.0.0" />
+    Version="1.1.0.0" />
 
   <Properties>
     <DisplayName>Aria2Gui</DisplayName>

@@ -45,7 +45,14 @@ public sealed partial class AddDownloadWindow : Window
         double scale = GetDpiForWindow(_hwnd) / 96.0;
         AppWindow.SetIcon("Assets/AppIcon.ico");
         AppWindow.Resize(new Windows.Graphics.SizeInt32((int)(660 * scale), (int)(600 * scale)));
-        AppWindow.TitleBar.PreferredTheme = TitleBarTheme.UseDefaultAppMode;
+        // Follow the IN-APP theme, not the OS app mode — otherwise a light app gets a
+        // dark dialog title bar (and vice versa) whenever the two differ.
+        AppWindow.TitleBar.PreferredTheme = settings.Theme switch
+        {
+            "Light" => TitleBarTheme.Light,
+            "Dark" => TitleBarTheme.Dark,
+            _ => TitleBarTheme.UseDefaultAppMode,
+        };
 
         // Dialog-style presenter, made modal over the main window so the user
         // can't fire a second add or fight a blocked toolbar while it's open.

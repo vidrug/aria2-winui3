@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0 — 2026-06-12
 
 ### Added
 - Queue ordering: move waiting downloads to top/up/down/bottom from the context menu; the
