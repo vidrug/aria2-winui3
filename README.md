@@ -63,6 +63,20 @@ UI strings live in `Aria2Gui/Strings/<lang>/Resources.resw` (12 languages). XAML
 - aria2c is launched on a private loopback port with a random secret and is tied to the GUI's lifetime (a Win32 Job Object plus `--stop-with-process`), so it never lingers after the app closes.
 - The session is auto-saved, so unfinished downloads resume on the next launch.
 
+## Limitations
+
+Honest notes on what the aria2 engine cannot do compared to qBittorrent/libtorrent-based clients:
+
+- **No sequential/streaming download for torrents** - aria2 has no per-piece prioritization, so you can't watch a video while it downloads.
+- **No per-file priorities** - files can be included/excluded (select-file), but not ordered high/normal/low.
+- **No IP filter lists** (eMule/PeerGuardian style block lists are not supported by the engine).
+- **No super-seeding / per-tracker statistics** - the engine reports the tracker list but not per-tracker health.
+- **DHT state is in-memory per session** plus a small routing-table file; node bootstrap after a cold start can take a moment.
+
+## Privacy
+
+The app collects **no telemetry** and makes no network connections of its own - all traffic belongs to the downloads you add. The optional privacy mode forces full peer encryption and disables DHT/PEX/LPD. See [docs/privacy-policy.md](docs/privacy-policy.md).
+
 ## Credits & third-party
 
 - **[aria2](https://aria2.github.io/)** - the download engine, bundled as `aria2c.exe`. aria2 is licensed under the **GNU GPL v2 (or later)**; this repository redistributes the unmodified official binary.
