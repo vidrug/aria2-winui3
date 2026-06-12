@@ -341,4 +341,20 @@ um por linha</value></data>
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Baixado</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Enviado</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>Proporção</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>Modo lento</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Limites de velocidade alternativos (modo lento)</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Limites de velocidade alternativos (modo lento)</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>Modo lento</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>Limites de velocidade alternativos</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>Alternados pelo botão de modo lento na barra ou pela bandeja; 0 — ilimitado</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>Limite de download</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>Limite de upload</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Iniciar com o Windows</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>Início automático ao entrar (usuário atual)</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>Iniciar minimizado na bandeja</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>A janela fica oculta até ser aberta pelo ícone da bandeja</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>Fechar para a bandeja</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>O botão fechar oculta a janela; saia pelo menu do ícone da bandeja</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>Abrir links magnet e arquivos .torrent</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>Registra o aplicativo como manipulador (usuário atual); escolha-o no diálogo do navegador no primeiro uso</value></data>
 </root>

@@ -268,6 +268,18 @@
                             <KeyboardAccelerator Key="Delete" ScopeOwner="{x:Bind DownloadsList}" />
                         </AppBarButton.KeyboardAccelerators>
                     </AppBarButton>
+                    <AppBarSeparator />
+                    <!-- Turtle mode: one click swaps the global limits for the alternative pair
+                         configured in Settings (and back). Mirrored in the tray menu. -->
+                    <AppBarToggleButton
+                        loc:Localize.Uid="ToolbarTurtleButton"
+                        IsChecked="{x:Bind ViewModel.IsAltSpeed, Mode=TwoWay}"
+                        IsEnabled="{x:Bind ViewModel.IsEngineReady, Mode=OneWay}"
+                        AutomationProperties.AutomationId="TurtleButton">
+                        <AppBarToggleButton.Icon>
+                            <FontIcon Glyph="&#xE708;" />
+                        </AppBarToggleButton.Icon>
+                    </AppBarToggleButton>
                     <AppBarButton
                         loc:Localize.Uid="ToolbarMoreButton"
                         AutomationProperties.AutomationId="MoreButton">

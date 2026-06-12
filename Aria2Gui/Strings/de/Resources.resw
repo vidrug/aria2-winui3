@@ -341,4 +341,20 @@ einer pro Zeile</value></data>
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Heruntergeladen</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Hochgeladen</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>Verhältnis</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>Langsamer Modus</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Alternative Geschwindigkeitslimits (langsamer Modus)</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Alternative Geschwindigkeitslimits (langsamer Modus)</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>Langsamer Modus</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>Alternative Geschwindigkeitslimits</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>Umschaltbar über die Schaltfläche in der Symbolleiste oder das Tray-Menü; 0 — unbegrenzt</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>Download-Limit</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>Upload-Limit</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Mit Windows starten</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>Automatischer Start bei der Anmeldung (aktueller Benutzer)</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>Minimiert im Infobereich starten</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>Das Fenster bleibt verborgen, bis es über das Tray-Symbol geöffnet wird</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>In den Infobereich schließen</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Die Schließen-Schaltfläche verbirgt das Fenster; Beenden über das Menü des Tray-Symbols</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>Magnet-Links und .torrent-Dateien öffnen</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>Registriert die App als Handler (aktueller Benutzer); wählen Sie sie beim ersten Öffnen im Browserdialog</value></data>
 </root>

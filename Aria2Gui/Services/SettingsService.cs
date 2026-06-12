@@ -46,6 +46,35 @@ public sealed class AppSettings
     /// <summary>Hold the system awake (no sleep) while downloads or seeding are active.</summary>
     public bool PreventSleep { get; set; } = true;
 
+    /// <summary>Launch the app at Windows sign-in (HKCU Run key, current user).</summary>
+    public bool StartWithWindows { get; set; }
+
+    /// <summary>Start hidden in the tray instead of showing the window.</summary>
+    public bool StartMinimized { get; set; }
+
+    /// <summary>The window close button hides to the tray; exit via the tray menu.</summary>
+    public bool CloseToTray { get; set; }
+
+    /// <summary>Register as a per-user handler for magnet: links and .torrent files.</summary>
+    public bool RegisterFileAssociations { get; set; }
+
+    // ---- Alternative ("turtle mode") speed limits ----
+
+    /// <summary>While true, the alternative limits below replace the main ones.</summary>
+    public bool AltSpeedEnabled { get; set; }
+
+    /// <summary>Alternative download cap, plain byte count ("0" = unlimited).</summary>
+    public string AltDownloadLimit { get; set; } = "0";
+
+    /// <summary>Alternative upload cap, plain byte count ("0" = unlimited).</summary>
+    public string AltUploadLimit { get; set; } = "0";
+
+    /// <summary>Display unit for the alternative download limit editor.</summary>
+    public string AltDownloadLimitUnit { get; set; } = Helpers.SpeedUnit.Default;
+
+    /// <summary>Display unit for the alternative upload limit editor.</summary>
+    public string AltUploadLimitUnit { get; set; } = Helpers.SpeedUnit.Default;
+
     /// <summary>"Default" (follow system), "Light" or "Dark".</summary>
     public string Theme { get; set; } = "Default";
 
@@ -204,6 +233,10 @@ public static class SettingsService
         settings.MaxUploadLimit = SanitizeSpeed(settings.MaxUploadLimit);
         settings.MaxDownloadLimitUnit = Helpers.SpeedUnit.Sanitize(settings.MaxDownloadLimitUnit);
         settings.MaxUploadLimitUnit = Helpers.SpeedUnit.Sanitize(settings.MaxUploadLimitUnit);
+        settings.AltDownloadLimit = SanitizeSpeed(settings.AltDownloadLimit);
+        settings.AltUploadLimit = SanitizeSpeed(settings.AltUploadLimit);
+        settings.AltDownloadLimitUnit = Helpers.SpeedUnit.Sanitize(settings.AltDownloadLimitUnit);
+        settings.AltUploadLimitUnit = Helpers.SpeedUnit.Sanitize(settings.AltUploadLimitUnit);
         settings.ListenPort = settings.ListenPort is 0 ? 0 : Math.Clamp(settings.ListenPort, 1024, 65535);
         settings.BtMaxOpenFiles = Math.Clamp(settings.BtMaxOpenFiles, 1, 10000);
         settings.Timeout = Math.Clamp(settings.Timeout, 1, 600);
@@ -323,6 +356,11 @@ public static class SettingsService
             settings.HttpPasswd = http;
             settings.AllProxyPasswd = proxy;
         }
+
+        // Keep the per-user registry integrations in lock-step with the persisted intent —
+        // every save path syncs them, and both helpers no-op when already in the right state.
+        StartupHelper.Sync(settings.StartWithWindows);
+        AssociationHelper.Sync(settings.RegisterFileAssociations);
     }
 
     /// <summary>Stable JSON form of the settings, used to skip a redundant apply/persist when a

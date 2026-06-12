@@ -341,4 +341,20 @@ uno per riga</value></data>
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Scaricato</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Caricato</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>Rapporto</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>Modalità lenta</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Limiti di velocità alternativi (modalità lenta)</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Limiti di velocità alternativi (modalità lenta)</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>Modalità lenta</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>Limiti di velocità alternativi</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>Attivati con il pulsante modalità lenta sulla barra o dall''area di notifica; 0 — illimitato</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>Limite di download</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>Limite di upload</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Avvia con Windows</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>Avvio automatico all''accesso (utente corrente)</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>Avvia ridotto nell''area di notifica</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>La finestra resta nascosta finché non viene aperta dall''icona nell''area di notifica</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>Chiudi nell''area di notifica</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Il pulsante di chiusura nasconde la finestra; esci dal menu dell''icona nell''area di notifica</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>Apri link magnet e file .torrent</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>Registra l''app come gestore (utente corrente); sceglila nella finestra del browser al primo utilizzo</value></data>
 </root>

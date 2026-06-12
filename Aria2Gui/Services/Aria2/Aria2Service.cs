@@ -308,13 +308,18 @@ public sealed class Aria2Service
         }
     }
 
+    // Turtle mode: while AltSpeedEnabled, the alternative limits replace the main ones
+    // everywhere the engine sees a limit (startup command line AND live changeGlobalOption).
+    private static string EffectiveDownLimit(AppSettings s) => s.AltSpeedEnabled ? s.AltDownloadLimit : s.MaxDownloadLimit;
+    private static string EffectiveUpLimit(AppSettings s) => s.AltSpeedEnabled ? s.AltUploadLimit : s.MaxUploadLimit;
+
     /// <summary>Options passed on the aria2c command line at startup.</summary>
     private static Dictionary<string, string> BuildStartupOptions(AppSettings s)
     {
         var options = new Dictionary<string, string>
         {
-            ["max-overall-download-limit"] = s.MaxDownloadLimit,
-            ["max-overall-upload-limit"] = s.MaxUploadLimit,
+            ["max-overall-download-limit"] = EffectiveDownLimit(s),
+            ["max-overall-upload-limit"] = EffectiveUpLimit(s),
             ["max-concurrent-downloads"] = s.MaxConcurrentDownloads.ToString(CultureInfo.InvariantCulture),
             ["max-connection-per-server"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
             ["split"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
@@ -428,8 +433,8 @@ public sealed class Aria2Service
         var options = new Dictionary<string, string>
         {
             ["dir"] = s.DownloadDirectory,
-            ["max-overall-download-limit"] = s.MaxDownloadLimit,
-            ["max-overall-upload-limit"] = s.MaxUploadLimit,
+            ["max-overall-download-limit"] = EffectiveDownLimit(s),
+            ["max-overall-upload-limit"] = EffectiveUpLimit(s),
             ["max-concurrent-downloads"] = s.MaxConcurrentDownloads.ToString(CultureInfo.InvariantCulture),
             ["max-connection-per-server"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),
             ["split"] = s.MaxConnectionsPerServer.ToString(CultureInfo.InvariantCulture),

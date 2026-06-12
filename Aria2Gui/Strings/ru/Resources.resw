@@ -341,4 +341,20 @@
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Скачано</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Роздано</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>Рейтинг</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>Медленный режим</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Альтернативные лимиты скорости (медленный режим)</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Альтернативные лимиты скорости (медленный режим)</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>Медленный режим</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>Альтернативные лимиты скорости</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>Включаются кнопкой медленного режима на панели или из трея; 0 — без ограничения</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>Лимит загрузки</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>Лимит отдачи</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Запускать с Windows</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>Автоматический запуск при входе в систему (текущий пользователь)</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>Запускать свёрнутым в трей</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>Окно скрыто, пока не открыто из значка в трее</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>Закрывать в трей</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Кнопка закрытия скрывает окно; выход — через меню значка в трее</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>Открывать magnet-ссылки и файлы .torrent</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>Регистрирует приложение как обработчик (текущий пользователь); при первом открытии выберите его в диалоге браузера</value></data>
 </root>

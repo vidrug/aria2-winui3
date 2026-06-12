@@ -341,4 +341,20 @@ jeden w wierszu</value></data>
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Pobrano</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Wysłano</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>Współczynnik</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>Tryb wolny</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Alternatywne limity prędkości (tryb wolny)</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Alternatywne limity prędkości (tryb wolny)</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>Tryb wolny</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>Alternatywne limity prędkości</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>Przełączane przyciskiem trybu wolnego na pasku lub z zasobnika; 0 — bez limitu</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>Limit pobierania</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>Limit wysyłania</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Uruchamiaj z systemem Windows</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>Automatyczne uruchamianie przy logowaniu (bieżący użytkownik)</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>Uruchamiaj zminimalizowany do zasobnika</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>Okno pozostaje ukryte do otwarcia z ikony zasobnika</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>Zamykaj do zasobnika</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Przycisk zamykania ukrywa okno; wyjście przez menu ikony zasobnika</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>Otwieraj linki magnet i pliki .torrent</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>Rejestruje aplikację jako program obsługujący (bieżący użytkownik); przy pierwszym użyciu wybierz ją w oknie przeglądarki</value></data>
 </root>

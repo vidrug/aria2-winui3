@@ -50,14 +50,14 @@ public sealed partial class SettingsView : UserControl
     {
         foreach (var nb in new[]
         {
-            DownLimitBox, UpLimitBox,
+            DownLimitBox, UpLimitBox, AltDownLimitBox, AltUpLimitBox,
             ConcurrentBox, ConnectionsBox, TimeoutBox, ConnectTimeoutBox,
             MaxTriesBox, RetryWaitBox, ListenPortBox, PeersBox, BtMaxOpenFilesBox,
             BtStopTimeoutBox, SeedValueBox,
         })
             nb.ValueChanged += OnNumberChanged;
 
-        foreach (var cb in new[] { DownLimitUnitBox, UpLimitUnitBox, ThemeBox, LanguageBox, FileAllocBox, MinTlsBox })
+        foreach (var cb in new[] { DownLimitUnitBox, UpLimitUnitBox, AltDownLimitUnitBox, AltUpLimitUnitBox, ThemeBox, LanguageBox, FileAllocBox, MinTlsBox })
             cb.SelectionChanged += OnSelectionChanged;
         // The seeding mode also reshapes its value card, so it gets a dedicated handler.
         SeedModeBox.SelectionChanged += OnSeedModeChanged;
@@ -67,7 +67,7 @@ public sealed partial class SettingsView : UserControl
         CryptoLevelRadio.SelectionChanged += OnSelectionChanged;
 
         // CryptoToggle keeps its own handler (OnCryptoToggled) which also applies.
-        foreach (var ts in new[] { CheckCertToggle, AllowOverwriteToggle, AutoRenameToggle, DhtToggle, PexToggle, LpdToggle, DisableIpv6Toggle, BtDetachSeedToggle, ForceEncryptionToggle, PreventSleepToggle })
+        foreach (var ts in new[] { CheckCertToggle, AllowOverwriteToggle, AutoRenameToggle, DhtToggle, PexToggle, LpdToggle, DisableIpv6Toggle, BtDetachSeedToggle, ForceEncryptionToggle, PreventSleepToggle, StartWithWindowsToggle, StartMinimizedToggle, CloseToTrayToggle, AssociateToggle })
             ts.Toggled += OnToggled;
 
         foreach (var tb in new[]
@@ -91,9 +91,15 @@ public sealed partial class SettingsView : UserControl
             DirText.Text = s.DownloadDirectory;
             LoadLimit(DownLimitBox, DownLimitUnitBox, s.MaxDownloadLimit, s.MaxDownloadLimitUnit);
             LoadLimit(UpLimitBox, UpLimitUnitBox, s.MaxUploadLimit, s.MaxUploadLimitUnit);
+            LoadLimit(AltDownLimitBox, AltDownLimitUnitBox, s.AltDownloadLimit, s.AltDownloadLimitUnit);
+            LoadLimit(AltUpLimitBox, AltUpLimitUnitBox, s.AltUploadLimit, s.AltUploadLimitUnit);
             ConcurrentBox.Value = s.MaxConcurrentDownloads;
             ConnectionsBox.Value = s.MaxConnectionsPerServer;
             PreventSleepToggle.IsOn = s.PreventSleep;
+            StartWithWindowsToggle.IsOn = s.StartWithWindows;
+            StartMinimizedToggle.IsOn = s.StartMinimized;
+            CloseToTrayToggle.IsOn = s.CloseToTray;
+            AssociateToggle.IsOn = s.RegisterFileAssociations;
             ThemeBox.SelectedIndex = s.Theme switch { "Light" => 1, "Dark" => 2, _ => 0 };
             LanguageBox.SelectedItem = LanguageBox.Items.OfType<ComboBoxItem>()
                 .FirstOrDefault(i => (i.Tag as string ?? "") == s.Language) ?? LanguageBox.Items[0];
@@ -545,6 +551,16 @@ public sealed partial class SettingsView : UserControl
             MaxConcurrentDownloads = (int)SafeValue(ConcurrentBox.Value, 5),
             MaxConnectionsPerServer = (int)SafeValue(ConnectionsBox.Value, 8),
             PreventSleep = PreventSleepToggle.IsOn,
+            StartWithWindows = StartWithWindowsToggle.IsOn,
+            StartMinimized = StartMinimizedToggle.IsOn,
+            CloseToTray = CloseToTrayToggle.IsOn,
+            RegisterFileAssociations = AssociateToggle.IsOn,
+            // Turtle mode itself is flipped from the toolbar/tray, not edited here.
+            AltSpeedEnabled = old.AltSpeedEnabled,
+            AltDownloadLimit = LimitToStored(AltDownLimitBox.Value, (AltDownLimitUnitBox.SelectedValue as string) ?? Helpers.SpeedUnit.Default),
+            AltUploadLimit = LimitToStored(AltUpLimitBox.Value, (AltUpLimitUnitBox.SelectedValue as string) ?? Helpers.SpeedUnit.Default),
+            AltDownloadLimitUnit = (AltDownLimitUnitBox.SelectedValue as string) ?? Helpers.SpeedUnit.Default,
+            AltUploadLimitUnit = (AltUpLimitUnitBox.SelectedValue as string) ?? Helpers.SpeedUnit.Default,
             Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
             Language = (LanguageBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "",
             LastAddDirectory = old.LastAddDirectory,

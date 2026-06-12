@@ -86,6 +86,33 @@ public sealed partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     public partial bool IsAnyActive { get; set; }
 
+    /// <summary>Turtle mode: alternative speed limits are in force. Two-way bound to the
+    /// toolbar toggle and flipped from the tray; pushing the change re-applies the settings
+    /// (the effective limits swap inside Aria2Service).</summary>
+    [ObservableProperty]
+    public partial bool IsAltSpeed { get; set; }
+
+    partial void OnIsAltSpeedChanged(bool value)
+    {
+        var s = _service.Settings;
+        if (s.AltSpeedEnabled == value)
+            return; // already in sync (e.g. the initial seed from settings)
+        s.AltSpeedEnabled = value;
+        _ = ApplyAltSpeedAsync(s);
+    }
+
+    private async Task ApplyAltSpeedAsync(AppSettings s)
+    {
+        try
+        {
+            await _service.ApplySettingsAsync(s);
+        }
+        catch (Exception ex) when (ex is Aria2Gui.Services.Aria2.Aria2RpcException or InvalidOperationException or TimeoutException)
+        {
+            // Engine reconnecting — the choice is persisted; limits apply on reconnect.
+        }
+    }
+
     /// <summary>True while the in-app settings page covers the download list.</summary>
     [ObservableProperty]
     public partial bool SettingsOpen { get; set; }
@@ -196,9 +223,15 @@ public sealed partial class MainPageViewModel : ObservableObject
         if (state == Aria2ServiceState.Failed)
             EngineErrorText = _service.LastError ?? L.Get("EngineUnknownError");
         if (state == Aria2ServiceState.Running)
+        {
+            // Seed the turtle toggle from the loaded settings (OnChanged self-guards on equal).
+            IsAltSpeed = _service.Settings.AltSpeedEnabled;
             _ = RefreshAsync();
+        }
         else
+        {
             PowerHelper.SetKeepAwake(false); // polls stop with the engine — release the hold
+        }
     }
 
     /// <summary>

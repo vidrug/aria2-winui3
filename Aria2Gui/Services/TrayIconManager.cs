@@ -22,6 +22,7 @@ public sealed class TrayIconManager : IDisposable
     private MainPageViewModel? _viewModel;
     private MenuFlyoutItem? _toggleItem;
     private MenuFlyoutItem? _pauseAllItem;
+    private ToggleMenuFlyoutItem? _turtleItem;
     private bool _restoring;
 
     public TrayIconManager(Window window, AppWindow appWindow)
@@ -51,6 +52,18 @@ public sealed class TrayIconManager : IDisposable
             Command = new RelayCommandShim(ToggleAllDownloads),
         };
 
+        // Turtle mode mirror of the toolbar toggle — flips the VM property, which applies
+        // the alternative limits and updates both UIs.
+        _turtleItem = new ToggleMenuFlyoutItem
+        {
+            Text = L.Get("TrayTurtle"),
+            Command = new RelayCommandShim(() =>
+            {
+                if (_viewModel is not null)
+                    _viewModel.IsAltSpeed = !_viewModel.IsAltSpeed;
+            }),
+        };
+
         var quit = new MenuFlyoutItem
         {
             Text = L.Get("TrayQuit"),
@@ -60,6 +73,7 @@ public sealed class TrayIconManager : IDisposable
         var menu = new MenuFlyout();
         menu.Items.Add(_toggleItem);
         menu.Items.Add(_pauseAllItem);
+        menu.Items.Add(_turtleItem);
         menu.Items.Add(new MenuFlyoutSeparator());
         menu.Items.Add(quit);
         // Re-label the toggle for the window's current state each time the menu opens.
@@ -106,6 +120,7 @@ public sealed class TrayIconManager : IDisposable
         viewModel.PropertyChanged += OnViewModelPropertyChanged;
         UpdateTooltip();
         UpdatePauseAllText();
+        UpdateTurtleCheck();
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -114,6 +129,14 @@ public sealed class TrayIconManager : IDisposable
             App.DispatcherQueue.TryEnqueue(UpdateTooltip);
         else if (e.PropertyName == nameof(MainPageViewModel.IsAnyActive))
             App.DispatcherQueue.TryEnqueue(UpdatePauseAllText);
+        else if (e.PropertyName == nameof(MainPageViewModel.IsAltSpeed))
+            App.DispatcherQueue.TryEnqueue(UpdateTurtleCheck);
+    }
+
+    private void UpdateTurtleCheck()
+    {
+        if (_turtleItem is not null && _viewModel is not null)
+            _turtleItem.IsChecked = _viewModel.IsAltSpeed;
     }
 
     /// <summary>Labels the tray pause/resume-all toggle for the current run state.</summary>
@@ -206,6 +229,7 @@ public sealed class TrayIconManager : IDisposable
 
     private void Quit()
     {
+        App.IsQuitting = true; // bypass close-to-tray — this is the real exit
         Dispose();
         _window.Close();
     }

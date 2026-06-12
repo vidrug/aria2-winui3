@@ -341,4 +341,20 @@ her satıra bir tane</value></data>
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>İndirilen</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Gönderilen</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>Oran</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>Yavaş mod</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Alternatif hız sınırları (yavaş mod)</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Alternatif hız sınırları (yavaş mod)</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>Yavaş mod</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>Alternatif hız sınırları</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>Araç çubuğundaki yavaş mod düğmesi veya tepsiden değiştirilir; 0 — sınırsız</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>İndirme sınırı</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>Yükleme sınırı</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Windows ile başlat</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>Oturum açıldığında otomatik başlat (geçerli kullanıcı)</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>Tepsiye küçültülmüş olarak başlat</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>Pencere, tepsi simgesinden açılana kadar gizli kalır</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>Tepsiye kapat</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Kapat düğmesi pencereyi gizler; çıkış tepsi simgesinin menüsünden</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>Magnet bağlantılarını ve .torrent dosyalarını aç</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>Uygulamayı işleyici olarak kaydeder (geçerli kullanıcı); ilk kullanımda tarayıcı iletişim kutusunda seçin</value></data>
 </root>

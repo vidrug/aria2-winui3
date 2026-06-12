@@ -154,6 +154,37 @@
                                 </ComboBox>
                             </StackPanel>
                         </tk:SettingsCard>
+                        <tk:SettingsExpander loc:Localize.Uid="AltLimitsExpander">
+                            <tk:SettingsExpander.HeaderIcon>
+                                <FontIcon Glyph="&#xE708;" />
+                            </tk:SettingsExpander.HeaderIcon>
+                            <tk:SettingsExpander.Items>
+                                <tk:SettingsCard loc:Localize.Uid="AltDownLimitCard">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <NumberBox x:Name="AltDownLimitBox" AutomationProperties.AutomationId="AltDownLimitBox" Minimum="0" MinWidth="120" SmallChange="1" SpinButtonPlacementMode="Compact" VerticalAlignment="Center" />
+                                        <ComboBox x:Name="AltDownLimitUnitBox" AutomationProperties.AutomationId="AltDownLimitUnitBox" MinWidth="72" VerticalAlignment="Center" SelectedValuePath="Tag">
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitByte" Tag="B" />
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitKByte" Tag="KB" />
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitKBit" Tag="Kb" />
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitMByte" Tag="MB" />
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitMBit" Tag="Mb" />
+                                        </ComboBox>
+                                    </StackPanel>
+                                </tk:SettingsCard>
+                                <tk:SettingsCard loc:Localize.Uid="AltUpLimitCard">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <NumberBox x:Name="AltUpLimitBox" AutomationProperties.AutomationId="AltUpLimitBox" Minimum="0" MinWidth="120" SmallChange="1" SpinButtonPlacementMode="Compact" VerticalAlignment="Center" />
+                                        <ComboBox x:Name="AltUpLimitUnitBox" AutomationProperties.AutomationId="AltUpLimitUnitBox" MinWidth="72" VerticalAlignment="Center" SelectedValuePath="Tag">
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitByte" Tag="B" />
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitKByte" Tag="KB" />
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitKBit" Tag="Kb" />
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitMByte" Tag="MB" />
+                                            <ComboBoxItem loc:Localize.Uid="SpeedUnitMBit" Tag="Mb" />
+                                        </ComboBox>
+                                    </StackPanel>
+                                </tk:SettingsCard>
+                            </tk:SettingsExpander.Items>
+                        </tk:SettingsExpander>
                         <tk:SettingsCard loc:Localize.Uid="ConcurrentCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE71D;" />
@@ -171,6 +202,30 @@
                                 <FontIcon Glyph="&#xEC46;" />
                             </tk:SettingsCard.HeaderIcon>
                             <ToggleSwitch x:Name="PreventSleepToggle" AutomationProperties.AutomationId="PreventSleepToggle" />
+                        </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="StartWithWindowsCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE7E8;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <ToggleSwitch x:Name="StartWithWindowsToggle" AutomationProperties.AutomationId="StartWithWindowsToggle" />
+                        </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="StartMinimizedCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE921;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <ToggleSwitch x:Name="StartMinimizedToggle" AutomationProperties.AutomationId="StartMinimizedToggle" />
+                        </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="CloseToTrayCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE8BB;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <ToggleSwitch x:Name="CloseToTrayToggle" AutomationProperties.AutomationId="CloseToTrayToggle" />
+                        </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="AssociateCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE71B;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <ToggleSwitch x:Name="AssociateToggle" AutomationProperties.AutomationId="AssociateToggle" />
                         </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="ThemeCard">
                             <tk:SettingsCard.HeaderIcon>

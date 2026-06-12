@@ -341,4 +341,20 @@ one per line</value></data>
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Downloaded</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Uploaded</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>Ratio</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>Slow mode</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Alternative speed limits (slow mode)</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Alternative speed limits (slow mode)</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>Slow mode</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>Alternative speed limits</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>Switched with the slow-mode button on the toolbar or from the tray; 0 — unlimited</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>Download limit</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>Upload limit</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Start with Windows</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>Launch automatically at sign-in (current user)</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>Start minimized to tray</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>The window stays hidden until opened from the tray icon</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>Close to tray</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>The close button hides the window; exit via the tray icon''s menu</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>Open magnet links and .torrent files</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>Register this app as a handler (current user); pick it in the browser''s dialog on first use</value></data>
 </root>

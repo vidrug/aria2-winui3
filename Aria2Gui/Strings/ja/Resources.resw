@@ -341,4 +341,20 @@
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>ダウンロード</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>アップロード</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>比率</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>低速モード</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>代替速度制限（低速モード）</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>代替速度制限（低速モード）</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>低速モード</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>代替速度制限</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>ツールバーの低速モードボタンまたはトレイから切り替え。0 は無制限</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>ダウンロード制限</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>アップロード制限</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Windows と同時に起動</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>サインイン時に自動起動します（現在のユーザー）</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>トレイに最小化した状態で起動</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>トレイアイコンから開くまでウィンドウは非表示のままです</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>閉じるときトレイへ</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>閉じるボタンはウィンドウを隠します。終了はトレイアイコンのメニューから</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>マグネットリンクと .torrent ファイルを開く</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>このアプリをハンドラーとして登録します（現在のユーザー）。初回はブラウザーのダイアログで選択してください</value></data>
 </root>

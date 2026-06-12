@@ -341,4 +341,20 @@ un par ligne</value></data>
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Téléchargé</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Envoyé</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>Ratio</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>Mode lent</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Limites de vitesse alternatives (mode lent)</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Limites de vitesse alternatives (mode lent)</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>Mode lent</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>Limites de vitesse alternatives</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>Activées via le bouton mode lent de la barre d''outils ou la zone de notification ; 0 — illimité</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>Limite de téléchargement</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>Limite d''envoi</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Démarrer avec Windows</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>Lancement automatique à l''ouverture de session (utilisateur actuel)</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>Démarrer réduit dans la zone de notification</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>La fenêtre reste masquée jusqu''à son ouverture depuis l''icône de la zone de notification</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>Fermer vers la zone de notification</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Le bouton fermer masque la fenêtre ; quittez via le menu de l''icône de la zone de notification</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>Ouvrir les liens magnet et les fichiers .torrent</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>Enregistre l''application comme gestionnaire (utilisateur actuel) ; choisissez-la dans la boîte de dialogue du navigateur à la première utilisation</value></data>
 </root>

@@ -341,4 +341,20 @@
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Завантажено</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Віддано</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>Рейтинг</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>Повільний режим</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Альтернативні ліміти швидкості (повільний режим)</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Альтернативні ліміти швидкості (повільний режим)</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>Повільний режим</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>Альтернативні ліміти швидкості</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>Вмикаються кнопкою повільного режиму на панелі або з трея; 0 — без обмежень</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>Ліміт завантаження</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>Ліміт вивантаження</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>Запускати разом із Windows</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>Автоматичний запуск під час входу (поточний користувач)</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>Запускати згорнутим у трей</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>Вікно приховане, доки не відкрити його зі значка в треї</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>Закривати в трей</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Кнопка закриття приховує вікно; вихід — через меню значка в треї</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>Відкривати magnet-посилання та файли .torrent</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>Реєструє застосунок як обробник (поточний користувач); уперше виберіть його в діалозі браузера</value></data>
 </root>

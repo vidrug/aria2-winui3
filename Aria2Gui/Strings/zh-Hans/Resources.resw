@@ -341,4 +341,20 @@
   <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>已下载</value></data>
   <data name="StatsRowUploaded.Text" xml:space="preserve"><value>已上传</value></data>
   <data name="StatsRowRatio.Text" xml:space="preserve"><value>分享率</value></data>
+  <data name="ToolbarTurtleButton.Label" xml:space="preserve"><value>慢速模式</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>备用速度限制（慢速模式）</value></data>
+  <data name="ToolbarTurtleButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>备用速度限制（慢速模式）</value></data>
+  <data name="TrayTurtle" xml:space="preserve"><value>慢速模式</value></data>
+  <data name="AltLimitsExpander.Header" xml:space="preserve"><value>备用速度限制</value></data>
+  <data name="AltLimitsExpander.Description" xml:space="preserve"><value>通过工具栏的慢速模式按钮或托盘切换；0 表示不限制</value></data>
+  <data name="AltDownLimitCard.Header" xml:space="preserve"><value>下载限制</value></data>
+  <data name="AltUpLimitCard.Header" xml:space="preserve"><value>上传限制</value></data>
+  <data name="StartWithWindowsCard.Header" xml:space="preserve"><value>开机启动</value></data>
+  <data name="StartWithWindowsCard.Description" xml:space="preserve"><value>登录时自动启动（当前用户）</value></data>
+  <data name="StartMinimizedCard.Header" xml:space="preserve"><value>启动时最小化到托盘</value></data>
+  <data name="StartMinimizedCard.Description" xml:space="preserve"><value>窗口保持隐藏，直到从托盘图标打开</value></data>
+  <data name="CloseToTrayCard.Header" xml:space="preserve"><value>关闭到托盘</value></data>
+  <data name="CloseToTrayCard.Description" xml:space="preserve"><value>关闭按钮仅隐藏窗口；通过托盘图标菜单退出</value></data>
+  <data name="AssociateCard.Header" xml:space="preserve"><value>打开磁力链接和 .torrent 文件</value></data>
+  <data name="AssociateCard.Description" xml:space="preserve"><value>将本应用注册为处理程序（当前用户）；首次使用时请在浏览器对话框中选择</value></data>
 </root>
