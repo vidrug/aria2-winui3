@@ -191,6 +191,21 @@ public sealed partial class MainPage : Page
     private void DownloadsList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
         ViewModel.SetSelection([.. DownloadsList.SelectedItems.OfType<DownloadItemViewModel>()]);
 
+    /// <summary>Fills the statistics flyout when it opens (Opened, not Opening — the deferred
+    /// flyout content and its x:Name fields only exist once shown).</summary>
+    private void StatsFlyout_Opened(object? sender, object e)
+    {
+        if (StatsSessionDown is null)
+            return;
+        var t = ViewModel.GetStatsTexts();
+        StatsSessionDown.Text = t.SessionDown;
+        StatsSessionUp.Text = t.SessionUp;
+        StatsSessionRatio.Text = t.SessionRatio;
+        StatsAllDown.Text = t.AllDown;
+        StatsAllUp.Text = t.AllUp;
+        StatsAllRatio.Text = t.AllRatio;
+    }
+
     /// <summary>
     /// Zebra-stripes a ListView/TreeViewList in place: every odd realized row gets a
     /// faint subtle tint, even rows stay transparent. Keying off the live realized index

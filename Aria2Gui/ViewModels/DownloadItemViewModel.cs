@@ -97,6 +97,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     [ObservableProperty]
     public partial bool IsPaused { get; set; }
 
+    /// <summary>True while waiting in aria2's start queue — gates the queue-reorder menu.</summary>
+    [ObservableProperty]
+    public partial bool IsQueued { get; set; }
+
     /// <summary>aria2's error reason, shown as a row tooltip so failures are visible
     /// without opening the details pane. Null on non-errored rows (no tooltip).</summary>
     [ObservableProperty]
@@ -279,6 +283,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
 
         bool paused = d.Status == Aria2Status.Paused;
         IsPaused = paused;
+        IsQueued = d.Status == Aria2Status.Waiting;
         CanPauseResume = !_isStopped;
         PauseResumeText = paused ? _actionResume : _actionPause;
         HasMagnet = !string.IsNullOrEmpty(d.InfoHash);
@@ -343,6 +348,24 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         {
             // Already gone or engine reconnecting — the list resyncs on the next tick.
             return false;
+        }
+    }
+
+    // Queue reordering for waiting downloads (I7). The next poll mirrors aria2's new order.
+    [RelayCommand] private Task MoveToTopAsync() => ChangeQueuePositionAsync(0, "POS_SET");
+    [RelayCommand] private Task MoveUpAsync() => ChangeQueuePositionAsync(-1, "POS_CUR");
+    [RelayCommand] private Task MoveDownAsync() => ChangeQueuePositionAsync(1, "POS_CUR");
+    [RelayCommand] private Task MoveToBottomAsync() => ChangeQueuePositionAsync(0, "POS_END");
+
+    private async Task ChangeQueuePositionAsync(int pos, string how)
+    {
+        try
+        {
+            await _service.Rpc.ChangePositionAsync(Gid, pos, how);
+        }
+        catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
+        {
+            // Started/stopped between polls or engine reconnecting — the next tick resyncs.
         }
     }
 

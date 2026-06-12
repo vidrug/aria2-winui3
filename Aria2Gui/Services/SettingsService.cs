@@ -43,6 +43,9 @@ public sealed class AppSettings
     /// <summary>Minutes to seed in "time" mode before stopping.</summary>
     public int SeedTimeMinutes { get; set; } = 60;
 
+    /// <summary>Hold the system awake (no sleep) while downloads or seeding are active.</summary>
+    public bool PreventSleep { get; set; } = true;
+
     /// <summary>"Default" (follow system), "Light" or "Dark".</summary>
     public string Theme { get; set; } = "Default";
 

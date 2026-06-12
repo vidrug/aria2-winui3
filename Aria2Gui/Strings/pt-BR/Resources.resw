@@ -318,4 +318,27 @@ um por linha</value></data>
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Desativado</value></data>
   <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>Ativado</value></data>
   <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>Desativado</value></data>
+  <data name="SettingsErrorBadFormat" xml:space="preserve"><value>Formato inválido — use um tamanho como 20M, 512K ou 0.</value></data>
+  <data name="AddNoticeNotTorrent" xml:space="preserve"><value>Somente arquivos .torrent podem ser soltos aqui — para links e magnets, use a janela de adicionar.</value></data>
+  <data name="SpeedLimitDownSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Limite de velocidade de download</value></data>
+  <data name="SpeedLimitDownBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Valor do limite de velocidade de download</value></data>
+  <data name="SpeedLimitDownUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Unidade do limite de velocidade de download</value></data>
+  <data name="SpeedLimitUpSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Limite de velocidade de upload</value></data>
+  <data name="SpeedLimitUpBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Valor do limite de velocidade de upload</value></data>
+  <data name="SpeedLimitUpUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Unidade do limite de velocidade de upload</value></data>
+  <data name="RowMenuQueue.Text" xml:space="preserve"><value>Fila</value></data>
+  <data name="RowMenuQueueTop.Text" xml:space="preserve"><value>Mover para o topo</value></data>
+  <data name="RowMenuQueueUp.Text" xml:space="preserve"><value>Mover para cima</value></data>
+  <data name="RowMenuQueueDown.Text" xml:space="preserve"><value>Mover para baixo</value></data>
+  <data name="RowMenuQueueBottom.Text" xml:space="preserve"><value>Mover para o final</value></data>
+  <data name="PreventSleepCard.Header" xml:space="preserve"><value>Manter o computador ativo</value></data>
+  <data name="PreventSleepCard.Description" xml:space="preserve"><value>Impede a suspensão enquanto houver downloads ou seeding ativos</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Estatísticas</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Estatísticas</value></data>
+  <data name="StatsTitle.Text" xml:space="preserve"><value>Estatísticas</value></data>
+  <data name="StatsColSession.Text" xml:space="preserve"><value>Esta sessão</value></data>
+  <data name="StatsColAllTime.Text" xml:space="preserve"><value>Total</value></data>
+  <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Baixado</value></data>
+  <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Enviado</value></data>
+  <data name="StatsRowRatio.Text" xml:space="preserve"><value>Proporção</value></data>
 </root>

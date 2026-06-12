@@ -67,7 +67,7 @@ public sealed partial class SettingsView : UserControl
         CryptoLevelRadio.SelectionChanged += OnSelectionChanged;
 
         // CryptoToggle keeps its own handler (OnCryptoToggled) which also applies.
-        foreach (var ts in new[] { CheckCertToggle, AllowOverwriteToggle, AutoRenameToggle, DhtToggle, PexToggle, LpdToggle, DisableIpv6Toggle, BtDetachSeedToggle, ForceEncryptionToggle })
+        foreach (var ts in new[] { CheckCertToggle, AllowOverwriteToggle, AutoRenameToggle, DhtToggle, PexToggle, LpdToggle, DisableIpv6Toggle, BtDetachSeedToggle, ForceEncryptionToggle, PreventSleepToggle })
             ts.Toggled += OnToggled;
 
         foreach (var tb in new[]
@@ -93,6 +93,7 @@ public sealed partial class SettingsView : UserControl
             LoadLimit(UpLimitBox, UpLimitUnitBox, s.MaxUploadLimit, s.MaxUploadLimitUnit);
             ConcurrentBox.Value = s.MaxConcurrentDownloads;
             ConnectionsBox.Value = s.MaxConnectionsPerServer;
+            PreventSleepToggle.IsOn = s.PreventSleep;
             ThemeBox.SelectedIndex = s.Theme switch { "Light" => 1, "Dark" => 2, _ => 0 };
             LanguageBox.SelectedItem = LanguageBox.Items.OfType<ComboBoxItem>()
                 .FirstOrDefault(i => (i.Tag as string ?? "") == s.Language) ?? LanguageBox.Items[0];
@@ -543,6 +544,7 @@ public sealed partial class SettingsView : UserControl
             MaxUploadLimitUnit = upUnit,
             MaxConcurrentDownloads = (int)SafeValue(ConcurrentBox.Value, 5),
             MaxConnectionsPerServer = (int)SafeValue(ConnectionsBox.Value, 8),
+            PreventSleep = PreventSleepToggle.IsOn,
             Theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "Default",
             Language = (LanguageBox.SelectedItem as ComboBoxItem)?.Tag as string ?? "",
             LastAddDirectory = old.LastAddDirectory,

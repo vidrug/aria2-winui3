@@ -318,4 +318,27 @@
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>オフ</value></data>
   <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>オン</value></data>
   <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsErrorBadFormat" xml:space="preserve"><value>形式が無効です。20M、512K、0 のようなサイズを指定してください。</value></data>
+  <data name="AddNoticeNotTorrent" xml:space="preserve"><value>ここにドロップできるのは .torrent ファイルのみです。リンクやマグネットは追加ウィンドウを使用してください。</value></data>
+  <data name="SpeedLimitDownSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ダウンロード速度の制限</value></data>
+  <data name="SpeedLimitDownBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ダウンロード速度制限の値</value></data>
+  <data name="SpeedLimitDownUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ダウンロード速度制限の単位</value></data>
+  <data name="SpeedLimitUpSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>アップロード速度の制限</value></data>
+  <data name="SpeedLimitUpBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>アップロード速度制限の値</value></data>
+  <data name="SpeedLimitUpUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>アップロード速度制限の単位</value></data>
+  <data name="RowMenuQueue.Text" xml:space="preserve"><value>キュー</value></data>
+  <data name="RowMenuQueueTop.Text" xml:space="preserve"><value>先頭へ移動</value></data>
+  <data name="RowMenuQueueUp.Text" xml:space="preserve"><value>上へ移動</value></data>
+  <data name="RowMenuQueueDown.Text" xml:space="preserve"><value>下へ移動</value></data>
+  <data name="RowMenuQueueBottom.Text" xml:space="preserve"><value>末尾へ移動</value></data>
+  <data name="PreventSleepCard.Header" xml:space="preserve"><value>コンピューターをスリープさせない</value></data>
+  <data name="PreventSleepCard.Description" xml:space="preserve"><value>ダウンロードまたはシード中はスリープを防ぎます</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>統計</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>統計</value></data>
+  <data name="StatsTitle.Text" xml:space="preserve"><value>統計</value></data>
+  <data name="StatsColSession.Text" xml:space="preserve"><value>今回のセッション</value></data>
+  <data name="StatsColAllTime.Text" xml:space="preserve"><value>累計</value></data>
+  <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="StatsRowUploaded.Text" xml:space="preserve"><value>アップロード</value></data>
+  <data name="StatsRowRatio.Text" xml:space="preserve"><value>比率</value></data>
 </root>

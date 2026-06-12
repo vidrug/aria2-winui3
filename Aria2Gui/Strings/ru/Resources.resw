@@ -318,4 +318,27 @@
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Выкл</value></data>
   <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>Вкл</value></data>
   <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>Выкл</value></data>
+  <data name="SettingsErrorBadFormat" xml:space="preserve"><value>Неверный формат — укажите размер вида 20M, 512K или 0.</value></data>
+  <data name="AddNoticeNotTorrent" xml:space="preserve"><value>Сюда можно перетаскивать только файлы .torrent — для ссылок и magnet используйте окно добавления.</value></data>
+  <data name="SpeedLimitDownSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ограничение скорости загрузки</value></data>
+  <data name="SpeedLimitDownBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Значение ограничения скорости загрузки</value></data>
+  <data name="SpeedLimitDownUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Единица ограничения скорости загрузки</value></data>
+  <data name="SpeedLimitUpSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ограничение скорости отдачи</value></data>
+  <data name="SpeedLimitUpBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Значение ограничения скорости отдачи</value></data>
+  <data name="SpeedLimitUpUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Единица ограничения скорости отдачи</value></data>
+  <data name="RowMenuQueue.Text" xml:space="preserve"><value>Очередь</value></data>
+  <data name="RowMenuQueueTop.Text" xml:space="preserve"><value>В начало</value></data>
+  <data name="RowMenuQueueUp.Text" xml:space="preserve"><value>Выше</value></data>
+  <data name="RowMenuQueueDown.Text" xml:space="preserve"><value>Ниже</value></data>
+  <data name="RowMenuQueueBottom.Text" xml:space="preserve"><value>В конец</value></data>
+  <data name="PreventSleepCard.Header" xml:space="preserve"><value>Не давать компьютеру засыпать</value></data>
+  <data name="PreventSleepCard.Description" xml:space="preserve"><value>Запрещает сон, пока идут загрузки или раздача</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Статистика</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Статистика</value></data>
+  <data name="StatsTitle.Text" xml:space="preserve"><value>Статистика</value></data>
+  <data name="StatsColSession.Text" xml:space="preserve"><value>За сессию</value></data>
+  <data name="StatsColAllTime.Text" xml:space="preserve"><value>За всё время</value></data>
+  <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Скачано</value></data>
+  <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Роздано</value></data>
+  <data name="StatsRowRatio.Text" xml:space="preserve"><value>Рейтинг</value></data>
 </root>

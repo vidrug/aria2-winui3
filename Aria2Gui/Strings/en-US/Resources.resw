@@ -326,4 +326,19 @@ one per line</value></data>
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Off</value></data>
   <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>On</value></data>
   <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="RowMenuQueue.Text" xml:space="preserve"><value>Queue</value></data>
+  <data name="RowMenuQueueTop.Text" xml:space="preserve"><value>Move to top</value></data>
+  <data name="RowMenuQueueUp.Text" xml:space="preserve"><value>Move up</value></data>
+  <data name="RowMenuQueueDown.Text" xml:space="preserve"><value>Move down</value></data>
+  <data name="RowMenuQueueBottom.Text" xml:space="preserve"><value>Move to bottom</value></data>
+  <data name="PreventSleepCard.Header" xml:space="preserve"><value>Keep the computer awake</value></data>
+  <data name="PreventSleepCard.Description" xml:space="preserve"><value>Prevent sleep while downloads or seeding are active</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Statistics</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Statistics</value></data>
+  <data name="StatsTitle.Text" xml:space="preserve"><value>Statistics</value></data>
+  <data name="StatsColSession.Text" xml:space="preserve"><value>This session</value></data>
+  <data name="StatsColAllTime.Text" xml:space="preserve"><value>All time</value></data>
+  <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>Downloaded</value></data>
+  <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Uploaded</value></data>
+  <data name="StatsRowRatio.Text" xml:space="preserve"><value>Ratio</value></data>
 </root>

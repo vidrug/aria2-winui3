@@ -429,6 +429,15 @@
                                                 <FontIcon Glyph="&#xE896;" />
                                             </MenuFlyoutItem.Icon>
                                         </MenuFlyoutItem>
+                                        <MenuFlyoutSubItem loc:Localize.Uid="RowMenuQueue" Visibility="{x:Bind local:MainPage.VisIf(IsQueued), Mode=OneWay}">
+                                            <MenuFlyoutSubItem.Icon>
+                                                <FontIcon Glyph="&#xE8CB;" />
+                                            </MenuFlyoutSubItem.Icon>
+                                            <MenuFlyoutItem loc:Localize.Uid="RowMenuQueueTop" Command="{x:Bind MoveToTopCommand}" AutomationProperties.AutomationId="QueueTopItem" />
+                                            <MenuFlyoutItem loc:Localize.Uid="RowMenuQueueUp" Command="{x:Bind MoveUpCommand}" AutomationProperties.AutomationId="QueueUpItem" />
+                                            <MenuFlyoutItem loc:Localize.Uid="RowMenuQueueDown" Command="{x:Bind MoveDownCommand}" AutomationProperties.AutomationId="QueueDownItem" />
+                                            <MenuFlyoutItem loc:Localize.Uid="RowMenuQueueBottom" Command="{x:Bind MoveToBottomCommand}" AutomationProperties.AutomationId="QueueBottomItem" />
+                                        </MenuFlyoutSubItem>
                                         <MenuFlyoutItem loc:Localize.Uid="RowMenuOpenFolder" Command="{x:Bind OpenFolderCommand}">
                                             <MenuFlyoutItem.Icon>
                                                 <FontIcon Glyph="&#xE838;" />
@@ -783,12 +792,51 @@
                     Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                     VerticalAlignment="Center" />
             </StackPanel>
-            <TextBlock
-                AutomationProperties.AutomationId="GlobalSpeedText"
+            <!-- The live speeds double as the statistics button: clicking opens the
+                 session/all-time totals flyout (filled on open — no per-tick cost). -->
+            <Button
                 Grid.Column="1"
-                Text="{x:Bind ViewModel.GlobalSpeedText, Mode=OneWay}"
-                Style="{StaticResource CaptionTextBlockStyle}"
-                VerticalAlignment="Center" />
+                loc:Localize.Uid="StatsButton"
+                AutomationProperties.AutomationId="StatsButton"
+                Background="Transparent"
+                BorderThickness="0"
+                Padding="8,2"
+                VerticalAlignment="Center">
+                <TextBlock
+                    AutomationProperties.AutomationId="GlobalSpeedText"
+                    Text="{x:Bind ViewModel.GlobalSpeedText, Mode=OneWay}"
+                    Style="{StaticResource CaptionTextBlockStyle}" />
+                <Button.Flyout>
+                    <Flyout Opened="StatsFlyout_Opened">
+                        <Grid ColumnSpacing="20" RowSpacing="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.ColumnSpan="3" loc:Localize.Uid="StatsTitle" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,0,4" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" loc:Localize.Uid="StatsColSession" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock Grid.Row="1" Grid.Column="2" loc:Localize.Uid="StatsColAllTime" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock Grid.Row="2" loc:Localize.Uid="StatsRowDownloaded" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" x:Name="StatsSessionDown" />
+                            <TextBlock Grid.Row="2" Grid.Column="2" x:Name="StatsAllDown" />
+                            <TextBlock Grid.Row="3" loc:Localize.Uid="StatsRowUploaded" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" x:Name="StatsSessionUp" />
+                            <TextBlock Grid.Row="3" Grid.Column="2" x:Name="StatsAllUp" />
+                            <TextBlock Grid.Row="4" loc:Localize.Uid="StatsRowRatio" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock Grid.Row="4" Grid.Column="1" x:Name="StatsSessionRatio" />
+                            <TextBlock Grid.Row="4" Grid.Column="2" x:Name="StatsAllRatio" />
+                        </Grid>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
         </Grid>
     </Grid>
 </Page>

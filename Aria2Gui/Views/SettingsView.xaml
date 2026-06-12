@@ -166,6 +166,12 @@
                             </tk:SettingsCard.HeaderIcon>
                             <NumberBox x:Name="ConnectionsBox" AutomationProperties.AutomationId="ConnectionsBox" Minimum="1" Maximum="16" MinWidth="148" SpinButtonPlacementMode="Compact" />
                         </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="PreventSleepCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xEC46;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <ToggleSwitch x:Name="PreventSleepToggle" AutomationProperties.AutomationId="PreventSleepToggle" />
+                        </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="ThemeCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE790;" />

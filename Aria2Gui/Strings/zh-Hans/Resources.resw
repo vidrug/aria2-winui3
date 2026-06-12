@@ -318,4 +318,27 @@
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>关</value></data>
   <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>开</value></data>
   <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>关</value></data>
+  <data name="SettingsErrorBadFormat" xml:space="preserve"><value>格式无效——请使用类似 20M、512K 或 0 的大小。</value></data>
+  <data name="AddNoticeNotTorrent" xml:space="preserve"><value>此处只能拖放 .torrent 文件——链接和磁力链接请使用添加窗口。</value></data>
+  <data name="SpeedLimitDownSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>下载速度限制</value></data>
+  <data name="SpeedLimitDownBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>下载速度限制值</value></data>
+  <data name="SpeedLimitDownUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>下载速度限制单位</value></data>
+  <data name="SpeedLimitUpSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>上传速度限制</value></data>
+  <data name="SpeedLimitUpBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>上传速度限制值</value></data>
+  <data name="SpeedLimitUpUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>上传速度限制单位</value></data>
+  <data name="RowMenuQueue.Text" xml:space="preserve"><value>队列</value></data>
+  <data name="RowMenuQueueTop.Text" xml:space="preserve"><value>移到顶部</value></data>
+  <data name="RowMenuQueueUp.Text" xml:space="preserve"><value>上移</value></data>
+  <data name="RowMenuQueueDown.Text" xml:space="preserve"><value>下移</value></data>
+  <data name="RowMenuQueueBottom.Text" xml:space="preserve"><value>移到底部</value></data>
+  <data name="PreventSleepCard.Header" xml:space="preserve"><value>保持计算机唤醒</value></data>
+  <data name="PreventSleepCard.Description" xml:space="preserve"><value>在下载或做种期间阻止计算机进入睡眠</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>统计</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>统计</value></data>
+  <data name="StatsTitle.Text" xml:space="preserve"><value>统计</value></data>
+  <data name="StatsColSession.Text" xml:space="preserve"><value>本次会话</value></data>
+  <data name="StatsColAllTime.Text" xml:space="preserve"><value>累计</value></data>
+  <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>已下载</value></data>
+  <data name="StatsRowUploaded.Text" xml:space="preserve"><value>已上传</value></data>
+  <data name="StatsRowRatio.Text" xml:space="preserve"><value>分享率</value></data>
 </root>

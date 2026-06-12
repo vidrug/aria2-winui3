@@ -318,4 +318,27 @@ her satıra bir tane</value></data>
   <data name="ForceEncryptionToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
   <data name="PrivacyToggle.OnContent" xml:space="preserve"><value>Açık</value></data>
   <data name="PrivacyToggle.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsErrorBadFormat" xml:space="preserve"><value>Geçersiz biçim — 20M, 512K veya 0 gibi bir boyut kullanın.</value></data>
+  <data name="AddNoticeNotTorrent" xml:space="preserve"><value>Buraya yalnızca .torrent dosyaları bırakılabilir — bağlantılar ve magnetler için ekleme penceresini kullanın.</value></data>
+  <data name="SpeedLimitDownSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>İndirme hızı sınırı</value></data>
+  <data name="SpeedLimitDownBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>İndirme hızı sınırı değeri</value></data>
+  <data name="SpeedLimitDownUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>İndirme hızı sınırı birimi</value></data>
+  <data name="SpeedLimitUpSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yükleme hızı sınırı</value></data>
+  <data name="SpeedLimitUpBox.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yükleme hızı sınırı değeri</value></data>
+  <data name="SpeedLimitUpUnit.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yükleme hızı sınırı birimi</value></data>
+  <data name="RowMenuQueue.Text" xml:space="preserve"><value>Kuyruk</value></data>
+  <data name="RowMenuQueueTop.Text" xml:space="preserve"><value>En üste taşı</value></data>
+  <data name="RowMenuQueueUp.Text" xml:space="preserve"><value>Yukarı taşı</value></data>
+  <data name="RowMenuQueueDown.Text" xml:space="preserve"><value>Aşağı taşı</value></data>
+  <data name="RowMenuQueueBottom.Text" xml:space="preserve"><value>En alta taşı</value></data>
+  <data name="PreventSleepCard.Header" xml:space="preserve"><value>Bilgisayarı uyanık tut</value></data>
+  <data name="PreventSleepCard.Description" xml:space="preserve"><value>İndirme veya gönderme etkinken uykuyu engeller</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>İstatistikler</value></data>
+  <data name="StatsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>İstatistikler</value></data>
+  <data name="StatsTitle.Text" xml:space="preserve"><value>İstatistikler</value></data>
+  <data name="StatsColSession.Text" xml:space="preserve"><value>Bu oturum</value></data>
+  <data name="StatsColAllTime.Text" xml:space="preserve"><value>Tüm zamanlar</value></data>
+  <data name="StatsRowDownloaded.Text" xml:space="preserve"><value>İndirilen</value></data>
+  <data name="StatsRowUploaded.Text" xml:space="preserve"><value>Gönderilen</value></data>
+  <data name="StatsRowRatio.Text" xml:space="preserve"><value>Oran</value></data>
 </root>

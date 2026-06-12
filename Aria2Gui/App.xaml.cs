@@ -100,6 +100,7 @@ public partial class App : Application
 
         Window.Activate();
 
+        Services.StatsService.Load();
         Services.NotificationService.Initialize();
 
         // Start the aria2c engine in the background; the UI reflects service state.
@@ -116,6 +117,7 @@ public partial class App : Application
         if (_cleanedUp)
             return;
         _cleanedUp = true;
+        Services.StatsService.Save();
         (Window as MainWindow)?.Tray.Dispose();
         Services.Aria2.Aria2Service.Instance.Shutdown();
     }

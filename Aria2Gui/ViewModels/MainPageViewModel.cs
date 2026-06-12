@@ -197,6 +197,8 @@ public sealed partial class MainPageViewModel : ObservableObject
             EngineErrorText = _service.LastError ?? L.Get("EngineUnknownError");
         if (state == Aria2ServiceState.Running)
             _ = RefreshAsync();
+        else
+            PowerHelper.SetKeepAwake(false); // polls stop with the engine — release the hold
     }
 
     /// <summary>
@@ -313,6 +315,23 @@ public sealed partial class MainPageViewModel : ObservableObject
             _seenGids.Add(download.Gid);
             if (_byGid.TryGetValue(download.Gid, out var item))
             {
+                // I12: session/all-time traffic from per-tick deltas, taken BEFORE UpdateFrom
+                // overwrites the previous totals. New items are skipped on purpose — their
+                // pre-existing progress is not session traffic. The download delta counts only
+                // while the network is active, so a hash re-check's growing completedLength
+                // (no traffic) doesn't inflate the stats.
+                long downDelta = download.CompletedLength - item.CompletedLength;
+                long upDelta = download.UploadLength - item.UploadLength;
+                if (downDelta > 0 && download.DownloadSpeed > 0)
+                {
+                    _sessionDownloaded += downDelta;
+                    StatsService.AllTimeDownloaded += downDelta;
+                }
+                if (upDelta > 0)
+                {
+                    _sessionUploaded += upDelta;
+                    StatsService.AllTimeUploaded += upDelta;
+                }
                 item.UpdateFrom(download);
             }
             else
@@ -365,14 +384,100 @@ public sealed partial class MainPageViewModel : ObservableObject
             }
         }
 
+        // I7: follow aria2's order (active, queue order, stopped) so changePosition moves and
+        // state transitions are visible; an explicit column sort still overrides.
+        SyncMasterOrder(snapshot);
         UpdateFilterCounts();
         UpdateDetails();
-        ApplySortToView();
+        if (SortKey is null)
+            ApplyMasterOrderToView();
+        else
+            ApplySortToView();
 
         IsEmpty = Downloads.Count == 0;
         GlobalSpeedText = $"↓ {FormatUtils.FormatSpeed(snapshot.GlobalStat.DownloadSpeed)}   ↑ {FormatUtils.FormatSpeed(snapshot.GlobalStat.UploadSpeed)}";
         CountsText = L.Get("CountsText", snapshot.GlobalStat.NumActive, snapshot.GlobalStat.NumWaiting, snapshot.GlobalStat.NumStopped);
         IsAnyActive = snapshot.GlobalStat.NumActive > 0;
+
+        // I11: hold the system awake while anything transfers (per-thread state — we are
+        // always on the UI thread here). No-ops when unchanged.
+        PowerHelper.SetKeepAwake(IsAnyActive && _service.Settings.PreventSleep);
+
+        // I12: persist the all-time totals periodically (Save skips unchanged values).
+        if (--_statsSaveCountdown <= 0)
+        {
+            _statsSaveCountdown = StatsSaveTicks;
+            StatsService.Save();
+        }
+    }
+
+    // I12: session traffic counters (all-time lives in StatsService).
+    private long _sessionDownloaded;
+    private long _sessionUploaded;
+    private const int StatsSaveTicks = 300; // ~5 min at the 1s poll cadence
+    private int _statsSaveCountdown = StatsSaveTicks;
+
+    /// <summary>Display strings for the statistics flyout — computed on open, not per tick.</summary>
+    public (string SessionDown, string SessionUp, string SessionRatio, string AllDown, string AllUp, string AllRatio) GetStatsTexts()
+    {
+        static string Ratio(long up, long down) =>
+            down > 0 ? (up / (double)down).ToString("0.00", System.Globalization.CultureInfo.CurrentCulture) : "—";
+        return (FormatUtils.FormatSize(_sessionDownloaded), FormatUtils.FormatSize(_sessionUploaded),
+                Ratio(_sessionUploaded, _sessionDownloaded),
+                FormatUtils.FormatSize(StatsService.AllTimeDownloaded), FormatUtils.FormatSize(StatsService.AllTimeUploaded),
+                Ratio(StatsService.AllTimeUploaded, StatsService.AllTimeDownloaded));
+    }
+
+    /// <summary>Mirrors aria2's snapshot order into the master list with in-place moves
+    /// (keeps selection/scroll). Cheap ordered-check first — reordering is rare.</summary>
+    private void SyncMasterOrder(Aria2Snapshot snapshot)
+    {
+        int expected = 0;
+        bool ordered = true;
+        foreach (var download in snapshot.Downloads)
+        {
+            if (download.FollowedBy is { Count: > 0 } || !_byGid.TryGetValue(download.Gid, out var item))
+                continue;
+            if (expected >= _all.Count || !ReferenceEquals(_all[expected], item))
+            {
+                ordered = false;
+                break;
+            }
+            expected++;
+        }
+        if (ordered)
+            return;
+
+        int target = 0;
+        foreach (var download in snapshot.Downloads)
+        {
+            if (download.FollowedBy is { Count: > 0 } || !_byGid.TryGetValue(download.Gid, out var item))
+                continue;
+            int current = _all.IndexOf(item);
+            if (current >= 0 && current != target)
+            {
+                _all.RemoveAt(current);
+                _all.Insert(target, item);
+            }
+            target++;
+        }
+    }
+
+    /// <summary>With no explicit column sort, the visible rows follow the master (aria2) order.
+    /// In-place Moves keep selection and scroll position.</summary>
+    private void ApplyMasterOrderToView()
+    {
+        if (Downloads.Count < 2)
+            return;
+        int target = 0;
+        foreach (var item in _all)
+        {
+            if (!item.InView)
+                continue;
+            if (target < Downloads.Count && !ReferenceEquals(Downloads[target], item))
+                Downloads.Move(Downloads.IndexOf(item), target);
+            target++;
+        }
     }
 
     // ------------------------------------------------------------------ filtering
