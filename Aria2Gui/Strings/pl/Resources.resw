@@ -357,4 +357,13 @@ jeden w wierszu</value></data>
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Przycisk zamykania ukrywa okno; wyjście przez menu ikony zasobnika</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>Otwieraj linki magnet i pliki .torrent</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>Rejestruje aplikację jako program obsługujący (bieżący użytkownik); przy pierwszym użyciu wybierz ją w oknie przeglądarki</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>Obserwowany folder</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>Pliki .torrent umieszczone tutaj są dodawane automatycznie (potem zmieniana jest nazwa na .added)</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>Obserwuj schowek</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>Skopiowany link magnet otwiera wstępnie wypełnione okno dodawania</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>Trackery</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>Dodaj trackery…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>Jeden adres trackera w wierszu</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>Dodaj</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>Zmień lokalizację…</value></data>
 </root>

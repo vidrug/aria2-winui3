@@ -357,4 +357,13 @@ um por linha</value></data>
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>O botão fechar oculta a janela; saia pelo menu do ícone da bandeja</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>Abrir links magnet e arquivos .torrent</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>Registra o aplicativo como manipulador (usuário atual); escolha-o no diálogo do navegador no primeiro uso</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>Pasta monitorada</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>Arquivos .torrent colocados aqui são adicionados automaticamente (depois renomeados para .added)</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>Monitorar a área de transferência</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>Um link magnet copiado abre o diálogo de adição preenchido</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>Rastreadores</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>Adicionar rastreadores…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>Uma URL de rastreador por linha</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>Adicionar</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>Definir local…</value></data>
 </root>

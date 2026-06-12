@@ -357,4 +357,13 @@
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Кнопка закриття приховує вікно; вихід — через меню значка в треї</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>Відкривати magnet-посилання та файли .torrent</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>Реєструє застосунок як обробник (поточний користувач); уперше виберіть його в діалозі браузера</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>Тека спостереження</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>Файли .torrent із цієї теки додаються автоматично (потім перейменовуються на .added)</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>Стежити за буфером обміну</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>Скопійоване magnet-посилання відкриває вікно додавання із заповненим полем</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>Трекери</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>Додати трекери…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>Одне посилання трекера на рядок</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>Додати</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>Перемістити до теки…</value></data>
 </root>

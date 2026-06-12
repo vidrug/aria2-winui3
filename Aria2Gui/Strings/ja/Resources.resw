@@ -357,4 +357,13 @@
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>閉じるボタンはウィンドウを隠します。終了はトレイアイコンのメニューから</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>マグネットリンクと .torrent ファイルを開く</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>このアプリをハンドラーとして登録します（現在のユーザー）。初回はブラウザーのダイアログで選択してください</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>監視フォルダー</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>ここに置かれた .torrent ファイルは自動的に追加されます（その後 .added にリネーム）</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>クリップボードを監視</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>コピーしたマグネットリンクで追加ダイアログが自動入力で開きます</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>トラッカー</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>トラッカーを追加…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>1 行に 1 つのトラッカー URL</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>追加</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>保存先を変更…</value></data>
 </root>

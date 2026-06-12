@@ -357,4 +357,13 @@
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>关闭按钮仅隐藏窗口；通过托盘图标菜单退出</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>打开磁力链接和 .torrent 文件</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>将本应用注册为处理程序（当前用户）；首次使用时请在浏览器对话框中选择</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>监视文件夹</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>放入此处的 .torrent 文件会自动添加（随后重命名为 .added）</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>监视剪贴板</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>复制磁力链接后会自动打开预填好的添加窗口</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>Tracker</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>添加 Tracker…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>每行一个 Tracker 地址</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>添加</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>更改保存位置…</value></data>
 </root>

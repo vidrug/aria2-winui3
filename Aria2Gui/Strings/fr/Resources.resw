@@ -357,4 +357,13 @@ un par ligne</value></data>
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Le bouton fermer masque la fenêtre ; quittez via le menu de l''icône de la zone de notification</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>Ouvrir les liens magnet et les fichiers .torrent</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>Enregistre l''application comme gestionnaire (utilisateur actuel) ; choisissez-la dans la boîte de dialogue du navigateur à la première utilisation</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>Dossier surveillé</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>Les fichiers .torrent déposés ici sont ajoutés automatiquement (puis renommés en .added)</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>Surveiller le presse-papiers</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>Un lien magnet copié ouvre la boîte d''ajout préremplie</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>Trackers</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>Ajouter des trackers…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>Une URL de tracker par ligne</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>Ajouter</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>Changer l''emplacement…</value></data>
 </root>

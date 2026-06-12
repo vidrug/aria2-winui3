@@ -357,4 +357,13 @@ einer pro Zeile</value></data>
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Die Schließen-Schaltfläche verbirgt das Fenster; Beenden über das Menü des Tray-Symbols</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>Magnet-Links und .torrent-Dateien öffnen</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>Registriert die App als Handler (aktueller Benutzer); wählen Sie sie beim ersten Öffnen im Browserdialog</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>Überwachter Ordner</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>Hier abgelegte .torrent-Dateien werden automatisch hinzugefügt (danach in .added umbenannt)</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>Zwischenablage überwachen</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>Ein kopierter Magnet-Link öffnet den Hinzufügen-Dialog vorausgefüllt</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>Tracker</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>Tracker hinzufügen…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>Eine Tracker-URL pro Zeile</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>Hinzufügen</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>Speicherort ändern…</value></data>
 </root>

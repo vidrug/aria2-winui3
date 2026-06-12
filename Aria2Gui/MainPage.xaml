@@ -456,6 +456,14 @@
                                             </MenuFlyoutItem.Icon>
                                         </MenuFlyoutItem>
                                         <MenuFlyoutItem
+                                            loc:Localize.Uid="RowMenuSetLocation"
+                                            Command="{x:Bind SetLocationCommand}"
+                                            Visibility="{x:Bind local:MainPage.VisIf(HasMagnet), Mode=OneWay}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE8DE;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                        <MenuFlyoutItem
                                             loc:Localize.Uid="RowMenuCopyMagnet"
                                             Command="{x:Bind CopyMagnetCommand}"
                                             Visibility="{x:Bind HasMagnet, Mode=OneWay}">
@@ -613,6 +621,9 @@
                         <toolkit:SegmentedItem
                             AutomationProperties.AutomationId="DetailsTabPeers"
                             Content="{x:Bind local:MainPage.TabLabel('DetailsTabPeers')}" />
+                        <toolkit:SegmentedItem
+                            AutomationProperties.AutomationId="DetailsTabTrackers"
+                            Content="{x:Bind local:MainPage.TabLabel('DetailsTabTrackers')}" />
                     </toolkit:Segmented>
 
                     <!-- No selection placeholder -->
@@ -743,6 +754,58 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+
+                    <!-- Trackers -->
+                    <Grid
+                        Grid.Row="1"
+                        Margin="0,8,0,0"
+                        RowSpacing="8"
+                        Visibility="{x:Bind local:MainPage.TabVisible(ViewModel.DetailsTabIndex, 3, ViewModel.HasSelection), Mode=OneWay}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Button loc:Localize.Uid="AddTrackersButton" AutomationProperties.AutomationId="AddTrackersButton" HorizontalAlignment="Left">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <StackPanel Width="360" Spacing="8">
+                                        <TextBox
+                                            x:Name="AddTrackersBox"
+                                            loc:Localize.Uid="AddTrackersBox"
+                                            AutomationProperties.AutomationId="AddTrackersBox"
+                                            AcceptsReturn="True"
+                                            Height="120"
+                                            TextWrapping="Wrap" />
+                                        <Button
+                                            loc:Localize.Uid="ConfirmAddTrackersButton"
+                                            AutomationProperties.AutomationId="ConfirmAddTrackersButton"
+                                            Style="{StaticResource AccentButtonStyle}"
+                                            HorizontalAlignment="Right"
+                                            Click="AddTrackers_Click" />
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                        <ListView
+                            Grid.Row="1"
+                            Padding="0"
+                            SelectionMode="None"
+                            ItemsSource="{x:Bind ViewModel.Trackers, Mode=OneWay}"
+                            ContainerContentChanging="ZebraList_ContainerContentChanging">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="MinHeight" Value="32" />
+                                    <Setter Property="Padding" Value="8,0,12,0" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <TextBlock Text="{x:Bind}" Style="{StaticResource CellTextStyle}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
                     </Grid>
                 </Border>
                 </Grid>

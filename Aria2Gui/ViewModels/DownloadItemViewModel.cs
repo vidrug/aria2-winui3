@@ -167,6 +167,8 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     public long Connections { get; private set; }
     public long NumSeeders { get; private set; }
     public IReadOnlyList<Aria2File>? Files { get; private set; }
+    /// <summary>Tracker tiers from the torrent metadata (raw reference, for the Trackers tab).</summary>
+    public IReadOnlyList<List<string>>? AnnounceList { get; private set; }
 
     /// <summary>Share ratio (bytes uploaded ÷ bytes downloaded). 0 until something has been
     /// downloaded. The single source of truth for both the Ratio column and ratio sorting, so
@@ -222,6 +224,7 @@ public sealed partial class DownloadItemViewModel : ObservableObject
         Connections = d.Connections;
         NumSeeders = d.NumSeeders;
         Files = d.Files;
+        AnnounceList = d.BitTorrent?.AnnounceList;
 
         var firstFile = d.Files?.FirstOrDefault();
         bool isMetadata = firstFile?.Path.StartsWith("[METADATA]", StringComparison.Ordinal) == true;
@@ -429,7 +432,48 @@ public sealed partial class DownloadItemViewModel : ObservableObject
 
         // B16: prune empty folders. Without a known download root we have no safe boundary,
         // so we never touch directories in that case.
-        string? stop = NormalizePath(root);
+        PruneEmptyDirs(dirs, NormalizePath(root));
+    }
+
+    /// <summary>"Set location": moves each listed file (+ its control file) preserving the
+    /// layout relative to the old root, then prunes the emptied source folders. Best-effort —
+    /// a locked file stays behind and the re-added entry re-verifies/redownloads it.</summary>
+    private static void MoveFilesTo(IReadOnlyList<Aria2File> files, string? oldRoot, string newRoot)
+    {
+        string? stop = NormalizePath(oldRoot);
+        if (string.IsNullOrEmpty(stop))
+            return;
+        var dirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var file in files)
+        {
+            try
+            {
+                if (!Path.IsPathRooted(file.Path))
+                    continue;
+                string src = NormalizePath(file.Path) ?? file.Path;
+                string rel = Path.GetRelativePath(stop, src);
+                if (rel.StartsWith("..", StringComparison.Ordinal) || Path.IsPathRooted(rel))
+                    continue; // outside the old root — never touch
+                string dst = Path.Combine(newRoot, rel);
+                System.IO.Directory.CreateDirectory(Path.GetDirectoryName(dst)!);
+                if (File.Exists(src))
+                    File.Move(src, dst, overwrite: false);
+                if (File.Exists(src + ".aria2"))
+                    File.Move(src + ".aria2", dst + ".aria2", overwrite: true);
+                if (Path.GetDirectoryName(src) is { Length: > 0 } d)
+                    dirs.Add(d);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+            {
+                // Locked/colliding file — left in place; check-integrity covers the gap.
+            }
+        }
+        PruneEmptyDirs(dirs, stop);
+    }
+
+    /// <summary>Removes now-empty folders walking up from each dir to (never including) the root.</summary>
+    private static void PruneEmptyDirs(HashSet<string> dirs, string? stop)
+    {
         if (string.IsNullOrEmpty(stop))
             return;
         string boundary = stop + Path.DirectorySeparatorChar;
@@ -460,8 +504,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
             return;
         try
         {
+            string magnet = $"magnet:?xt=urn:btih:{InfoHash}&dn={Uri.EscapeDataString(Name)}";
+            App.SuppressClipboardCatch(magnet); // our own copy must not trigger the catcher
             var package = new DataPackage();
-            package.SetText($"magnet:?xt=urn:btih:{InfoHash}&dn={Uri.EscapeDataString(Name)}");
+            package.SetText(magnet);
             Clipboard.SetContent(package);
         }
         catch (Exception)
@@ -483,6 +529,28 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     [RelayCommand]
     private Task RecheckAsync() => RecheckCoreAsync();
 
+    /// <summary>"Set location": pick a folder, then move the payload and re-add there (I13).</summary>
+    [RelayCommand]
+    private async Task SetLocationAsync()
+    {
+        if (string.IsNullOrEmpty(InfoHash))
+            return;
+        try
+        {
+            var picker = new Windows.Storage.Pickers.FolderPicker();
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
+            picker.FileTypeFilter.Add("*");
+            var folder = await picker.PickSingleFolderAsync();
+            if (folder is null || string.Equals(NormalizePath(folder.Path), Directory, StringComparison.OrdinalIgnoreCase))
+                return;
+            await RecheckCoreAsync(folder.Path);
+        }
+        catch (Exception)
+        {
+            // Picker failure — nothing was touched.
+        }
+    }
+
     /// <summary>
     /// Re-hash and continue a torrent whose data exists on disk but whose aria2 state
     /// was lost: remove the entry keeping files, then re-add. BuildOptions sets
@@ -490,7 +558,11 @@ public sealed partial class DownloadItemViewModel : ObservableObject
     /// Prefers the .torrent aria2 saved (bt-save-metadata) — it keeps the tracker list;
     /// the magnet fallback carries no trackers and needs DHT to fetch metadata.
     /// </summary>
-    public async Task<RecheckOutcome> RecheckCoreAsync()
+    public Task<RecheckOutcome> RecheckCoreAsync() => RecheckCoreAsync(null);
+
+    /// <param name="moveTo">When set, the torrent's files are MOVED there between the remove
+    /// and the re-add — this is "Set location" reusing the proven recheck dance.</param>
+    public async Task<RecheckOutcome> RecheckCoreAsync(string? moveTo)
     {
         if (string.IsNullOrEmpty(InfoHash))
             return RecheckOutcome.NotPossible;
@@ -501,9 +573,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
             // .torrent and without DHT (e.g. privacy mode), a bare magnet could never fetch
             // metadata — the recheck would replace a working entry with a stuck [METADATA] stub.
             byte[]? torrentBytes = null;
+            string? metaPath = null;
             if (!string.IsNullOrEmpty(Directory))
             {
-                string metaPath = Path.Combine(Directory, hash.ToLowerInvariant() + ".torrent");
+                metaPath = Path.Combine(Directory, hash.ToLowerInvariant() + ".torrent");
                 try
                 {
                     if (File.Exists(metaPath))
@@ -558,6 +631,27 @@ public sealed partial class DownloadItemViewModel : ObservableObject
                 await Task.Delay(200);
             }
 
+            // Set location: with the entry out of the engine, move the payload on disk, then
+            // re-add pointing at the new folder. check-integrity re-verifies what arrived.
+            string? targetDir = Directory;
+            if (moveTo is not null)
+            {
+                var filesToMove = Files;
+                string? oldRoot = Directory;
+                if (filesToMove is { Count: > 0 })
+                    await Task.Run(() => MoveFilesTo(filesToMove, oldRoot, moveTo));
+                try
+                {
+                    if (metaPath is not null && File.Exists(metaPath))
+                        File.Move(metaPath, Path.Combine(moveTo, Path.GetFileName(metaPath)), overwrite: true);
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    // Metadata copy is already in memory — the re-add still works.
+                }
+                targetDir = moveTo;
+            }
+
             // N9: from here the entry is GONE — a failed re-add silently loses the download,
             // so retry transient failures instead of swallowing them.
             string magnet = $"magnet:?xt=urn:btih:{hash}&dn={Uri.EscapeDataString(Name)}";
@@ -567,10 +661,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
                 {
                     if (torrentBytes is not null)
                     {
-                        await DownloadAdder.AddTorrentBytesAsync(torrentBytes, Directory, null, preserve);
+                        await DownloadAdder.AddTorrentBytesAsync(torrentBytes, targetDir, null, preserve);
                         return RecheckOutcome.Succeeded;
                     }
-                    var result = await DownloadAdder.AddUrisAsync(magnet, Directory, preserve);
+                    var result = await DownloadAdder.AddUrisAsync(magnet, targetDir, preserve);
                     if (result.Error is null && result.Added > 0)
                         return RecheckOutcome.Succeeded;
                 }

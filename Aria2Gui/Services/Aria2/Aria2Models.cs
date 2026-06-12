@@ -108,6 +108,10 @@ public sealed class Aria2BitTorrent
 
     [JsonPropertyName("mode")]
     public string? Mode { get; set; }
+
+    /// <summary>Tracker tiers from the torrent metadata (announce-list).</summary>
+    [JsonPropertyName("announceList")]
+    public List<List<string>>? AnnounceList { get; set; }
 }
 
 public sealed class Aria2BitTorrentInfo

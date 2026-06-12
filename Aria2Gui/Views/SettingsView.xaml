@@ -227,6 +227,12 @@
                             </tk:SettingsCard.HeaderIcon>
                             <ToggleSwitch x:Name="AssociateToggle" AutomationProperties.AutomationId="AssociateToggle" />
                         </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="WatchClipboardCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE77F;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <ToggleSwitch x:Name="WatchClipboardToggle" AutomationProperties.AutomationId="WatchClipboardToggle" />
+                        </tk:SettingsCard>
                         <tk:SettingsCard loc:Localize.Uid="ThemeCard">
                             <tk:SettingsCard.HeaderIcon>
                                 <FontIcon Glyph="&#xE790;" />
@@ -399,6 +405,16 @@
                                 <FontIcon Glyph="&#xEDA2;" />
                             </tk:SettingsCard.HeaderIcon>
                             <TextBox x:Name="DiskCacheBox" AutomationProperties.AutomationId="DiskCacheBox" MinWidth="148" PlaceholderText="16M" />
+                        </tk:SettingsCard>
+                        <tk:SettingsCard loc:Localize.Uid="WatchFolderCard">
+                            <tk:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="&#xE7B8;" />
+                            </tk:SettingsCard.HeaderIcon>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock x:Name="WatchDirText" AutomationProperties.AutomationId="WatchDirText" VerticalAlignment="Center" MaxWidth="240" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <Button loc:Localize.Uid="BrowseFolderButton" AutomationProperties.AutomationId="WatchBrowseButton" Click="OnWatchBrowseClick" />
+                                <ToggleSwitch x:Name="WatchFolderToggle" AutomationProperties.AutomationId="WatchFolderToggle" MinWidth="0" />
+                            </StackPanel>
                         </tk:SettingsCard>
                     </StackPanel>
 

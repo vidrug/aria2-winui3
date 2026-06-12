@@ -357,4 +357,13 @@ uno per riga</value></data>
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Il pulsante di chiusura nasconde la finestra; esci dal menu dell''icona nell''area di notifica</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>Apri link magnet e file .torrent</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>Registra l''app come gestore (utente corrente); sceglila nella finestra del browser al primo utilizzo</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>Cartella monitorata</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>I file .torrent qui depositati vengono aggiunti automaticamente (poi rinominati in .added)</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>Monitora gli appunti</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>Un link magnet copiato apre la finestra di aggiunta precompilata</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>Tracker</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>Aggiungi tracker…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>Un URL di tracker per riga</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>Aggiungi</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>Cambia posizione…</value></data>
 </root>

@@ -191,6 +191,13 @@ public sealed partial class MainPage : Page
     private void DownloadsList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
         ViewModel.SetSelection([.. DownloadsList.SelectedItems.OfType<DownloadItemViewModel>()]);
 
+    /// <summary>Pushes the trackers typed into the flyout to the selected torrent (I9).</summary>
+    private async void AddTrackers_Click(object sender, RoutedEventArgs e)
+    {
+        if (await ViewModel.AddTrackersAsync(AddTrackersBox.Text))
+            AddTrackersBox.Text = "";
+    }
+
     /// <summary>Fills the statistics flyout when it opens (Opened, not Opening — the deferred
     /// flyout content and its x:Name fields only exist once shown).</summary>
     private void StatsFlyout_Opened(object? sender, object e)

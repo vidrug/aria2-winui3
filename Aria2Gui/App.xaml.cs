@@ -139,8 +139,50 @@ public partial class App : Application
         Services.StatsService.Load();
         Services.NotificationService.Initialize();
 
+        // Watch folder: (re)arm on every engine connect — adds need a live RPC, and the
+        // connect-time rescan picks up files dropped while the app was closed (I8).
+        Services.Aria2.Aria2Service.Instance.StateChanged += state =>
+        {
+            if (state == Services.Aria2.Aria2ServiceState.Running)
+                Services.WatchFolderService.Instance.Reconfigure(Services.Aria2.Aria2Service.Instance.Settings);
+        };
+
+        // Clipboard catcher (I14, off by default): a copied magnet link opens the add
+        // dialog pre-filled — the lightest browser integration without an extension.
+        Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += (_, _) => _ = OnClipboardChangedAsync();
+
         // Start the aria2c engine in the background; the UI reflects service state.
         _ = InitializeEngineAsync();
+    }
+
+    private static string? _lastClipboardCatch;
+
+    /// <summary>Marks a magnet the app itself just copied, so the clipboard catcher
+    /// doesn't bounce it straight back as an add prompt.</summary>
+    public static void SuppressClipboardCatch(string text) => _lastClipboardCatch = text;
+
+    private static async Task OnClipboardChangedAsync()
+    {
+        try
+        {
+            if (!Services.Aria2.Aria2Service.Instance.Settings.WatchClipboard)
+                return;
+            var content = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
+            if (!content.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
+                return;
+            string text = (await content.GetTextAsync()).Trim();
+            // Magnet links only: catching every copied http URL would be far too noisy.
+            if (!text.StartsWith("magnet:", StringComparison.OrdinalIgnoreCase) || text.Contains('\n'))
+                return;
+            if (text == _lastClipboardCatch)
+                return; // same link re-copied (or our own magnet-copy feature)
+            _lastClipboardCatch = text;
+            DispatcherQueue.TryEnqueue(() => ShowAddDialogFor(text));
+        }
+        catch (Exception)
+        {
+            // Clipboard is flaky when another app holds it — best effort.
+        }
     }
 
     /// <summary>Set by exit paths that must bypass close-to-tray (tray Quit, relaunch).</summary>

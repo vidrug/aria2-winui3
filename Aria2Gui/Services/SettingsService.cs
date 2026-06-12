@@ -58,6 +58,15 @@ public sealed class AppSettings
     /// <summary>Register as a per-user handler for magnet: links and .torrent files.</summary>
     public bool RegisterFileAssociations { get; set; }
 
+    /// <summary>Auto-add .torrent files dropped into <see cref="WatchFolder"/>.</summary>
+    public bool WatchFolderEnabled { get; set; }
+
+    /// <summary>Folder scanned for new .torrent files (renamed to .added after queueing).</summary>
+    public string WatchFolder { get; set; } = "";
+
+    /// <summary>Offer to add a magnet link the moment it is copied to the clipboard.</summary>
+    public bool WatchClipboard { get; set; }
+
     // ---- Alternative ("turtle mode") speed limits ----
 
     /// <summary>While true, the alternative limits below replace the main ones.</summary>

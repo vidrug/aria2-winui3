@@ -357,4 +357,13 @@
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Кнопка закрытия скрывает окно; выход — через меню значка в трее</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>Открывать magnet-ссылки и файлы .torrent</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>Регистрирует приложение как обработчик (текущий пользователь); при первом открытии выберите его в диалоге браузера</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>Папка наблюдения</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>Файлы .torrent из этой папки добавляются автоматически (затем переименовываются в .added)</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>Следить за буфером обмена</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>Скопированная magnet-ссылка открывает окно добавления с предзаполнением</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>Трекеры</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>Добавить трекеры…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>По одной ссылке на строку</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>Добавить</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>Переместить в папку…</value></data>
 </root>

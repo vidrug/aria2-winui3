@@ -67,7 +67,7 @@ public sealed partial class SettingsView : UserControl
         CryptoLevelRadio.SelectionChanged += OnSelectionChanged;
 
         // CryptoToggle keeps its own handler (OnCryptoToggled) which also applies.
-        foreach (var ts in new[] { CheckCertToggle, AllowOverwriteToggle, AutoRenameToggle, DhtToggle, PexToggle, LpdToggle, DisableIpv6Toggle, BtDetachSeedToggle, ForceEncryptionToggle, PreventSleepToggle, StartWithWindowsToggle, StartMinimizedToggle, CloseToTrayToggle, AssociateToggle })
+        foreach (var ts in new[] { CheckCertToggle, AllowOverwriteToggle, AutoRenameToggle, DhtToggle, PexToggle, LpdToggle, DisableIpv6Toggle, BtDetachSeedToggle, ForceEncryptionToggle, PreventSleepToggle, StartWithWindowsToggle, StartMinimizedToggle, CloseToTrayToggle, AssociateToggle, WatchClipboardToggle, WatchFolderToggle })
             ts.Toggled += OnToggled;
 
         foreach (var tb in new[]
@@ -100,6 +100,9 @@ public sealed partial class SettingsView : UserControl
             StartMinimizedToggle.IsOn = s.StartMinimized;
             CloseToTrayToggle.IsOn = s.CloseToTray;
             AssociateToggle.IsOn = s.RegisterFileAssociations;
+            WatchClipboardToggle.IsOn = s.WatchClipboard;
+            WatchFolderToggle.IsOn = s.WatchFolderEnabled;
+            WatchDirText.Text = s.WatchFolder;
             ThemeBox.SelectedIndex = s.Theme switch { "Light" => 1, "Dark" => 2, _ => 0 };
             LanguageBox.SelectedItem = LanguageBox.Items.OfType<ComboBoxItem>()
                 .FirstOrDefault(i => (i.Tag as string ?? "") == s.Language) ?? LanguageBox.Items[0];
@@ -513,6 +516,26 @@ public sealed partial class SettingsView : UserControl
         SeedValueBox.SmallChange = time ? 5 : 1; // ratio steps by whole numbers
     }
 
+    private async void OnWatchBrowseClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var picker = new FolderPicker();
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
+            picker.FileTypeFilter.Add("*");
+            var folder = await picker.PickSingleFolderAsync();
+            if (folder is not null)
+            {
+                WatchDirText.Text = folder.Path;
+                await ApplyChangeAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError(Helpers.L.Get("ErrorOpenFolderPicker", ex.Message));
+        }
+    }
+
     private async void OnBrowseClick(object sender, RoutedEventArgs e)
     {
         try
@@ -555,6 +578,9 @@ public sealed partial class SettingsView : UserControl
             StartMinimized = StartMinimizedToggle.IsOn,
             CloseToTray = CloseToTrayToggle.IsOn,
             RegisterFileAssociations = AssociateToggle.IsOn,
+            WatchClipboard = WatchClipboardToggle.IsOn,
+            WatchFolderEnabled = WatchFolderToggle.IsOn,
+            WatchFolder = WatchDirText.Text,
             // Turtle mode itself is flipped from the toolbar/tray, not edited here.
             AltSpeedEnabled = old.AltSpeedEnabled,
             AltDownloadLimit = LimitToStored(AltDownLimitBox.Value, (AltDownLimitUnitBox.SelectedValue as string) ?? Helpers.SpeedUnit.Default),

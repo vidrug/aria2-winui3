@@ -357,4 +357,13 @@ her satıra bir tane</value></data>
   <data name="CloseToTrayCard.Description" xml:space="preserve"><value>Kapat düğmesi pencereyi gizler; çıkış tepsi simgesinin menüsünden</value></data>
   <data name="AssociateCard.Header" xml:space="preserve"><value>Magnet bağlantılarını ve .torrent dosyalarını aç</value></data>
   <data name="AssociateCard.Description" xml:space="preserve"><value>Uygulamayı işleyici olarak kaydeder (geçerli kullanıcı); ilk kullanımda tarayıcı iletişim kutusunda seçin</value></data>
+  <data name="WatchFolderCard.Header" xml:space="preserve"><value>İzlenen klasör</value></data>
+  <data name="WatchFolderCard.Description" xml:space="preserve"><value>Buraya bırakılan .torrent dosyaları otomatik eklenir (sonra .added olarak yeniden adlandırılır)</value></data>
+  <data name="WatchClipboardCard.Header" xml:space="preserve"><value>Panoyu izle</value></data>
+  <data name="WatchClipboardCard.Description" xml:space="preserve"><value>Kopyalanan magnet bağlantısı, ekleme penceresini önceden doldurulmuş açar</value></data>
+  <data name="DetailsTabTrackers.Text" xml:space="preserve"><value>İzleyiciler</value></data>
+  <data name="AddTrackersButton.Content" xml:space="preserve"><value>İzleyici ekle…</value></data>
+  <data name="AddTrackersBox.PlaceholderText" xml:space="preserve"><value>Her satıra bir izleyici URL''si</value></data>
+  <data name="ConfirmAddTrackersButton.Content" xml:space="preserve"><value>Ekle</value></data>
+  <data name="RowMenuSetLocation.Text" xml:space="preserve"><value>Konumu değiştir…</value></data>
 </root>

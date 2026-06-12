@@ -673,6 +673,8 @@ public sealed partial class MainPageViewModel : ObservableObject
             }
             if (Peers.Count > 0)
                 Peers.Clear();
+            if (Trackers.Count > 0)
+                Trackers.Clear();
             return;
         }
 
@@ -703,6 +705,47 @@ public sealed partial class MainPageViewModel : ObservableObject
             case 2:
                 _ = RefreshPeersAsync();
                 break;
+            case 3:
+                RefreshTrackers(item);
+                break;
+        }
+    }
+
+    /// <summary>Tracker URLs of the selected torrent (Trackers details tab).</summary>
+    public System.Collections.ObjectModel.ObservableCollection<string> Trackers { get; } = [];
+
+    /// <summary>Rebuilds the tracker list only when it actually changed — metadata trackers
+    /// are static, so most ticks are a cheap count/first comparison.</summary>
+    private void RefreshTrackers(DownloadItemViewModel item)
+    {
+        var tiers = item.AnnounceList;
+        var flat = tiers is null ? [] : tiers.SelectMany(t => t).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        if (flat.Count == Trackers.Count && (flat.Count == 0 || flat.SequenceEqual(Trackers, StringComparer.OrdinalIgnoreCase)))
+            return;
+        Trackers.Clear();
+        foreach (var url in flat)
+            Trackers.Add(url);
+    }
+
+    /// <summary>Pushes extra trackers to the selected torrent (aria2 bt-tracker, per gid).
+    /// Free-form lines/commas; returns false when nothing was sent.</summary>
+    public async Task<bool> AddTrackersAsync(string raw)
+    {
+        var item = SelectedDownload;
+        var urls = raw.Split(['\r', '\n', ',', ' '], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (item is null || !item.IsTorrent || urls.Length == 0)
+            return false;
+        try
+        {
+            await _service.Rpc.ChangeOptionAsync(item.Gid, new Dictionary<string, string>
+            {
+                ["bt-tracker"] = string.Join(',', urls),
+            });
+            return true;
+        }
+        catch (Exception ex) when (ex is Aria2Gui.Services.Aria2.Aria2RpcException or InvalidOperationException or TimeoutException)
+        {
+            return false;
         }
     }
 

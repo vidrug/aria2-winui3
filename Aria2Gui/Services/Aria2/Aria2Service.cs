@@ -101,6 +101,7 @@ public sealed class Aria2Service
         {
             _settingsLock.Release();
         }
+        WatchFolderService.Instance.Reconfigure(settings);
         if (_rpc.IsConnected)
             await _rpc.ChangeGlobalOptionAsync(BuildRuntimeOptions(settings), ct).ConfigureAwait(false);
     }
