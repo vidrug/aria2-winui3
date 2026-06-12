@@ -107,8 +107,10 @@ public sealed class Aria2RpcClient : IAsyncDisposable
     public Task UnpauseAsync(string gid, CancellationToken ct = default) =>
         InvokeAsync("aria2.unpause", w => w.WriteStringValue(gid), ct);
 
-    public Task PauseAllAsync(CancellationToken ct = default) =>
-        InvokeAsync("aria2.pauseAll", null, ct);
+    /// <summary>Force by default: the graceful pauseAll waits out in-flight tracker announces,
+    /// which reads as the button doing nothing for seconds.</summary>
+    public Task PauseAllAsync(bool force = true, CancellationToken ct = default) =>
+        InvokeAsync(force ? "aria2.forcePauseAll" : "aria2.pauseAll", null, ct);
 
     public Task UnpauseAllAsync(CancellationToken ct = default) =>
         InvokeAsync("aria2.unpauseAll", null, ct);

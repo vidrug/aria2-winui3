@@ -297,7 +297,10 @@ public sealed partial class DownloadItemViewModel : ObservableObject
             if (RawStatus == Aria2Status.Paused)
                 await _service.Rpc.UnpauseAsync(Gid);
             else if (!_isStopped)
-                await _service.Rpc.PauseAsync(Gid);
+                // Force: the graceful aria2.pause defers until the in-flight tracker announce
+                // completes, so a freshly added torrent visibly ignores the button for seconds
+                // (or tens of seconds on a dead tracker). The button must act immediately.
+                await _service.Rpc.PauseAsync(Gid, force: true);
         }
         catch (Exception ex) when (ex is Aria2RpcException or InvalidOperationException or TimeoutException)
         {

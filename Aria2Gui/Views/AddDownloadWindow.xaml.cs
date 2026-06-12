@@ -21,6 +21,10 @@ public sealed partial class AddDownloadWindow : Window
 {
     private const int GWLP_HWNDPARENT = -8;
 
+    /// <summary>The open dialog, if any — protocol/file activations append to it instead of
+    /// stacking a second modal.</summary>
+    public static AddDownloadWindow? ActiveInstance { get; private set; }
+
     private readonly nint _hwnd;
     private byte[]? _torrentBytes;
     private TorrentContent? _torrentContent;
@@ -54,8 +58,50 @@ public sealed partial class AddDownloadWindow : Window
 
         CenterOnOwner();
 
-        Closed += (_, _) => App.Window?.Activate();
+        ActiveInstance = this;
+        Closed += (_, _) =>
+        {
+            ActiveInstance = null;
+            App.Window?.Activate();
+        };
         AppWindow.Show();
+    }
+
+    /// <summary>Appends a URI line (magnet/http) — used by protocol activation, so the user
+    /// still picks the save folder before anything is added.</summary>
+    public void PrefillUri(string uri)
+    {
+        if (UrlsBox.Text.Contains(uri, StringComparison.OrdinalIgnoreCase))
+            return; // double activation of the same link
+        UrlsBox.Text = string.IsNullOrWhiteSpace(UrlsBox.Text)
+            ? uri
+            : UrlsBox.Text.TrimEnd() + Environment.NewLine + uri;
+    }
+
+    /// <summary>Loads a .torrent from disk into the dialog (file-activation path) — same
+    /// outcome as picking it manually: name shown, per-file selection tree built.</summary>
+    public void LoadTorrentFromPath(string path)
+    {
+        try
+        {
+            byte[] bytes = File.ReadAllBytes(path);
+            var content = TorrentParser.Parse(bytes);
+
+            _torrentBytes = bytes;
+            _torrentContent = content;
+            TorrentFileName.Text = Path.GetFileName(path);
+            ErrorBar.IsOpen = false;
+            BuildFileTree(content);
+            TorrentFilesPanel.Visibility = Visibility.Visible;
+        }
+        catch (Exception ex)
+        {
+            _torrentBytes = null;
+            _torrentContent = null;
+            TorrentFileName.Text = "";
+            TorrentFilesPanel.Visibility = Visibility.Collapsed;
+            ShowError(L.Get("AddErrorReadTorrent", ex.Message));
+        }
     }
 
     /// <summary>Centers this dialog over the main window (falling back to its display), so it

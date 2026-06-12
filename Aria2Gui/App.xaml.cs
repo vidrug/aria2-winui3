@@ -103,25 +103,32 @@ public partial class App : Application
             }
         };
 
-        // A second app launch redirects here (see Program) — queue any magnet/.torrent it
-        // carried, then surface our window. The restore routes through the tray: it runs under
-        // the _restoring guard, so the minimize-watcher can't re-hide the window mid-restore (N16).
+        // A second app launch redirects here (see Program) — surface our window, then open the
+        // add dialog pre-filled with whatever magnet/.torrent the launch carried, so the user
+        // picks the save folder before anything is added. The restore routes through the tray:
+        // it runs under the _restoring guard, so the minimize-watcher can't re-hide the window
+        // mid-restore (N16).
         Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().Activated += (_, e) =>
         {
             var items = ExtractActivationItems(e);
             DispatcherQueue.TryEnqueue(() =>
             {
-                foreach (var item in items)
-                    QueueActivationAdd(item);
                 (Window as MainWindow)?.Tray.RestoreFromTray();
+                foreach (var item in items)
+                    ShowAddDialogFor(item);
             });
         };
 
         // This (first) launch may itself carry a magnet/.torrent — e.g. the app was closed
-        // when the user clicked the link. Queued until the engine is up.
-        foreach (var arg in Environment.GetCommandLineArgs().Skip(1))
-            if (IsActivationItem(arg))
-                QueueActivationAdd(arg);
+        // when the user clicked the link. Open the dialog once the window is up; the engine
+        // connects in the background while the user picks the folder.
+        var launchItems = Environment.GetCommandLineArgs().Skip(1).Where(IsActivationItem).ToList();
+        if (launchItems.Count > 0)
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                foreach (var item in launchItems)
+                    ShowAddDialogFor(item);
+            });
 
         var settings = Services.SettingsService.Load();
         if (settings.StartMinimized)
@@ -141,14 +148,24 @@ public partial class App : Application
 
     // ---- magnet: / .torrent activation (I3) ----
 
-    /// <summary>Items waiting for the engine: protocol/file activations can arrive before
-    /// (or while) aria2c connects, so adds are queued and drained once it's Running.</summary>
-    private static readonly List<string> _pendingAdds = [];
-    private static bool _engineReady;
-
     private static bool IsActivationItem(string arg) =>
         arg.StartsWith("magnet:", StringComparison.OrdinalIgnoreCase)
         || arg.EndsWith(".torrent", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Routes an activated magnet/.torrent into the add dialog (creating or reusing
+    /// it) so the user picks the save folder and, for torrents, the files — exactly like a
+    /// manual add. UI thread only.</summary>
+    private static void ShowAddDialogFor(string item)
+    {
+        // The modal needs a visible owner; also the user should see what's being added.
+        (Window as MainWindow)?.Tray.RestoreFromTray();
+        var dialog = Views.AddDownloadWindow.ActiveInstance ?? new Views.AddDownloadWindow();
+        if (item.StartsWith("magnet:", StringComparison.OrdinalIgnoreCase))
+            dialog.PrefillUri(item);
+        else if (File.Exists(item))
+            dialog.LoadTorrentFromPath(item);
+        dialog.Activate();
+    }
 
     /// <summary>Pulls magnet links / .torrent paths out of a redirected activation. Unpackaged
     /// launches arrive as ExtendedActivationKind.Launch with a raw command line; packaged
@@ -193,31 +210,6 @@ public partial class App : Application
         return items;
     }
 
-    /// <summary>Adds now when the engine is up, else queues for the post-start drain.
-    /// UI thread only.</summary>
-    private static void QueueActivationAdd(string item)
-    {
-        if (_engineReady)
-            _ = AddActivationItemAsync(item);
-        else
-            _pendingAdds.Add(item);
-    }
-
-    private static async Task AddActivationItemAsync(string item)
-    {
-        try
-        {
-            if (item.StartsWith("magnet:", StringComparison.OrdinalIgnoreCase))
-                await Services.DownloadAdder.AddUrisAsync(item);
-            else if (File.Exists(item))
-                await Services.DownloadAdder.AddTorrentBytesAsync(await File.ReadAllBytesAsync(item));
-        }
-        catch (Exception)
-        {
-            // Best effort: a bad link/file shows up via the engine's own error reporting
-            // if it was added, and is silently skipped if it never could be.
-        }
-    }
 
     /// <summary>
     /// Graceful teardown: save the aria2 session, stop the engine, and remove the tray icon.
@@ -241,14 +233,6 @@ public partial class App : Application
         try
         {
             await Services.Aria2.Aria2Service.Instance.StartAsync();
-            // Drain the magnet/.torrent items that arrived before the engine was up.
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                _engineReady = true;
-                foreach (var item in _pendingAdds)
-                    _ = AddActivationItemAsync(item);
-                _pendingAdds.Clear();
-            });
         }
         catch
         {
